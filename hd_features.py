@@ -285,36 +285,41 @@ def get_variables(date_to_gate_dict):
 
     return variables 
 
-def is_connected(active_channels_dict,*args):
+def is_connected(active_channels_dict, *args):
     ''' 
     get bool answer wheater chakras are connected through channel or not
-    direct and indirekt connections are supported (e.g ["TT","AA"],["TT","SN","RT"))
+    direct and indirekt connections are supported (e.g ["TT","AA"],["TT","SN","RT"])
+    Checks if the chakras in *args form a connected path in the order provided.
         Params: 
            active_channels_dict(dict): all active channels, keys: ["label","planets","gate","ch_gate"]
-           given_chakras(str): Chakras that will be checked                                    
+           *args(str): sequence of Chakras that will be checked for connection                                    
     Return:
-        bool: returns True if is connected, and false if not
+        bool: returns True if connected in sequence, and false if not
     '''
     #if gate list is emtpy ->Reflector-Typ (no channels at all), return false
     if not len(active_channels_dict["gate"]):
         return False
-    else:
-        gate_chakra_mask = np.array(
-            [gate_chakra in args 
-             for gate_chakra in active_channels_dict["gate_chakra"]]
-        ) 
-        ch_gate_chakra_mask = np.array(
-            [ch_gate_chakra in args for 
-             ch_gate_chakra in active_channels_dict["ch_gate_chakra"]]
-        )
         
-        #if gate and channel gate in same line -> is connected
-        mask = gate_chakra_mask & ch_gate_chakra_mask 
+    gate_chakras = active_channels_dict["gate_chakra"]
+    ch_gate_chakras = active_channels_dict["ch_gate_chakra"]
+    
+    # Check each link in the path
+    for i in range(len(args) - 1):
+        c1 = args[i]
+        c2 = args[i+1]
         
-        #for 2 elements 1 connection, for 3 elements 2 connection, ...
-        if sum(mask)>=len(args)-1: 
-            return True
-        else: return False
+        # Check if any active channel connects c1 and c2
+        connected = False
+        # iterate through all active channels to find a match
+        for gc, cgc in zip(gate_chakras, ch_gate_chakras):
+            if (gc == c1 and cgc == c2) or (gc == c2 and cgc == c1):
+                connected = True
+                break
+        
+        if not connected:
+            return False
+            
+    return True
 
 def get_auth(active_chakras,active_channels_dict): 
     ''' 
