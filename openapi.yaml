@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: Human Design API
+  description: API for calculating Human Design charts based on birth data.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # --- General Section Schema ---
+    GeneralInfo:
+      type: object
+      properties:
+        birth_date:
+          type: string
+          description: Formatted birth date
+          example: "01. Jan 1980 12:00:00"
+        create_date:
+          type: string
+          description: Date of calculation
+          example: "2023-10-27 10:00:00"
+        energie_type:
+          type: string
+          description: The Energy Type of the chart
+          example: "Generator"
+        strategy:
+          type: string
+          description: Strategy associated with the Energy Type
+          example: "To Respond"
+        signature:
+          type: string
+          description: Signature goal of the Energy Type
+          example: "Satisfaction"
+        not_self:
+          type: string
+          description: Not-Self theme
+          example: "Frustration"
+        aura:
+          type: string
+          description: Aura description
+          example: "Open and Enveloping"
+        inner_authority:
+          type: string
+          description: Inner Authority
+          example: "Sacral"
+        inc_cross:
+          type: string
+          description: Incarnation Cross
+          example: "The Right Angle Cross of The Sleeping Phoenix (55/59 | 34/20)"
+        profile:
+          type: string
+          description: Profile lines
+          example: "4/6: Opportunist Role Model"
+        defined_centers:
+          type: array
+          items:
+            type: string
+          description: List of defined centers
+          example: ["Sacral", "Root"]
+        undefined_centers:
+          type: array
+          items:
+            type: string
+          description: List of undefined centers
+          example: ["Head", "Ajna", "Throat", "G Center", "Heart", "Spleen", "Solar Plexus"]
+        split:
+          type: string
+          description: Definition split definition
+          example: "Single Definition"
+        variables:
+          type: object
+          properties:
+            right_up:
+              type: string
+              example: "right"
+            right_down:
+              type: string
+              example: "left"
+            left_up:
+              type: string
+              example: "right"
+            left_down:
+              type: string
+              example: "right"
+      required:
+        - birth_date
+        - energie_type
+        - strategy
+        - inner_authority
+        - inc_cross
+        - profile
+
+    # --- Gates Section Schema ---
+    PlanetData:
+      type: object
+      properties:
+        Planet:
+          type: string
+          description: Name of the planet or celestial body
+          example: "Sun"
+        Lon:
+          type: number
+          format: float
+          description: Longitude of the planet
+          example: 225.5
+        Gate:
+          type: integer
+          description: Gate number
+          example: 55
+        Line:
+          type: integer
+          description: Line number
+          example: 4
+        Color:
+          type: integer
+          description: Color number
+          example: 2
+        Tone:
+          type: integer
+          description: Tone number
+          example: 1
+        Base:
+          type: integer
+          description: Base number
+          example: 5
+        Ch_Gate:
+          type: integer
+          description: Channel gate
+          example: 59
+      required:
+        - Planet
+        - Gate
+        - Line
+
+    GatesCollection:
+      type: object
+      properties:
+        Planets:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanetData'
+
+    GatesInfo:
+      type: object
+      properties:
+        prs:
+          $ref: '#/components/schemas/GatesCollection'
+          description: Personality (Black) side data
+        des:
+          $ref: '#/components/schemas/GatesCollection'
+          description: Design (Red) side data
+
+    # --- Channels Section Schema ---
+    ChannelData:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Name of the active channel
+          example: "34/20: The Channel of Charisma"
+
+    ChannelsInfo:
+      type: object
+      properties:
+        Channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelData'
+
+    # --- Main Response Schema ---
+    CalculationResponse:
+      type: object
+      properties:
+        general:
+          $ref: '#/components/schemas/GeneralInfo'
+        gates:
+          $ref: '#/components/schemas/GatesInfo'
+        channels:
+          $ref: '#/components/schemas/ChannelsInfo'
+      required:
+        - general
+        - gates
+        - channels
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Invalid or missing authentication token."
+
+security:
+  - bearerAuth: []
+
+paths:
+  /calculate:
+    get:
+      summary: Calculate Human Design Chart
+      description: |
+        Calculates the Human Design chart based on the provided birth date, time, and location.
+        Requires a valid API token in the Authorization header.
+      tags:
+        - Calculation
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+            example: 1985
+          required: true
+          description: Birth year (4 digits)
+        - in: query
+          name: month
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 5
+          required: true
+          description: Birth month
+        - in: query
+          name: day
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 31
+            example: 15
+          required: true
+          description: Birth day
+        - in: query
+          name: hour
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 23
+            example: 14
+          required: true
+          description: Birth hour (0-23)
+        - in: query
+          name: minute
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 59
+            example: 30
+          required: true
+          description: Birth minute
+        - in: query
+          name: second
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 59
+            default: 0
+            example: 0
+          required: false
+          description: Birth second
+        - in: query
+          name: place
+          schema:
+            type: string
+            example: "New York, USA"
+          required: true
+          description: Birth place (City, Country)
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationResponse'
+        '400':
+          description: Bad Request (e.g., Geocoding failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Geocoding failed for place: 'Unknown City'. Please check the place name or try a different format."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Invalid or missing authentication token."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Error calculating Human Design features: ..."

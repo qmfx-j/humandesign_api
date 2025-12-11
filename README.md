@@ -442,3 +442,25 @@ curl -X GET "http://localhost:9021/calculate?year=1990&month=7&day=15&hour=14&mi
   }
 }
 ```
+
+## API Documentation
+
+The project includes an OpenAPI 3.0 specification file named `openapi.yaml`. This file describes the API endpoints, request parameters, responses, and schemas in a standard format.
+
+### Using `openapi.yaml`
+
+You can use the `openapi.yaml` file to:
+
+1.  **Visualize the API**:
+    *   **VS Code**: Install extensions like "Swagger Viewer" or "OpenAPI (Swagger) Editor" to preview the API documentation directly in your editor.
+    *   **Online Viewers**: Copy the content of `openapi.yaml` and paste it into the [Swagger Editor](https://editor.swagger.io/) to view and interact with the API documentation.
+
+2.  **Import into Postman**:
+    *   Open Postman.
+    *   Click on the **Import** button in the top left corner.
+    *   Drag and drop the `openapi.yaml` file or select it from your file system.
+    *   Postman will automatically generate a collection with the request (including examples) pre-configured.
+
+3.  **Generate Client Libraries**:
+    *   Tools like `openapi-generator` can use this file to generate API client code for various programming languages (e.g., Python, JavaScript, Java).
+
