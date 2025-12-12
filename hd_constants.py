@@ -29,7 +29,7 @@ IGING_CIRCLE_LIST =  [41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42
                       20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56, 31, 33, 7, 4, 29, 59, 40, 64, 47, 6, 
                       46, 18, 48, 57, 32, 50, 28, 44, 1, 43, 14, 34, 9, 5, 26, 11, 10, 58, 38, 54, 61, 60]
 
-#legend ->HD=Head,AA=Anja, TT=Throat, GC=G_Center, SL = Sacral, SN = Spleen, SP = SolarPlexus, RT = Root
+#legend ->HD=Head,AA=Ajna, TT=Throat, GC=G_Center, SL = Sacral, SN = Spleen, SP = SolarPlexus, RT = Root
 GATES_CHAKRA_DICT = {(64,47):("HD","AA"),
                      (61,24):("HD","AA"),
                      (63, 4):("HD","AA"),
@@ -72,7 +72,7 @@ CHAKRA_LIST = ["HD","AA","TT","GC","HT","SP","SN","SL","RT"]
 
 CHAKRA_NAMES_MAP = {
     "HD": "Head",
-    "AA": "Anja",
+    "AA": "Ajna",
     "TT": "Throat",
     "GC": "G_Center",
     "SL": "Sacral",
@@ -229,9 +229,9 @@ awareness_stream_group_dict = {
 								"Feel":"SolarPlexus",
 								"Emotion":"SolarPlexus",
 								"Sensitivity":"SolarPlexus",
-								"Realize/Meaning":"Anja",
-								"Knowledge":"Anja",
-								"Understand":"Anja"
+								"Realize/Meaning":"Ajna",
+								"Knowledge":"Ajna",
+								"Understand":"Ajna"
 								}
 								                
 # Dictionary Mapping for Incarnation Crosses:
