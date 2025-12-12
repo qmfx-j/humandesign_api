@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Human Design API
   description: API for calculating Human Design charts based on birth data.
-  version: 1.0.0
+  version: 1.0.5
 servers:
   - url: http://localhost:8000
     description: Local development server
@@ -301,3 +301,97 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 detail: "Error calculating Human Design features: ..."
+
+  /bodygraph:
+    get:
+      summary: Generate BodyGraph Image
+      description: |
+        Generates a visual bodygraph chart based on the provided birth data.
+        Returns an image in PNG (transparent), SVG, or JPG format.
+      tags:
+        - Visualization
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+            example: 1985
+          required: true
+        - in: query
+          name: month
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 5
+          required: true
+        - in: query
+          name: day
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 31
+            example: 15
+          required: true
+        - in: query
+          name: hour
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 23
+            example: 14
+          required: true
+        - in: query
+          name: minute
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 59
+            example: 30
+          required: true
+        - in: query
+          name: second
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 59
+            default: 0
+            example: 0
+          required: false
+        - in: query
+          name: place
+          schema:
+            type: string
+            example: "New York, USA"
+          required: true
+        - in: query
+          name: fmt
+          schema:
+            type: string
+            enum: [png, svg, jpg, jpeg]
+            default: png
+            example: png
+          required: false
+          description: Output image format.
+      responses:
+        '200':
+          description: Successful generation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad Request (e.g., Geocoding failed)
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
