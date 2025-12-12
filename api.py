@@ -17,21 +17,11 @@ app = FastAPI(title="Human Design API", version=__version__)
 import os
 from dotenv import load_dotenv
 
-# --- Load environment variables from .env with debug output ---
+# --- Load environment variables from .env ---
 env_path = os.path.join(os.path.dirname(__file__), ".env")
-# print(f"[DEBUG] Attempting to load .env from: {env_path}")
-if os.path.exists(env_path):
-    with open(env_path, "r") as f:
-        pass
-        # print("[DEBUG] .env contents:")
-        # print(f.read())
-else:
-    pass
-    # print("[DEBUG] .env file not found at expected location!")
-
 load_dotenv(dotenv_path=env_path, override=True)
+
 TOKEN = os.getenv("HD_API_TOKEN")
-# print(f"[DEBUG] Loaded HD_API_TOKEN: '{TOKEN}'")  # Debug print for troubleshooting
 if not TOKEN:
     raise RuntimeError("HD_API_TOKEN environment variable is not set. Please set it before running the API or add it to your .env file.")
 security = HTTPBearer()
@@ -87,7 +77,6 @@ def calculate_hd(
             "inner_authority": single_result[1],
             "inc_cross": single_result[2],
             "profile": single_result[4],
-#            "active_chakras": [hd_constants.CHAKRA_NAMES_MAP.get(chakra, chakra) for chakra in single_result[7]],
             "active_chakras": single_result[7],
             "inactive_chakras": set(hd_constants.CHAKRA_LIST) - set(single_result[7]),
             "split": "{}".format(single_result[5]),
@@ -130,9 +119,6 @@ def get_bodygraph_image(
     fmt: str = Query("png", description="Image format: png, svg, jpg/jpeg"),
     authorized: bool = Depends(verify_token)
 ):
-    # Reuse the logic? Ideally we'd refactor, but for now let's reuse the internal logic by calling a helper or duplicating.
-    # Duplication for safety in this context:
-    
     # 1. Validate and collect input
     birth_time = (year, month, day, hour, minute, second)
 

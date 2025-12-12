@@ -57,7 +57,7 @@ def draw_chart(chart_data, layout_data):
 
     # 2. PREPARE DATA
     defined_centers = set(chart_data['general'].get('defined_centers', []))
-    # Typo correction
+    # Handle legacy typo in center names
     if "Anja" in defined_centers: 
         defined_centers.remove("Anja")
         defined_centers.add("Ajna")
@@ -66,10 +66,7 @@ def draw_chart(chart_data, layout_data):
     personality_gates = {g['Gate']: g for g in chart_data['gates']['prs']['Planets']}
     
     # 3. DRAW CHANNELS / GATES
-    # The XAML logic draws *half channels* (gates) separately.
-    # If Chart[Gate] is active, we draw that gate's stub.
-    # If the *Channel* is formed, both stubs meet.
-    # We iterate 1..64
+    # Draw active gates and full channels
     
     channels_layout = layout_data.get('channels', {})
     
@@ -80,8 +77,7 @@ def draw_chart(chart_data, layout_data):
         if not path_d: continue
         mpl_path = svg_to_mpl_path(path_d)
         
-        # 1. Always Draw Gray Background (Inactive state)
-        # Matches the provided image style where all paths are visible in light gray/dark gray
+        # 1. Draw Inactive state (Gray Background)
         patch_bg = patches.PathPatch(mpl_path, facecolor='none', edgecolor="#D3D3D3", linewidth=4, capstyle='round', zorder=0.5)
         ax.add_patch(patch_bg)
 
@@ -112,8 +108,7 @@ def draw_chart(chart_data, layout_data):
     centers_layout = layout_data.get('centers', {})
     
     # Map generic names to XAML keys if needed. 
-    # Our extract script used keys like "Head", "Ajna", "Throat", "G", "Heart", "Sacral", "SolarPlexus", "Spleen", "Root".
-    # User JSON has "G_Center". XAML uses "G".
+    # Standardize center names to match layout keys
     name_map = {
         "G_Center": "G",
         "Anja": "Ajna"
@@ -173,10 +168,8 @@ def draw_chart(chart_data, layout_data):
         # XAML Gate Template uses a small Ellipse 6.5x6.5
         # We'll draw a small circle
         
-        circle_color = "gainsboro" if is_active else "none" # Highlight active gates? XAML logic: 'IsActive' -> Fill 'Transparent' else... wait.
-        # XAML Logic: If NOT active -> Fill Transparent. If mouse over -> Gainsboro.
-        # So inactive gates are just numbers. Active gates... actually usually in HD charts, the number is circled if active.
-        # Let's circle active gates.
+        circle_color = "gainsboro" if is_active else "none" 
+        # Highlight active gates
         
         if is_active:
             circ = patches.Circle((x + 3, y + 3), radius=3.5, facecolor='white', edgecolor='purple', linewidth=0.5, alpha=0.8, zorder=20)
@@ -187,11 +180,6 @@ def draw_chart(chart_data, layout_data):
         # We want to center the text approx +3, +3
         ax.text(x + 3.2, y + 4.5, str(gate_id), fontsize=4, ha='center', va='center', zorder=21, color='black', fontfamily='sans-serif')
 
-    # 6. SIDE PANELS (Planets) - Optional but good for completeness
-    # Draw simple lists on left/right outside the canvas w/ clipping off? 
-    # Current setup is 240x320. Side panels would need more width.
-    # Let's keep it simple and just draw the chart as requested.
-    
     # 6. SIDE PANELS (Planets) - Optional but good for completeness
     # Draw simple lists on left/right outside the canvas w/ clipping off? 
     # Current setup is 240x320. Side panels would need more width.

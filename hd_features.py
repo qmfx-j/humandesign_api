@@ -16,7 +16,7 @@ import sys
 def get_utc_offset_from_tz(timestamp,zone):
     """
     get utc offset from given time_zone. 
-    DST (daylightsavingtime) is respectet (data from pytz lib)
+    dst (daylightsavingtime) is respected (data from pytz lib)
     Args:
         zone(str): e.g. "Europe/Berlin"
     Return:
@@ -37,13 +37,13 @@ class hd_features:
                     date_to_gate_dict [planets,longitude,gate,line,color,tone,base]
                     profile,
                     inner authority,
-                    typ(G=Generator,MG=Manifesting,Generator,P=Projector,
+                    Type(G=Generator,MG=Manifesting,Generator,P=Projector,
                         M=Manifestor,R=Reflector)
-                    incranation cross,
+                    incarnation cross,
                     active chakras,
                     active channels,
                     split
-    extendet hd_features:
+    extended hd_features:
                     composition charts
                     penta analysis
    
@@ -52,10 +52,10 @@ class hd_features:
         Ajna Chakra = AA
         Throat Chakra = TT
         G-Centre = GC
-        Hearth Chakra = HT
+        Heart Chakra = HT
         Spleen Chakra = SN
         Solar Plexus Chakra = SP
-        Sakral Chakra = SL
+        Sacral Chakra = SL
         Root Chakra = RT     
     '''    
     def __init__(self,year,month,day,hour,minute,second,tz_offset):
@@ -710,14 +710,11 @@ def calc_single_hd_features(timestamp,report=False,channel_meaning=False,day_cha
             bdate="{}".format(timestamp[:-2])
             cdate="{}".format(instance.create_date)
             if report == True:
-#                print("birth date: {}".format(timestamp[:-2]))
                 print("birth date: "+ bdate)
-#                print("create date: {}".format(instance.create_date))
                 print("create date: " + cdate)
                 print("energie-type: {}".format(typ))
                 print("inner authority: {}".format(auth))
                 print("inc. cross: {}".format(inc_cross))
-                #print("profile: {}".format(profile))
                 print("profile: {}/{}".format( *profile, sep='/'))
                 print("active chakras: {}".format(active_chakras))
                 print("split: {}".format(split))

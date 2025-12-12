@@ -8,7 +8,7 @@ IGING_offset = 58
 SWE_PLANET_DICT = {"Sun":0,
                     "Earth":0, # Sun position -180 longitude
                     "Moon":1,
-                    "North_Node":11, # Disussion wheater mean or True node?! here North Node -> true Node
+                    "North_Node":11, # Discussion whether mean or True node?! here North Node -> true Node
                     "South_Node":11, # North_Node position -180 longitude
                     "Mercury":2,
                     "Venus":3,
@@ -95,7 +95,7 @@ INNER_AUTHORITY_NAMES_MAP = {
 
 CHANNEL_MEANING_DICT = {
                         (64,47):["Abstraction","D. of mental activity and clarity"],
-                        (61,24):["Awereness", "D. of a thinker"],
+                        (61,24):["Awareness", "D. of a thinker"],
                         (63, 4):["Logic","D. of mental muse? mixed with doubt"],
                         (17,62):["Acceptance","D. of an organizational being"],
                         (43,23):["Structuring","D. of individuality"],
@@ -104,22 +104,22 @@ CHANNEL_MEANING_DICT = {
                         (20,57):["The Brain Wave","D. of penetrating awareness"],
                         (20,34):["Charisma","D. where thoughts must become deeds"],
                         (32,54):["Transformation","D. of being driven"],
-                        (28,38):["Struggle","D. of stubbornness "],
+                        (28,38):["Struggle","D. of stubbornness"],
                         (18,58):["Judgment","D. of insatiability"],
                         (20,10):["Awakening","D. of commitment to higher principles"],
                         (31, 7):["The Alpha","For 'good' or 'bad', a d. of leadership"],
                         ( 8, 1):["Inspiration","The creative role model"],
                         (33,13):["The Prodigal","The d. of witness"],
                         (10,34):["Exploration","A d. of following one's convictions"],
-                        (15, 5):["Rythm","A d. of being in the flow"],
+                        (15, 5):["Rhythm","A d. of being in the flow"],
                         ( 2,14):["The Beat","A d. of being the keeper of keys"],
-                        (46,29):["Discovery","A d. of succeding where others fail"],
+                        (46,29):["Discovery","A d. of succeeding where others fail"],
                         (10,57):["Perfected Form","A d. of survival"],
                         (57,34):["Power","A d. of an archetype"],
                         (50,27):["Preservation","A. d. of custodianship"],
                         (45,21):["Money","A d. of a materialist"],
                         (59, 6):["Mating","A d. focused on reproduction"],
-                        (42,53):["Maturation","A d. of balanced developement,cyclic"],
+                        (42,53):["Maturation","A d. of balanced development,cyclic"],
                         ( 3,60):["Mutation","Energy which fluctuates and initiates, pulse"],
                         ( 9,52):["Concentration","A d. of determination, focused"],
                         (26,44):["Surrender","A d. of a transmitter"],

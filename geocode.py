@@ -11,6 +11,15 @@ class Location:
     address: Optional[str] = None
 
 def get_latitude_longitude(place: str) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Get latitude and longitude for a given place name.
+    
+    Args:
+        place (str): Name of the place (e.g., "City, Country")
+        
+    Returns:
+        Tuple[float, float]: Latitude and Longitude, or (None, None) if not found.
+    """
     geolocator = Nominatim(user_agent="geocoding_api")
     location = geolocator.geocode(place)
     if location:
