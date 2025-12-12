@@ -59,6 +59,7 @@ def calculate_distance(place1: str, place2: str) -> Optional[float]:
         
     return geodesic(coords1, coords2).kilometers
 
-place = "Istanbul, Turkey"
-latitude, longitude = get_latitude_longitude(place)
-print(f"Latitude: {latitude}, Longitude: {longitude}")
+if __name__ == "__main__":
+    place = "Istanbul, Turkey"
+    latitude, longitude = get_latitude_longitude(place)
+    print(f"Latitude: {latitude}, Longitude: {longitude}")
