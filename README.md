@@ -3,10 +3,14 @@
 Welcome to the Human Design API! This project provides a robust and scalable API for calculating various Human Design features based on birth data. Built with FastAPI and leveraging powerful astrological and geographical libraries, it offers a comprehensive solution for integrating Human Design analytics into your applications.
 
 ## Project Overview
+ 
+The **Human Design API** is a high-performance Python service meant to power modern Human Design applications. It serves as a comprehensive backend engine that:
 
-The Human Design API is a Python-based service designed to compute intricate Human Design charts. It takes birth details (year, month, day, hour, minute, second, and place) as input and returns a detailed JSON response including energy type, inner authority, incarnation cross, profile, active/inactive chakras, split definition, and planetary gate information.
+1.   **Calculates** core and deep Human Design metrics from birth data (Earth, Moon, Nodes, Planets, Gates, Lines, Color, Tone, Base).
+2.  **Resolves** birth locations to precise geocoordinates and timezones automatically.
+3.  **Visualizes** results by generating beautiful, high-quality BodyGraph images on-the-fly.
 
-The API is containerized using Docker, ensuring consistent and isolated environments for development and deployment. Docker Compose is used for easy orchestration of the API service.
+Whether you are building a mobile app, a professional dashboard, or a personal research tool, this API provides the rigorous astrological data and visual assets you need, all containerized for easy deployment.
 
 ### Key Features:
 
