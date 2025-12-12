@@ -141,7 +141,7 @@ curl -X GET "http://localhost:9021/calculate?year=1990&month=7&day=15&hour=14&mi
     "profile": "2/4: Hermit Opportunist",
     "defined_centers": [
       "Head",
-      "Anja",
+      "Ajna",
       "Throat",
       "G_Center",
       "Sacral",

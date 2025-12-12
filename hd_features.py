@@ -49,7 +49,7 @@ class hd_features:
    
     shortcuts used:
         Head Chakra = HD
-        Anja Chakra = AA
+        Ajna Chakra = AA
         Throat Chakra = TT
         G-Centre = GC
         Hearth Chakra = HT
