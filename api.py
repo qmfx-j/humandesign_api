@@ -9,9 +9,10 @@ import chart
 from geocode import get_latitude_longitude
 from timezonefinder import TimezoneFinder
 import json
+from version import __version__
 
 
-app = FastAPI(title="Human Design API")
+app = FastAPI(title="Human Design API", version=__version__)
 
 import os
 from dotenv import load_dotenv
@@ -126,7 +127,7 @@ def get_bodygraph_image(
     minute: int = Query(..., description="Birth minute"),
     second: int = Query(0, description="Birth second (optional, default 0)"),
     place: str = Query(..., description="Birth place (city, country)"),
-    fmt: str = Query("png", description="Image format: png or svg"),
+    fmt: str = Query("png", description="Image format: png, svg, jpg/jpeg"),
     authorized: bool = Depends(verify_token)
 ):
     # Reuse the logic? Ideally we'd refactor, but for now let's reuse the internal logic by calling a helper or duplicating.
@@ -197,7 +198,13 @@ def get_bodygraph_image(
     # 6. Generate Image
     try:
         img_bytes = chart.generate_bodygraph_image(final_result, fmt=fmt)
-        media_type = "image/svg+xml" if fmt == 'svg' else "image/png"
+        if fmt == 'svg':
+            media_type = "image/svg+xml"
+        elif fmt in ['jpg', 'jpeg']:
+            media_type = "image/jpeg"
+        else:
+            media_type = "image/png"
+            
         return Response(content=img_bytes, media_type=media_type)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating chart image: {e}")
