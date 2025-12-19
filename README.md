@@ -146,6 +146,22 @@ curl -X GET "http://localhost:9021/calculate?year=1990&month=7&day=15&hour=14&mi
 
 Generates a visual BodyGraph chart image based on birth information.
 
+### `GET /transits/daily`
+
+Calculates the "Weather of the Day" (Transit Analysis).
+
+#### Parameters
+*   Birth Data (year, month, day, hour, minute, place)
+*   Transit Date (`transit_year`, `transit_month`, `transit_day`)
+
+### `GET /transits/solar_return`
+
+Calculates the "Yearly Theme" (Solar Return Analysis).
+
+#### Parameters
+*   Birth Data (year, month, day, hour, minute, place)
+*   Offset (`sr_year_offset`): Years after birth (e.g., 1 for 1st birthday return).
+
 #### Parameters
 
 | Name     | Type    | Description                                     | Required |
