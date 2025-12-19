@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-12-19
+
+### Added
+- **AuraCycle Module**: Implemented new functionality for strategic timing and planning based on planetary transits.
+- **Daily Transit Analysis**: Added `GET /transits/daily` endpoint to calculate the "Weather of the Day" (Composite Chart of User + Current Transit).
+- **Solar Return Analysis**: Added `GET /transits/solar_return` endpoint to calculate the "Yearly Theme" (Solar Return Chart).
+- **Core Logic**: Enhanced `hd_features.py` with `calc_solar_return_jd` and `get_solar_return_date` methods using `swisseph` for precise astronomical return calculations.
+
 ## [1.0.5] - 2025-12-12
 
 ### Added
