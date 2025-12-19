@@ -9,3 +9,4 @@ venv
 ENV
 env.txt
 venv.txt
+.backup
