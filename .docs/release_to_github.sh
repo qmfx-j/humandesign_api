@@ -18,7 +18,33 @@ echo "========================================"
 echo "releasing to GitHub: v$VERSION"
 echo "========================================"
 
-# 3. Git Operations
+# 3. Extract Changelog for this version
+# We use python to robustly extract the text between ## [VERSION] and the next ##
+CHANGELOG_TEXT=$(VERSION="$VERSION" python3 -c "
+import re
+import os
+version = os.environ.get('VERSION')
+try:
+    with open('CHANGELOG.md', 'r') as f:
+        content = f.read() 
+    # escape dots for regex
+    ver_safe = re.escape(version)
+    pattern = rf'(## \[{ver_safe}\].*?)(?=\n## \[|$)'
+    match = re.search(pattern, content, re.DOTALL)
+    if match:
+        print(match.group(1).strip())
+    else:
+        print(f'Version {version} Release')
+except Exception as e:
+    print(f'Version {version} Release')
+")
+
+echo "----------------------------------------"
+echo "Release Notes:"
+echo "$CHANGELOG_TEXT"
+echo "----------------------------------------"
+
+# 4. Git Operations
 echo "Step 1: Staging changes..."
 git add .
 
@@ -27,7 +53,8 @@ echo "Step 2: Committing..."
 if git diff-index --quiet HEAD --; then
     echo "No changes to commit."
 else
-    git commit -m "Release version $VERSION"
+    # We use a simple subject for the commit, but could include body if needed
+    git commit -m "Release version $VERSION" -m "$CHANGELOG_TEXT"
 fi
 
 echo "Step 3: Tagging..."
@@ -35,7 +62,8 @@ echo "Step 3: Tagging..."
 if git rev-parse "v$VERSION" >/dev/null 2>&1; then
     echo "Tag v$VERSION already exists. Skipping tag creation."
 else
-    git tag -a "v$VERSION" -m "Version $VERSION Release"
+    # Create annotated tag with the changelog as the message
+    git tag -a "v$VERSION" -m "$CHANGELOG_TEXT"
     echo "Created tag v$VERSION"
 fi
 
