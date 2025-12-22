@@ -87,6 +87,7 @@ def general(data):
     output = {
         "birth_date": data['birth_date'],
         "create_date": data['create_date'],
+        "place": data.get('birth_place', ''), 
         
         # --- Type Info ---
         "energy_type": e_type,
@@ -125,7 +126,7 @@ def gatesJSON(data):
     for i in range(len(data['label'])):
         planet_data = {
             "Planet": data['planets'][i],
-            "Lon": data['lon'][i],
+            "Lon": round(data['lon'][i], 3),
             "Gate": data['gate'][i],
             "Line": data['line'][i],
             "Color": data['color'][i],

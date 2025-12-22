@@ -11,6 +11,7 @@ from timezonefinder import TimezoneFinder
 import json
 import tomllib
 import os
+from datetime import datetime, timedelta
 
 # --- Read version from pyproject.toml ---
 try:
@@ -79,8 +80,9 @@ def calculate_hd(
     # 5. Format Data for JSON Output
     try:
         data = {
-            "birth_date": single_result[9],
-            "create_date": single_result[10],
+            "birth_date": clean_birth_date_to_iso(single_result[9], hours),
+            "create_date": clean_create_date_to_iso(single_result[10]),
+            "birth_place": place,
             "energy_type": single_result[0],
             "inner_authority": single_result[1],
             "inc_cross": single_result[2],
@@ -156,8 +158,8 @@ def get_bodygraph_image(
     # 5. Format Data for JSON Output (Required for Chart)
     try:
         data = {
-            "birth_date": single_result[9],
-            "create_date": single_result[10],
+            "birth_date": clean_birth_date_to_iso(single_result[9], hours),
+            "create_date": clean_create_date_to_iso(single_result[10]),
             "energy_type": single_result[0],
             "inner_authority": single_result[1],
             "inc_cross": single_result[2],
@@ -204,14 +206,74 @@ def get_bodygraph_image(
         raise HTTPException(status_code=500, detail=f"Error generating chart image: {e}")
 
 
+# --- Helper Functions ---
+
+# Helper to convert HD timestamp (Y,M,D,H,M,S,Offset) to ISO UTC
+def to_iso_utc(ts_tuple):
+    try:
+        # ts_tuple is (Y, M, D, H, M, S, Offset)
+        local_dt = datetime(ts_tuple[0], ts_tuple[1], ts_tuple[2], 
+                          ts_tuple[3], ts_tuple[4], ts_tuple[5])
+        # Offset is in hours (float or int). Subtract to get UTC.
+        offset_hours = ts_tuple[6]
+        utc_dt = local_dt - timedelta(hours=offset_hours)
+        return utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return str(ts_tuple)
+
+# Helper to clean birth_date string which might be "(1990, 1, 1, 12, 0)"
+def clean_birth_date_to_iso(b_date_str, offset):
+    try:
+        if isinstance(b_date_str, tuple):
+             # If it's a tuple, format string then parse or just use parts
+             parts = list(b_date_str)
+        else:
+             # If it's string tuple representation
+             parts = [int(x) for x in b_date_str.strip('()').split(', ')]
+             
+        # Pad with 0 for seconds if missing
+        while len(parts) < 6:
+            parts.append(0)
+        local_dt = datetime(*parts[:6])
+        utc_dt = local_dt - timedelta(hours=offset)
+        return utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return str(b_date_str)
+
+# Helper for create_date which is typically already UTC (from swe) but might be tuple/string
+def clean_create_date_to_iso(c_date_input):
+    try:
+        if isinstance(c_date_input, str):
+             parts = [float(x) for x in c_date_input.strip('()').split(', ')]
+        elif isinstance(c_date_input, (list, tuple)):
+             parts = list(c_date_input)
+        else:
+             return str(c_date_input)
+             
+        # Create date is from swe.jdut1_to_utc so it is ALREADY UTC.
+        # We just need to format it.
+        # It's likely (Y, M, D, H, M, S)
+        parts = [int(p) for p in parts] # Ensure ints
+        while len(parts) < 6:
+            parts.append(0)
+            
+        utc_dt = datetime(*parts[:6])
+        return utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return str(c_date_input)
+
+
 # --- Helper to process transit data (combines existing logic) ---
-def process_transit_data(transit_date_timestamp, birth_timestamp):
+def process_transit_data(transit_date_timestamp, birth_timestamp, birth_place):
     # 1. Calculate birth chart to get natal features (prs + des)
     birth_features = hd.calc_single_hd_features(birth_timestamp, report=False, channel_meaning=True, day_chart_only=False)
     natal_gate_dict = birth_features[6]
 
     # 2. Calculate day chart (transit features only)
     day_gate_dict = hd.calc_single_hd_features(transit_date_timestamp, day_chart_only=True)
+    # Round longitude to 3 decimal places for clean output
+    if 'lon' in day_gate_dict:
+        day_gate_dict['lon'] = [round(x, 3) for x in day_gate_dict['lon']]
     
     # 3. Prepare composite dict: Natal (prs+des) + Transit (day chart)
     # The composite analysis expects both natal and a day chart to be concatenated.
@@ -237,9 +299,14 @@ def process_transit_data(transit_date_timestamp, birth_timestamp):
     new_channels, duplicated_channels, new_chakras, comp_chakras = hd.composite_chakras_channels(
         persons_dict, "natal", "transit") 
     
+    # Extract offset from birth_timestamp for the birth_date conversion
+    birth_offset = birth_timestamp[6] 
+    
     # 6. Structure output
     return {
-        "transit_date": transit_date_timestamp,
+        "transit_date": to_iso_utc(transit_date_timestamp),
+        "birth_date": clean_birth_date_to_iso(birth_features[9], birth_offset),
+        "birth_place": birth_place,
         "composite_type": typ,
         "composite_authority": auth,
         "new_defined_channels": list(zip(new_channels["gate"], new_channels["ch_gate"])),
@@ -285,11 +352,11 @@ def get_solar_return(
     sr_timestamp = (int(sr_year), int(sr_month), int(sr_day), int(sr_hour), int(sr_minute), int(sr_second), int(hours))
     
     # Calculate the full composite chart at the SR moment
-    sr_composite_data = process_transit_data(sr_timestamp, birth_timestamp)
+    sr_composite_data = process_transit_data(sr_timestamp, birth_timestamp, place)
     
     return {
         "solar_return_year": sr_year_offset,
-        "solar_return_utc_date": f"{int(sr_year)}-{int(sr_month):02d}-{int(sr_day):02d} {int(sr_hour):02d}:{int(sr_minute):02d}:{int(sr_second):02d}",
+        "solar_return_utc_date": f"{int(sr_year)}-{int(sr_month):02d}-{int(sr_day):02d}T{int(sr_hour):02d}:{int(sr_minute):02d}:{int(sr_second):02d}Z",
         "sr_chart_analysis": sr_composite_data
     }
 
@@ -323,7 +390,7 @@ def get_daily_transit(
     transit_timestamp = tuple(list(transit_time) + [int(hours)])
 
     # Calculate the composite chart at the transit moment
-    composite_data = process_transit_data(transit_timestamp, birth_timestamp)
+    composite_data = process_transit_data(transit_timestamp, birth_timestamp, place)
 
     return {
         "transit_date": f"{transit_year}-{transit_month:02d}-{transit_day:02d}",
