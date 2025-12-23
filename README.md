@@ -184,7 +184,10 @@ The project is organized as follows:
       -H "Authorization: Bearer your_secret_token_here" \
       -o bodygraph.png
  ```
- 
+ ![alt text](static/bodygraph_sample.png)
+
+
+
  ---
  
  ### 3. `GET /transits/daily`
