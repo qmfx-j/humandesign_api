@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.4] - 2025-12-22
+## [1.2.5] - 2025-12-22
+
+### Added
+- **Penta Analysis**: Added `POST /analyze/penta` endpoint to calculate group dynamics (Penta) for 3-5 people. Returns match percentage and active gates breakdown per person.
+- **Core Logic**: Refactored `hd_features.get_penta` to return detailed data `(percentage, details_dict)` without side effects or reliance on global state.
 
 ### Changed
+
 - **API Response**: Renamed the output field `split` to `definition` across all endpoints (`/calculate`, `/bodygraph`, `/transits`, etc.) to better align with Human Design terminology.
 - **API Response**: Standardized all date outputs to ISO 8601 UTC format (`YYYY-MM-DDTHH:MM:SSZ`) across all endpoints.
 - **API Response**: Added `birth_place` field to `/calculate` and `/transits` output.

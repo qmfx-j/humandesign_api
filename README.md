@@ -19,6 +19,7 @@ Whether you are building a mobile app, a professional dashboard, or a personal r
 *   **BodyGraph Visualization**: Generates high-fidelity, transparent BodyGraph charts in PNG, SVG, and JPG formats via the `/bodygraph` endpoint.
 *   **Composite Analysis**: Calculates relationship mechanics (connection channels, centers) between multiple people via the `/compmatrix` endpoint.
 *   **Transit Analysis**: Provides Daily Weather and Solar Return (Yearly Theme) calculations for advanced forecasting.
+*   **Penta Analysis**: Calculates Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, revealing active group energy fields.
 *   **Comprehensive Chart Data**: Returns Energy Type, Strategy, Authority, Profile, Incarnation Cross, Variables, and full Planetary/Gate positions (Gate, Line, Color, Tone, Base).
 *   **Robust Validation**: Strict input validation using Pydantic, supporting flexible data types (integers or strings) for ease of integration.
 *   **Docker Ready**: Simple deployment with Docker and Docker Compose.
@@ -115,464 +116,183 @@ The project is organized as follows:
 *   **`static/`**: Static assets directory.
 
 ## API Usage
-
-The Human Design API provides a single endpoint for calculating Human Design features.
-
-### `GET /calculate`
-
-Calculates Human Design features based on birth information.
-
-#### Parameters
-
-| Name     | Type    | Description                                     | Required |
-| :------- | :------ | :---------------------------------------------- | :------- |
-| `year`   | `integer` | Birth year (e.g., `1990`)                       | Yes      |
-| `month`  | `integer` | Birth month (e.g., `7` for July)                | Yes      |
-| `day`    | `integer` | Birth day (e.g., `15`)                          | Yes      |
-| `hour`   | `integer` | Birth hour (24-hour format, e.g., `14` for 2 PM) | Yes      |
-| `minute` | `integer` | Birth minute (e.g., `30`)                       | Yes      |
-| `second` | `integer` | Birth second (optional, default `0`)            | No       |
-| `place`  | `string`  | Birth place (city, country, e.g., `London, UK`) | Yes      |
-
-#### Authentication
-
-This endpoint requires an API token passed in the `Authorization` header as a Bearer token.
-
-`Authorization: Bearer your_secret_token_here`
-
-#### Example Request
-
-```bash
-curl -X GET "http://localhost:9021/calculate?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK" \
-     -H "Authorization: Bearer your_secret_token_here"
-```
-
-### `GET /bodygraph`
-
-Generates a visual BodyGraph chart image based on birth information.
-
-### `GET /transits/daily`
-
-Calculates the "Weather of the Day" (Transit Analysis).
-
-#### Parameters
-*   Birth Data (year, month, day, hour, minute, place)
-*   Transit Date (`transit_year`, `transit_month`, `transit_day`)
-
-### `GET /transits/solar_return`
-
-Calculates the "Yearly Theme" (Solar Return Analysis).
-
-#### Parameters
-*   Birth Data (year, month, day, hour, minute, place)
-*   Offset (`sr_year_offset`): Years after birth (e.g., 1 for 1st birthday return).
-
-### `POST /compmatrix`
-
-Calculates the composite Human Design matrix for two or more people.
-
-#### Request Body
-The body should be a dictionary where keys are person identifiers (e.g., `person1`, `person2`) and values are their birth details.
-
-**Flexible Inputs**: Numeric fields (`year`, `month`, `day`, `hour`, `minute`) accept both **integers** (e.g., `1990`) and **strings** (e.g., `"1990"`, `"00"`).
-
-```json
-{
-  "person1": {
-    "place": "Berlin, Germany",
-    "year": 1985,
-    "month": 6,
-    "day": 15,
-    "hour": 14,
-    "minute": "00"
-  },
-  "person2": {
-    "place": "Munich, Germany",
-    "year": "1988",
-    "month": 11,
-    "day": 22,
-    "hour": 9,
-    "minute": 15
-  }
-}
-```
-
-#### Authentication
-Requires Bearer token in `Authorization` header.
-
-#### Example Response
-Returns a comprehensive analysis including individual profiles and the composite connection type (e.g., "Split Definition", "Work to do").
-
-```bash
-curl -X 'POST' \
-  'http://localhost:9021/compmatrix' \
-  -H 'Authorization: Bearer your_token' \
-  -H 'Content-Type: application/json' \
-  -d '{...}'
-```
-
-#### Parameters
-
-| Name     | Type    | Description                                     | Required |
-| :------- | :------ | :---------------------------------------------- | :------- |
-| `year`   | `integer` | Birth year (e.g., `1990`)                       | Yes      |
-| `month`  | `integer` | Birth month (e.g., `7` for July)                | Yes      |
-| `day`    | `integer` | Birth day (e.g., `15`)                          | Yes      |
-| `hour`   | `integer` | Birth hour (24-hour format, e.g., `14` for 2 PM) | Yes      |
-| `minute` | `integer` | Birth minute (e.g., `30`)                       | Yes      |
-| `second` | `integer` | Birth second (optional, default `0`)            | No       |
-| `place`  | `string`  | Birth place (city, country, e.g., `London, UK`) | Yes      |
-| `fmt`    | `string`  | Image format: `png`, `svg`, `jpg`, `jpeg` (default: `png`) | No       |
-
-#### Authentication
-
-This endpoint requires an API token passed in the `Authorization` header as a Bearer token.
-
-`Authorization: Bearer your_secret_token_here`
-
-#### Example Request
-
-```bash
-curl -X GET "http://localhost:9021/bodygraph?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK&fmt=png" \
-     -H "Authorization: Bearer your_secret_token_here" \
-     -o bodygraph.png
-```
-
-#### Response
-
-Returns the image file directly (MIME type `image/png`, `image/svg+xml`, or `image/jpeg`).
-
-<p align="center">
-  <img src="static/bodygraph_sample.png" width="50%" />
-</p>
-
-#### Example Response
-
-```json
-{
-  "general": {
-    "birth_date": "1990-07-15T13:30:00Z",
-    "create_date": "1990-04-15T00:56:00Z",
-    "place": "London, UK",
-    "energy_type": "Projector",
-    "strategy": "Wait for the Invitation",
-    "signature": "Success",
-    "not_self": "Bitterness",
-    "aura": "Focused & Absorbing",
-    "inner_authority": "Solar Plexus",
-    "inc_cross": "The Right Angle Cross of the Maya (2)",
-    "profile": "3/5: Martyr Heretic",
-    "defined_centers": [
-      "Throat",
-      "Root",
-      "G_Center",
-      "SolarPlexus"
-    ],
-    "undefined_centers": [
-      "Heart",
-      "Ajna",
-      "Spleen",
-      "Head",
-      "Sacral"
-    ],
-    "definition": "Split Definition",
-    "variables": {
-      "right_up": "right",
-      "right_down": "left",
-      "left_up": "right",
-      "left_down": "right"
-    }
-  },
-  "gates": {
-    "prs": {
-      "Planets": [
-        {
-          "Planet": "Sun",
-          "Lon": 112.806,
-          "Gate": 62,
-          "Line": 3,
-          "Color": 2,
-          "Tone": 1,
-          "Base": 5,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Earth",
-          "Lon": 292.8057828170957,
-          "Gate": 61,
-          "Line": 3,
-          "Color": 2,
-          "Tone": 1,
-          "Base": 5,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Moon",
-          "Lon": 24.13491606652376,
-          "Gate": 42,
-          "Line": 4,
-          "Color": 4,
-          "Tone": 4,
-          "Base": 5,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "North_Node",
-          "Lon": 307.35906010943785,
-          "Gate": 41,
-          "Line": 6,
-          "Color": 5,
-          "Tone": 2,
-          "Base": 4,
-          "Ch_Gate": 30
-        },
-        {
-          "Planet": "South_Node",
-          "Lon": 127.35906010943785,
-          "Gate": 31,
-          "Line": 6,
-          "Color": 5,
-          "Tone": 2,
-          "Base": 4,
-          "Ch_Gate": 7
-        },
-        {
-          "Planet": "Mercury",
-          "Lon": 126.89036485434069,
-          "Gate": 31,
-          "Line": 6,
-          "Color": 2,
-          "Tone": 2,
-          "Base": 4,
-          "Ch_Gate": 7
-        },
-        {
-          "Planet": "Venus",
-          "Lon": 84.48623656115177,
-          "Gate": 12,
-          "Line": 2,
-          "Color": 6,
-          "Tone": 6,
-          "Base": 3,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Mars",
-          "Lon": 31.983961512449053,
-          "Gate": 3,
-          "Line": 6,
-          "Color": 6,
-          "Tone": 6,
-          "Base": 2,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Jupiter",
-          "Lon": 112.56310904422688,
-          "Gate": 62,
-          "Line": 2,
-          "Color": 6,
-          "Tone": 4,
-          "Base": 4,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Saturn",
-          "Lon": 291.95899818771164,
-          "Gate": 61,
-          "Line": 2,
-          "Color": 2,
-          "Tone": 5,
-          "Base": 3,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Uranus",
-          "Lon": 276.9643234363261,
-          "Gate": 58,
-          "Line": 4,
-          "Color": 2,
-          "Tone": 5,
-          "Base": 4,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Neptune",
-          "Lon": 282.9195480234818,
-          "Gate": 38,
-          "Line": 4,
-          "Color": 4,
-          "Tone": 6,
-          "Base": 2,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Pluto",
-          "Lon": 224.99913456990504,
-          "Gate": 1,
-          "Line": 2,
-          "Color": 6,
-          "Tone": 2,
-          "Base": 1,
-          "Ch_Gate": 0
-        }
-      ]
-    },
-    "des": {
-      "Planets": [
-        {
-          "Planet": "Sun",
-          "Lon": 24.805782817306426,
-          "Gate": 42,
-          "Line": 5,
-          "Color": 2,
-          "Tone": 6,
-          "Base": 4,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Earth",
-          "Lon": 204.80578281730644,
-          "Gate": 32,
-          "Line": 5,
-          "Color": 2,
-          "Tone": 6,
-          "Base": 4,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Moon",
-          "Lon": 258.3863670444505,
-          "Gate": 26,
-          "Line": 2,
-          "Color": 3,
-          "Tone": 6,
-          "Base": 2,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "North_Node",
-          "Lon": 313.3571239367391,
-          "Gate": 13,
-          "Line": 1,
-          "Color": 1,
-          "Tone": 5,
-          "Base": 1,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "South_Node",
-          "Lon": 133.35712393673907,
-          "Gate": 7,
-          "Line": 1,
-          "Color": 1,
-          "Tone": 5,
-          "Base": 1,
-          "Ch_Gate": 31
-        },
-        {
-          "Planet": "Mercury",
-          "Lon": 44.12339096446304,
-          "Gate": 2,
-          "Line": 1,
-          "Color": 6,
-          "Tone": 4,
-          "Base": 3,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Venus",
-          "Lon": 339.05797731425446,
-          "Gate": 37,
-          "Line": 4,
-          "Color": 4,
-          "Tone": 2,
-          "Base": 1,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Mars",
-          "Lon": 325.59927235501266,
-          "Gate": 30,
-          "Line": 2,
-          "Color": 2,
-          "Tone": 1,
-          "Base": 2,
-          "Ch_Gate": 41
-        },
-        {
-          "Planet": "Jupiter",
-          "Lon": 94.4824157445859,
-          "Gate": 52,
-          "Line": 1,
-          "Color": 4,
-          "Tone": 6,
-          "Base": 2,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Saturn",
-          "Lon": 295.01454195131396,
-          "Gate": 61,
-          "Line": 5,
-          "Color": 4,
-          "Tone": 2,
-          "Base": 4,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Uranus",
-          "Lon": 279.5886579062558,
-          "Gate": 38,
-          "Line": 1,
-          "Color": 1,
-          "Tone": 4,
-          "Base": 3,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Neptune",
-          "Lon": 284.57379251015533,
-          "Gate": 38,
-          "Line": 6,
-          "Color": 3,
-          "Tone": 3,
-          "Base": 5,
-          "Ch_Gate": 0
-        },
-        {
-          "Planet": "Pluto",
-          "Lon": 227.00193884436874,
-          "Gate": 1,
-          "Line": 5,
-          "Color": 1,
-          "Tone": 1,
-          "Base": 1,
-          "Ch_Gate": 0
-        }
-      ]
-    }
-  },
-  "channels": {
-    "Channels": [
-      {
-        "channel": "30/41: The Channel of Recognition (A Design of Focused Energy)"
-      },
-      {
-        "channel": "7/31: The Channel of the Alpha (A Design of Leadership for 'Good' or 'Bad')"
-      }
-    ]
-  }
-}
-```
-
-## API Documentation
-
-The project includes an OpenAPI 3.0 specification file named `openapi.yaml`. This file describes the API endpoints, request parameters, responses, and schemas in a standard format.
-
-### Using `openapi.yaml`
-
-You can use the `openapi.yaml` file to:
+ 
+ The Human Design API provides several powerful endpoints for analysis and visualization.
+ 
+ ### 1. `GET /calculate`
+ 
+ Calculates comprehensive Human Design features based on birth information.
+ 
+ #### Parameters
+ 
+ | Name     | Type    | Description                                     | Required |
+ | :------- | :------ | :---------------------------------------------- | :------- |
+ | `year`   | `integer` | Birth year (e.g., `1990`)                       | Yes      |
+ | `month`  | `integer` | Birth month (e.g., `7` for July)                | Yes      |
+ | `day`    | `integer` | Birth day (e.g., `15`)                          | Yes      |
+ | `hour`   | `integer` | Birth hour (24-hour format, e.g., `14` for 2 PM) | Yes      |
+ | `minute` | `integer` | Birth minute (e.g., `30`)                       | Yes      |
+ | `second` | `integer` | Birth second (optional, default `0`)            | No       |
+ | `place`  | `string`  | Birth place (city, country, e.g., `London, UK`) | Yes      |
+ 
+ #### Example Request
+ 
+ ```bash
+ curl -X GET "http://localhost:9021/calculate?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK" \
+      -H "Authorization: Bearer your_secret_token_here"
+ ```
+ 
+ #### Example Response (Condensed)
+ ```json
+ {
+   "general": {
+     "birth_date": "1990-07-15T13:30:00Z",
+     "energy_type": "Projector",
+     "strategy": "Wait for the Invitation",
+     "inner_authority": "Solar Plexus",
+     "inc_cross": "The Right Angle Cross of the Maya (2)",
+     "profile": "3/5: Martyr Heretic",
+     "definition": "Split Definition",
+     ...
+   },
+   "gates": { ... },
+   "channels": {
+     "Channels": [
+       { "channel": "30/41: The Channel of Recognition..." }
+     ]
+   }
+ }
+ ```
+ 
+ ---
+ 
+ ### 2. `GET /bodygraph`
+ 
+ Generates a visual BodyGraph chart image based on birth information.
+ 
+ #### Parameters
+ Accepts the same birth parameters as `/calculate` (year, month, day, hour, minute, second, place) plus:
+ 
+ | Name   | Type   | Description                                          | Default |
+ | :----- | :----- | :--------------------------------------------------- | :------ |
+ | `fmt`  | `string` | Image format: `png`, `svg`, `jpg`, `jpeg`          | `png`   |
+ 
+ #### Example Request
+ ```bash
+ curl -X GET "http://localhost:9021/bodygraph?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK&fmt=png" \
+      -H "Authorization: Bearer your_secret_token_here" \
+      -o bodygraph.png
+ ```
+ 
+ ---
+ 
+ ### 3. `GET /transits/daily`
+ 
+ Calculates the "Weather of the Day" by creating a composite chart of the user's birth data and the current planetary transit.
+ 
+ #### Parameters
+ Requires **Birth Data** (year...place) plus:
+ 
+ | Name           | Type    | Description                   | Required |
+ | :------------- | :------ | :---------------------------- | :------- |
+ | `transit_year` | `integer` | Year of the transit           | Yes      |
+ | `transit_month`| `integer` | Month of the transit          | Yes      |
+ | `transit_day`  | `integer` | Day of the transit            | Yes      |
+ 
+ #### Example Request
+ ```bash
+ curl -X GET "http://localhost:9021/transits/daily?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK&transit_year=2025&transit_month=12&transit_day=22" \
+      -H "Authorization: Bearer your_secret_token_here"
+ ```
+ 
+ ---
+ 
+ ### 4. `GET /transits/solar_return`
+ 
+ Calculates the "Yearly Theme" (Solar Return Analysis).
+ 
+ #### Parameters
+ Requires **Birth Data** (year...place) plus:
+ 
+ | Name             | Type    | Description                                      | Default |
+ | :--------------- | :------ | :----------------------------------------------- | :------ |
+ | `sr_year_offset` | `integer` | Years after birth (e.g. `0`=Current SR, `1`=Next)| `0`     |
+ 
+ #### Example Request
+ ```bash
+ curl -X GET "http://localhost:9021/transits/solar_return?year=1990&month=7&day=15&hour=14&minute=30&place=London%2C%20UK&sr_year_offset=0" \
+      -H "Authorization: Bearer your_secret_token_here"
+ ```
+ 
+ ---
+ 
+ ### 5. `POST /compmatrix`
+ 
+ Calculates the composite Human Design matrix (Relationship Mechanics) for two or more people.
+ 
+ #### Request Body
+ ```json
+ {
+   "person1": { "place": "Berlin, Germany", "year": 1985, "month": 6, "day": 15, "hour": 14, "minute": 30 },
+   "person2": { "place": "Munich, Germany", "year": 1988, "month": 11, "day": 22, "hour": 9, "minute": 15 }
+ }
+ ```
+ 
+ #### Example Request
+ ```bash
+ curl -X POST "http://localhost:9021/compmatrix" \
+      -H "Authorization: Bearer your_secret_token_here" \
+      -H "Content-Type: application/json" \
+      -d @payload.json
+ ```
+ 
+ ---
+ 
+ ### 6. `POST /analyze/penta`
+ 
+ Calculates the **Penta** (Group Dynamics) for a group of 3-5 people.
+ 
+ #### Request Body
+ Uses the same structure as `/compmatrix` but requires 3 to 5 people.
+ 
+ ```json
+ {
+   "person1": { "place": "Berlin, Germany", "year": 1985, "month": 6, "day": 15, "hour": 14, "minute": 30 },
+   "person2": { "place": "Rome, Italy", "year": 1990, "month": 2, "day": 10, "hour": 10, "minute": 0 },
+   "person3": { "place": "London, UK", "year": 1992, "month": 12, "day": 5, "hour": 18, "minute": 30 }
+ }
+ ```
+ 
+ #### Example Request
+ ```bash
+ curl -X POST "http://localhost:9021/analyze/penta" \
+      -H "Authorization: Bearer your_secret_token_here" \
+      -H "Content-Type: application/json" \
+      -d @penta_payload.json
+ ```
+ 
+ #### Response
+ ```json
+ {
+   "penta_match_percentage": 58.33,
+   "active_penta_gates": {
+     "1": ["person3", "person1"],
+     "8": [],
+     "31": ["person3"],
+     ...
+   }
+ }
+ ```
+ 
+ ---
+ 
+ ## API Documentation
+ 
+ The project includes an OpenAPI 3.0 specification file named `openapi.yaml`. This file describes the API endpoints, request parameters, responses, and schemas in a standard format.
+ 
+ ### Using `openapi.yaml`
+ 
+ You can use the `openapi.yaml` file to:
 
 1.  **Visualize the API**:
     *   **VS Code**: Install extensions like "Swagger Viewer" or "OpenAPI (Swagger) Editor" to preview the API documentation directly in your editor.

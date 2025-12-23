@@ -1055,7 +1055,7 @@ def get_penta(persons_dict,report=False):
                           if identity combination has penta gate:x, else:0 
         persentage(float): how much percent of penta is matched
     """
-    penta_dict = hd_constants.penta_dict
+    penta_dict = {k: [] for k in hd_constants.penta_dict.keys()}
     
     for person in persons_dict.keys():
         identity_dict = get_single_hd_features(persons_dict,person,'date_to_gate_dict')
@@ -1070,6 +1070,13 @@ def get_penta(persons_dict,report=False):
                    for elem in penta_dict.keys()}
     penta_gates_bool = [(any(result_dict[key])) for key in result_dict.keys()]
     sum_penta_gates = sum(penta_gates_bool)
+    
+    # Prepare details dict
+    # Convert dataframe-like boolean structure to simple dict
+    # We want to know for each penta gate, is it active? And maybe who activates it?
+    # The existing logic builds `penta_dict` where values are lists of persons.
+    # So `penta_dict` itself is the details dict.
+    
     if report:
         df = pd.DataFrame(result_dict) 
         df.loc[df.shape[0]+1,:] = [any(df[col]) for col in df.columns]
@@ -1077,7 +1084,9 @@ def get_penta(persons_dict,report=False):
         df["index"] = list(persons_dict.keys())+["all"]
         df = df.set_index("index",drop=True)
         print(df)
-    return round(sum_penta_gates/12*100,2)
+        
+    percentage = round(sum_penta_gates/12*100,2)
+    return percentage, penta_dict
 
 
 
