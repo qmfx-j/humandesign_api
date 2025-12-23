@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-12-23
+
+### Added
+- **Documentation**: Added comprehensive `API_DOCUMENTATION.md` with industrial-standard formatting and runnable examples.
+
+### Changed
+- **Refactoring**: Split monolithic `api.py` into modular routers: `routers/general.py`, `routers/transits.py`, `routers/composite.py`.
+- **API Response**: Simplified `/analyze/composite` output. `new_chakras` and `composite_chakras` now return a flat list of names (strings) instead of objects.
+- **Organization**: Introduced `schemas/` directory for Pydantic models (`PersonInput`) and `utils/` for helper functions (`date_utils.py`, `calculations.py`).
+
 ## [1.2.6] - 2025-12-23
 
 ### Added

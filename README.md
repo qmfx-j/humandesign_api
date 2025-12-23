@@ -255,8 +255,8 @@ The project is organized as follows:
      { "gate": 59, "ch_gate": 6, "meaning": ["Mating", "A d. focused on reproduction"] }
    ],
    "duplicated_channels": [],
-   "new_chakras": [{ "code": "SP", "name": "SolarPlexus" }],
-   "composite_chakras": [{ "code": "AA", "name": "Ajna" }, ...]
+   "new_chakras": ["SolarPlexus"],
+   "composite_chakras": ["Ajna", "Throat", "G_Center", "SolarPlexus", "Sacral", "Root"]
  }
  ```
  
@@ -323,6 +323,8 @@ The project is organized as follows:
  ---
  
  ## API Documentation
+ 
+ For comprehensive details, industrial-standard references, and runnable examples, please refer to the [API_DOCUMENTATION.md](API_DOCUMENTATION.md) file.
  
  The project includes an OpenAPI 3.0 specification file named `openapi.yaml`. This file describes the API endpoints, request parameters, responses, and schemas in a standard format.
  
