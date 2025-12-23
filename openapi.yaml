@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Human Design API
-  version: 1.3.0
+  version: 1.3.1
 paths:
   /calculate:
     get:
@@ -397,14 +397,14 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
       - HTTPBearer: []
-  /compmatrix:
+  /analyze/compmatrix:
     post:
-      summary: Get Composite Matrix
+      summary: Analyze Composite Matrix
       description: "Calculate Human Design features for multiple people and analyze\
         \ their composite combinations (matrix).\n\nInput:\n{\n    \"person1\": {\
         \ \"place\": \"City, Country\", \"year\": 1990, \"month\": 1, \"day\": 1,\
         \ \"hour\": 12, \"minute\": 0 },\n    \"person2\": { ... }\n}"
-      operationId: get_composite_matrix_compmatrix_post
+      operationId: analyze_compmatrix_post
       requestBody:
         content:
           application/json:

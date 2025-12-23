@@ -11,7 +11,7 @@ from composite_handler import process_composite_matrix
 
 router = APIRouter()
 
-@router.post("/compmatrix")
+@router.post("/analyze/compmatrix")
 def get_composite_matrix(
     inputs: Dict[str, PersonInput] = Body(
         ...,

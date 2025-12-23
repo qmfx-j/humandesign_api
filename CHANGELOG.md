@@ -9,12 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [Unreleased]
+
+## [1.3.1] - 2025-12-23
+
+### Added
+- **Validation**: Added `verify_endpoints.sh` script to automated verification of all API endpoints.
+
+### Changed
+- **API Endpoint**: Renamed `/compmatrix` to `/analyze/compmatrix` to align with the `analyze` namespace for processing-heavy endpoints.
+- **Documentation**: Reduced the size of the bodygraph sample image in `API_DOCUMENTATION.md` for better readability.
+- **Documentation**: Updated `README.md` to reflect the renamed endpoint and improved examples.
+
 ## [1.3.0] - 2025-12-23
 
 ### Added
-- **Documentation**: Added comprehensive `API_DOCUMENTATION.md` with industrial-standard formatting and runnable examples.
-
-### Changed
 - **Refactoring**: Split monolithic `api.py` into modular routers: `routers/general.py`, `routers/transits.py`, `routers/composite.py`.
 - **API Response**: Simplified `/analyze/composite` output. `new_chakras` and `composite_chakras` now return a flat list of names (strings) instead of objects.
 - **Organization**: Introduced `schemas/` directory for Pydantic models (`PersonInput`) and `utils/` for helper functions (`date_utils.py`, `calculations.py`).

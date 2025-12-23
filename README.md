@@ -265,7 +265,7 @@ The project is organized as follows:
  
  ---
  
- ### 6. `POST /compmatrix`
+ ### 6. `POST /analyze/compmatrix`
  
  Calculates the composite Human Design matrix (Relationship Mechanics) for two or more people.
  
@@ -279,7 +279,7 @@ The project is organized as follows:
  
  #### Example Request
  ```bash
- curl -X POST "http://localhost:9021/compmatrix" \
+ curl -X POST "http://localhost:9021/analyze/compmatrix" \
       -H "Authorization: Bearer your_secret_token_here" \
       -H "Content-Type: application/json" \
       -d @payload.json

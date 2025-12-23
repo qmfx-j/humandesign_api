@@ -85,8 +85,8 @@ def calculate_hd(
 
     final_result = {
         "general": general_output,
-        "gates": gates_output,
-        "channels": channels_output
+        "channels": channels_output,
+        "gates": gates_output
     }
     return JSONResponse(content=final_result)
 
