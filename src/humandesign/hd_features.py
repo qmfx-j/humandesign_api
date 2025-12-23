@@ -1,4 +1,4 @@
-import hd_constants
+from . import hd_constants
 import swisseph  as swe  
 from IPython.display import display
 import pandas as pd

@@ -1,6 +1,6 @@
 [project]
 name = "humandesign-api"
-version = "1.3.1"
+version = "1.4.0"
 description = "Human Design API"
 authors = [
     {name = "Your Name", email = "your.email@example.com"}
@@ -23,9 +23,19 @@ dependencies = [
     "python-dotenv",
     "matplotlib",
     "svgpath2mpl",
-    "Pillow"
+    "Pillow",
+    "ruff",
+    "pytest",
+    "httpx"
 ]
 
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+humandesign = ["data/*.json"]
+

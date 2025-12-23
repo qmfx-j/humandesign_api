@@ -9,7 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [Unreleased]
+## [1.4.0] - 2025-12-23
+
+### Added
+- **Refactoring**: Implemented standard `src` layout (`src/humandesign`).
+- **Organization**: Created dedicated modules for `api` (root), `routers` (endpoints), `services` (logic), and `utils` (helpers).
+- **Import Logic**: Updated all imports to use relative imports within the package.
+- **Tooling**: Configured `pyproject.toml` as the single source of truth for build verification and dependency management.
+- **Verification**: Added `tests/test_api_smoke.py` and `verify_endpoints.sh` for robust testing.
+- **Robustness**: Implemented `importlib.resources` and `importlib.metadata` for reliable Docker execution.
+
+### Changed
+- **File Structure**: Moved `api.py`, `hd_features.py` and other core files into `src/humandesign`.
+- **Docker**: Updated `Dockerfile` to install the package using `pip install .` for better reproducibility.
 
 ## [1.3.1] - 2025-12-23
 

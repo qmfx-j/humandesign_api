@@ -2,12 +2,12 @@ from fastapi import APIRouter, Body, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from typing import Dict
 from timezonefinder import TimezoneFinder
-import hd_features as hd
-import hd_constants
-from geocode import get_latitude_longitude
-from dependencies import verify_token
-from schemas.input_models import PersonInput
-from composite_handler import process_composite_matrix
+from .. import hd_features as hd
+from .. import hd_constants
+from ..services.geolocation import get_latitude_longitude
+from ..dependencies import verify_token
+from ..schemas.input_models import PersonInput
+from ..services.composite import process_composite_matrix
 
 router = APIRouter()
 

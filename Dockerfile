@@ -32,8 +32,11 @@ COPY --from=builder /install /usr/local
 # Copy all application files into the container
 COPY . /app
 
+# Install the package
+RUN pip install .
+
 # Expose the port the API runs on
 EXPOSE 9021
 
 # Command to run the API using uvicorn
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "9021"]
+CMD ["uvicorn", "humandesign.api:app", "--host", "0.0.0.0", "--port", "9021"]

@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 import tomllib
 import os
-from routers import general, transits, composite
+from .routers import general, transits, composite
 
-# --- Read version from pyproject.toml ---
+# --- Read version from importlib.metadata ---
+import importlib.metadata
+
 try:
-    with open(os.path.join(os.path.dirname(__file__), "pyproject.toml"), "rb") as f:
-        project_data = tomllib.load(f)
-        __version__ = project_data["project"]["version"]
-except FileNotFoundError:
+    __version__ = importlib.metadata.version("humandesign-api")
+except importlib.metadata.PackageNotFoundError:
     __version__ = "0.0.0"
 
 app = FastAPI(title="Human Design API", version=__version__)

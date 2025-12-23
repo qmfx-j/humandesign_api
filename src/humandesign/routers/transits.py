@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
 from timezonefinder import TimezoneFinder
-import hd_features as hd
-from geocode import get_latitude_longitude
-from dependencies import verify_token
-from utils.calculations import process_transit_data
+from .. import hd_features as hd
+from ..services.geolocation import get_latitude_longitude
+from ..dependencies import verify_token
+from ..utils.calculations import process_transit_data
 
 router = APIRouter(prefix="/transits", tags=["transits"])
 

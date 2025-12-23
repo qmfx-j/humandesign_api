@@ -1,6 +1,6 @@
 import json
 import re
-import hd_constants
+from .. import hd_constants
 
 def get_incarnation_cross_map(input_string):
     """

@@ -1,9 +1,9 @@
-import hd_features as hd
-import hd_constants
+from .. import hd_features as hd
+from .. import hd_constants
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from geocode import get_latitude_longitude
+from .geolocation import get_latitude_longitude
 from timezonefinder import TimezoneFinder
 import pytz
 

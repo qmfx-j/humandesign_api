@@ -27,12 +27,20 @@ COLOR_BODY_BG = "#E6E6E6"  # Darker gray vertical background for better contrast
 CANVAS_W = 240
 CANVAS_H = 320
 
+# --- Helper to load JSON layout ---
+import importlib.resources
+
 def load_json_layout():
-    # Use absolute path relative to this file
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    path = os.path.join(base_dir, LAYOUT_FILE)
-    with open(path, 'r') as f:
-        return json.load(f)
+    """
+    Loads the SVG layout data from layout_data.json using importlib.resources.
+    """
+    try:
+        data_path = importlib.resources.files("humandesign.data").joinpath(LAYOUT_FILE)
+        with data_path.open("r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error loading layout file: {e}")
+        return {}
 
 def svg_to_mpl_path(svg_d):
     """Converts an SVG path string 'd' to a Matplotlib Path object."""

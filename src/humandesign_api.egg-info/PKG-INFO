@@ -1,3 +1,32 @@
+Metadata-Version: 2.4
+Name: humandesign-api
+Version: 1.3.1
+Summary: Human Design API
+Author-email: Your Name <your.email@example.com>
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ipython==8.12.3
+Requires-Dist: numpy==2.1.2
+Requires-Dist: pandas==2.2.3
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: pytz==2024.2
+Requires-Dist: pyswisseph==2.10.3.2
+Requires-Dist: tqdm==4.66.5
+Requires-Dist: fastapi==0.110.0
+Requires-Dist: uvicorn==0.27.1
+Requires-Dist: pydantic==2.6.3
+Requires-Dist: geopy==2.4.1
+Requires-Dist: timezonefinder
+Requires-Dist: python-dotenv
+Requires-Dist: matplotlib
+Requires-Dist: svgpath2mpl
+Requires-Dist: Pillow
+Requires-Dist: ruff
+Requires-Dist: pytest
+Requires-Dist: httpx
+Dynamic: license-file
+
 # Human Design API
 
 Welcome to the Human Design API! This project provides a robust and scalable API for calculating various Human Design features based on birth data. Built with FastAPI and leveraging powerful astrological and geographical libraries, it offers a comprehensive solution for integrating Human Design analytics into your applications.
@@ -184,7 +213,7 @@ The project is organized as follows:
       -H "Authorization: Bearer your_secret_token_here" \
       -o bodygraph.png
  ```
- <img src="src/humandesign/static/bodygraph_sample.png" alt="alt text" width="50%" />
+ <img src="static/bodygraph_sample.png" alt="alt text" width="50%" />
 
 
 
@@ -347,8 +376,4 @@ The project is organized as follows:
 
 3.  **Generate Client Libraries**:
     *   Tools like `openapi-generator` can use this file to generate API client code for various programming languages (e.g., Python, JavaScript, Java).
-
----
-*Documentation generated for Human Design API v1.4.0*
-
 
