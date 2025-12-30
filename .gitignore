@@ -33,7 +33,10 @@ Thumbs.db
 
 # backup files
 .backup/
-
 # docs
 .docs/
+# Conductor
+conductor/
+# tests
+tests/
 

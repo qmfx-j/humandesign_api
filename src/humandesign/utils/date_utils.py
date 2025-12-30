@@ -53,3 +53,13 @@ def clean_create_date_to_iso(c_date_input):
         return utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
     except Exception:
         return str(c_date_input)
+
+# Helper to calculate age from birth date tuple (Y, M, D, H, M, S)
+def calculate_age(birth_time_tuple):
+    try:
+        birth_date = datetime(birth_time_tuple[0], birth_time_tuple[1], birth_time_tuple[2])
+        today = datetime.now()
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        return age
+    except Exception:
+        return None

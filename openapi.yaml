@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Human Design API
-  version: 1.5.0
+  version: 1.5.1
 paths:
   /calculate:
     get:
@@ -16,7 +16,9 @@ paths:
         schema:
           type: integer
           description: Birth year
+          default: 1968
           title: Year
+          example: 1968
         description: Birth year
       - name: month
         in: query
@@ -24,7 +26,9 @@ paths:
         schema:
           type: integer
           description: Birth month
+          default: 2
           title: Month
+          example: 2
         description: Birth month
       - name: day
         in: query
@@ -32,7 +36,9 @@ paths:
         schema:
           type: integer
           description: Birth day
+          default: 21
           title: Day
+          example: 21
         description: Birth day
       - name: hour
         in: query
@@ -40,7 +46,9 @@ paths:
         schema:
           type: integer
           description: Birth hour
+          default: 11
           title: Hour
+          example: 11
         description: Birth hour
       - name: minute
         in: query
@@ -48,7 +56,9 @@ paths:
         schema:
           type: integer
           description: Birth minute
+          default: 0
           title: Minute
+          example: 0
         description: Birth minute
       - name: second
         in: query
@@ -58,6 +68,7 @@ paths:
           description: Birth second (optional, default 0)
           default: 0
           title: Second
+          example: 0
         description: Birth second (optional, default 0)
       - name: place
         in: query
@@ -65,14 +76,35 @@ paths:
         schema:
           type: string
           description: Birth place (city, country)
+          default: Kirikkale, Turkey
           title: Place
+          example: Kirikkale, Turkey
         description: Birth place (city, country)
+      - name: gender
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Gender (optional)
+          default: male
+          title: Gender
+        description: Gender (optional)
+      - name: islive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Whether the person is alive (true) or deceased (false)
+          default: true
+          title: Islive
+        description: Whether the person is alive (true) or deceased (false)
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/CalculateResponse'
         '422':
           description: Validation Error
           content:
@@ -92,6 +124,7 @@ paths:
         schema:
           type: integer
           description: Birth year
+          default: 1968
           title: Year
         description: Birth year
       - name: month
@@ -100,6 +133,7 @@ paths:
         schema:
           type: integer
           description: Birth month
+          default: 2
           title: Month
         description: Birth month
       - name: day
@@ -108,6 +142,7 @@ paths:
         schema:
           type: integer
           description: Birth day
+          default: 21
           title: Day
         description: Birth day
       - name: hour
@@ -116,6 +151,7 @@ paths:
         schema:
           type: integer
           description: Birth hour
+          default: 11
           title: Hour
         description: Birth hour
       - name: minute
@@ -124,6 +160,7 @@ paths:
         schema:
           type: integer
           description: Birth minute
+          default: 0
           title: Minute
         description: Birth minute
       - name: second
@@ -141,6 +178,7 @@ paths:
         schema:
           type: string
           description: Birth place (city, country)
+          default: Kirikkale, Turkey
           title: Place
         description: Birth place (city, country)
       - name: fmt
@@ -234,12 +272,10 @@ paths:
         required: false
         schema:
           type: integer
-          description: Calculate Solar Return for X years after birth. 0 is the current
-            SR.
+          description: Calculate Solar Return for X years after birth. 0 is the current SR.
           default: 0
           title: Sr Year Offset
-        description: Calculate Solar Return for X years after birth. 0 is the current
-          SR.
+        description: Calculate Solar Return for X years after birth. 0 is the current SR.
       responses:
         '200':
           description: Successful Response
@@ -400,10 +436,7 @@ paths:
   /analyze/compmatrix:
     post:
       summary: Analyze Composite Matrix
-      description: "Calculate Human Design features for multiple people and analyze\
-        \ their composite combinations (matrix).\n\nInput:\n{\n    \"person1\": {\
-        \ \"place\": \"City, Country\", \"year\": 1990, \"month\": 1, \"day\": 1,\
-        \ \"hour\": 12, \"minute\": 0 },\n    \"person2\": { ... }\n}"
+      description: "Calculate Human Design features for multiple people and analyze their composite combinations (matrix).\n\nInput:\n{\n    \"person1\": { \"place\": \"City, Country\", \"year\": 1990, \"month\": 1, \"day\": 1, \"hour\": 12, \"minute\": 0 },\n    \"person2\": { ... }\n}"
       operationId: analyze_compmatrix_post
       requestBody:
         content:
@@ -413,8 +446,7 @@ paths:
                 $ref: '#/components/schemas/PersonInput'
               type: object
               title: Inputs
-              description: Dictionary of people where keys are names (e.g., person1,
-                person2) and values are birth details.
+              description: Dictionary of people where keys are names (e.g., person1, person2) and values are birth details.
             example:
               person1:
                 place: Berlin, Germany
@@ -448,11 +480,7 @@ paths:
   /analyze/penta:
     post:
       summary: Analyze Penta
-      description: "Calculate Penta (Group Analysis) for a group of people. Returns\
-        \ the match percentage and details of active Penta gates.\n\nInput:\n{\n \
-        \   \"person1\": { \"place\": \"Berlin, Germany\", \"year\": 1985, \"month\"\
-        : 6, \"day\": 15, \"hour\": 14, \"minute\": 30 },\n    \"person2\": { ...\
-        \ },\n    \"person3\": { ... }\n}"
+      description: "Calculate Penta (Group Analysis) for a group of people. Returns the match percentage and details of active Penta gates.\n\nInput:\n{\n    \"person1\": { \"place\": \"Berlin, Germany\", \"year\": 1985, \"month\": 6, \"day\": 15, \"hour\": 14, \"minute\": 30 },\n    \"person2\": { ... },\n    \"person3\": { ... }\n}"
       operationId: analyze_penta_analyze_penta_post
       requestBody:
         content:
@@ -548,6 +576,15 @@ components:
           - type: string
           title: Minute
           description: Birth minute (0-59)
+        gender:
+          type: string
+          title: Gender
+          description: Gender (optional)
+        islive:
+          type: boolean
+          default: true
+          title: Islive
+          description: Whether the person is alive (true) or deceased (false)
       type: object
       required:
       - place
@@ -578,6 +615,145 @@ components:
       - msg
       - type
       title: ValidationError
+    CalculateResponse:
+      type: object
+      properties:
+        general:
+          $ref: '#/components/schemas/GeneralOutput'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelInfo'
+        gates:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/GateInfo'
+      title: CalculateResponse
+    GeneralOutput:
+      type: object
+      properties:
+        birth_date:
+          type: string
+          title: Birth Date
+        create_date:
+          type: string
+          title: Create Date
+        birth_place:
+          type: string
+          title: Birth Place
+        energy_type:
+          type: string
+          title: Energy Type
+        inner_authority:
+          type: string
+          title: Inner Authority
+        inc_cross:
+          type: string
+          title: Inc Cross
+        profile:
+          type: string
+          title: Profile
+        active_chakras:
+          type: array
+          items:
+            type: string
+          title: Active Chakras
+        inactive_chakras:
+          type: array
+          items:
+            type: string
+          title: Inactive Chakras
+        definition:
+          type: string
+          title: Definition
+        variables:
+          $ref: '#/components/schemas/Variables'
+        age:
+          type: integer
+          title: Age
+          description: Calculated age in years
+        zodiac_sign:
+          type: string
+          title: Zodiac Sign
+          description: Western astrological sign
+        gender:
+          type: string
+          title: Gender
+          default: male
+        islive:
+          type: boolean
+          title: Islive
+          description: Whether the person is alive (true) or deceased (false)
+          default: true
+      required:
+      - birth_date
+      - create_date
+      - energy_type
+      - inner_authority
+      - inc_cross
+      - profile
+      - active_chakras
+      - inactive_chakras
+      - definition
+      - variables
+      title: GeneralOutput
+    Variables:
+      type: object
+      properties:
+        right_up:
+          type: string
+        right_down:
+          type: string
+        left_up:
+          type: string
+        left_down:
+          type: string
+      required:
+      - right_up
+      - right_down
+      - left_up
+      - left_down
+      title: Variables
+    GateInfo:
+      type: object
+      properties:
+        gate:
+          type: integer
+        line:
+          type: integer
+        color:
+          type: integer
+        tone:
+          type: integer
+        base:
+          type: integer
+        is_active:
+          type: boolean
+      required:
+      - gate
+      - line
+      - color
+      - tone
+      - base
+      - is_active
+      title: GateInfo
+    ChannelInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        gates:
+          type: array
+          items:
+            type: integer
+        meaning:
+          type: string
+      required:
+      - name
+      - gates
+      title: ChannelInfo
   securitySchemes:
     HTTPBearer:
       type: http

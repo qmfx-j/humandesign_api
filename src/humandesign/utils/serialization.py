@@ -104,7 +104,11 @@ def general(data):
         "defined_centers": [hd_constants.CHAKRA_NAMES_MAP.get(chakra, chakra) for chakra in data['active_chakras']],
         "undefined_centers": [hd_constants.CHAKRA_NAMES_MAP.get(chakra, chakra) for chakra in data['inactive_chakras']],
         "definition": hd_constants.DEFINITION_DB.get(str(data['definition']), data['definition']),
-        "variables": data['variables']
+        "variables": data['variables'],
+        "age": data.get('age'),
+        "zodiac_sign": data.get('zodiac_sign'),
+        "gender": data.get('gender'),
+        "islive": data.get('islive')
     }
     
     return json.dumps(output, indent=2)

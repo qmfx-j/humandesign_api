@@ -15,7 +15,7 @@ router = APIRouter()
 def get_composite_matrix(
     inputs: Dict[str, PersonInput] = Body(
         ...,
-        example={
+        examples=[{
             "person1": {
                 "place": "Berlin, Germany",
                 "year": 1985,
@@ -32,7 +32,7 @@ def get_composite_matrix(
                 "hour": 9,
                 "minute": 15
             }
-        },
+        }],
         description="Dictionary of people where keys are names (e.g., person1, person2) and values are birth details."
     ),
     authorized: bool = Depends(verify_token)
@@ -56,7 +56,7 @@ def get_composite_matrix(
 def analyze_composite(
     inputs: Dict[str, PersonInput] = Body(
         ...,
-        example={
+        examples=[{
             "person1": {
                 "place": "Berlin, Germany",
                 "year": 1985,
@@ -73,7 +73,7 @@ def analyze_composite(
                 "hour": 9,
                 "minute": 15
             }
-        },
+        }],
         description="Dictionary of exactly 2 people for Composite analysis."
     ),
     authorized: bool = Depends(verify_token)
@@ -144,7 +144,7 @@ def analyze_composite(
 def analyze_penta(
     inputs: Dict[str, PersonInput] = Body(
         ...,
-        example={
+        examples=[{
              "person1": {
                 "place": "Berlin, Germany",
                 "year": 1985,
@@ -169,7 +169,7 @@ def analyze_penta(
                 "hour": 18,
                 "minute": 45
             }
-        },
+        }],
         description="Dictionary of 3-5 people for Penta analysis."
     ),
     authorized: bool = Depends(verify_token)

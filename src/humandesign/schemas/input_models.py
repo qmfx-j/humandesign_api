@@ -9,6 +9,8 @@ class PersonInput(BaseModel):
     day: Union[int, str] = Field(..., description="Birth day (1-31)")
     hour: Union[int, str] = Field(..., description="Birth hour (0-23)")
     minute: Union[int, str] = Field(..., description="Birth minute (0-59)")
+    gender: str = Field("male", description="Gender (e.g., male, female, other)")
+    islive: bool = Field(True, description="Whether the person is still alive (True) or deceased (False)")
 
     @validator('year', 'month', 'day', 'hour', 'minute', pre=True)
     def parse_int(cls, v):

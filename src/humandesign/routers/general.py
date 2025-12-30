@@ -15,16 +15,18 @@ router = APIRouter()
 
 @router.get("/calculate")
 def calculate_hd(
-    year: int = Query(..., description="Birth year"),
-    month: int = Query(..., description="Birth month"),
-    day: int = Query(..., description="Birth day"),
-    hour: int = Query(..., description="Birth hour"),
-    minute: int = Query(..., description="Birth minute"),
+    year: int = Query(1968, description="Birth year"),
+    month: int = Query(2, description="Birth month"),
+    day: int = Query(21, description="Birth day"),
+    hour: int = Query(11, description="Birth hour"),
+    minute: int = Query(0, description="Birth minute"),
     second: int = Query(0, description="Birth second (optional, default 0)"),
-    place: str = Query(..., description="Birth place (city, country)"),
+    place: str = Query("Kirikkale, Turkey", description="Birth place (city, country)"),
+    gender: str = Query("male", description="Gender (optional)"),
+    islive: bool = Query(True, description="Whether the person is still alive (True) or deceased (False)"),
     authorized: bool = Depends(verify_token)
 ):
-    # 1. Validate andcollect input
+    # 1. Validate and collect input
     birth_time = (year, month, day, hour, minute, second)
 
     # 2. Geocode and timezone
@@ -42,7 +44,7 @@ def calculate_hd(
         raise HTTPException(status_code=500, detail=f"Error determining timezone or offset: {str(e)}")
 
     # 3. Prepare timestamp
-    timestamp = tuple(list(birth_time) + [int(hours)])
+    timestamp = tuple(list(birth_time) + [float(hours)])
 
     # 4. Calculate Human Design Features
     try:
@@ -50,7 +52,16 @@ def calculate_hd(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error calculating Human Design features: {str(e)}")
 
-    # 5. Format Data for JSON Output
+    # 5. Additional Calculations (Age, Zodiac)
+    from ..utils import astrology
+    from ..utils import date_utils
+    
+    age = date_utils.calculate_age(birth_time)
+    # Personality Sun longitude is at index 0 of the 'lon' list in date_to_gate_dict (index 6 of result)
+    sun_lon = single_result[6]['lon'][0]
+    zodiac_sign = astrology.get_zodiac_sign(sun_lon)
+
+    # 6. Format Data for JSON Output
     try:
         data = {
             "birth_date": clean_birth_date_to_iso(single_result[9], hours),
@@ -59,46 +70,50 @@ def calculate_hd(
             "energy_type": single_result[0],
             "inner_authority": single_result[1],
             "inc_cross": single_result[2],
-            "profile": single_result[4],
-            "active_chakras": single_result[7],
-            "inactive_chakras": set(hd_constants.CHAKRA_LIST) - set(single_result[7]),
+            "profile": single_result[4], # Pass tuple directly for serialization helper
+            "active_chakras": list(single_result[7]),
+            "inactive_chakras": list(set(hd_constants.CHAKRA_LIST) - set(single_result[7])),
             "definition": "{}".format(single_result[5]),
             "variables": {
                 'right_up': 'right',
                 'right_down': 'left',
                 'left_up': 'right',
                 'left_down': 'right'
-            }
+            },
+            "age": age,
+            "zodiac_sign": zodiac_sign,
+            "gender": gender,
+            "islive": islive
         }
+        
+        # Serialize parts
         general_json_str = cj.general(data)
         gates_json_str = cj.gatesJSON(single_result[6])
         channels_json_str = cj.channelsJSON(single_result[8], False)
+        
         general_output = json.loads(general_json_str)
         gates_output = json.loads(gates_json_str)
         channels_output = json.loads(channels_json_str)
-    except IndexError as e:
-        raise HTTPException(status_code=500, detail=f"Error processing calculation results: Missing expected data at index {e}")
-    except json.JSONDecodeError as e:
-        raise HTTPException(status_code=500, detail=f"Internal error generating JSON output: {e}")
+        
+        final_result = {
+            "general": general_output,
+            "channels": channels_output,
+            "gates": gates_output
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error processing results: {e}")
+        raise HTTPException(status_code=500, detail=f"Error processing results: {str(e)}")
 
-    final_result = {
-        "general": general_output,
-        "channels": channels_output,
-        "gates": gates_output
-    }
     return JSONResponse(content=final_result)
 
 @router.get("/bodygraph")
 def get_bodygraph_image(
-    year: int = Query(..., description="Birth year"),
-    month: int = Query(..., description="Birth month"),
-    day: int = Query(..., description="Birth day"),
-    hour: int = Query(..., description="Birth hour"),
-    minute: int = Query(..., description="Birth minute"),
+    year: int = Query(1968, description="Birth year"),
+    month: int = Query(2, description="Birth month"),
+    day: int = Query(21, description="Birth day"),
+    hour: int = Query(11, description="Birth hour"),
+    minute: int = Query(0, description="Birth minute"),
     second: int = Query(0, description="Birth second (optional, default 0)"),
-    place: str = Query(..., description="Birth place (city, country)"),
+    place: str = Query("Kirikkale, Turkey", description="Birth place (city, country)"),
     fmt: str = Query("png", description="Image format: png, svg, jpg/jpeg"),
     authorized: bool = Depends(verify_token)
 ):

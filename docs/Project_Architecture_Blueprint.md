@@ -1,91 +1,102 @@
-# Project Architecture Blueprint
+# Project Architecture Blueprint: Human Design API
 
-**Generated:** 2025-12-23 for Version 1.5.0
-**Project Type:** Python (FastAPI)
-**Architecture Pattern:** Modular Layered Architecture
+This document provides a comprehensive analysis of the architectural patterns, components, and implementation strategies used in the Human Design API. It serves as a definitive reference for maintaining architectural consistency and guiding future development.
 
 ## 1. Architectural Overview
 
-The Human Design API utilizes a **Modular Layered Architecture** built on top of the **FastAPI** framework. The primary goal is to provide a clean separation of concerns between HTTP handling (Routers), business logic (Services), and core domain calculations (Features/Utils).
+The Human Design API is built as a **Modular Monolith** using the **FastAPI** framework. It follows a layered approach that separates concerns between request handling, core business logic, and utility functions.
 
 ### Guiding Principles
-- **Separation of Concerns**: distinctive boundaries between entry points, logic, and data processing.
-- **Statelessness**: The API is fully stateless, relying on Bearer tokens for auth.
-- **Single Source of Truth**: Configuration and versioning are centralized in `pyproject.toml`.
-- **Reproducibility**: Builds are standardized via `pip install .` and Docker.
-- **Package-Oriented**: Uses `src` layout and `importlib` for robust resource loading across environments (Local vs Docker).
+- **Separation of Concerns**: Use of `routers`, `services`, and `utils` to decouple HTTP logic from astrological calculations.
+- **Consistency**: Standardized JSON outputs (ISO dates, 3-decimal longitudes) and error handling.
+- **Extensibility**: Modular structure in `src/humandesign/features` allows adding new Human Design metrics without impacting existing logic.
+- **Portability**: Containerized with Docker, using standard Python packaging (`pyproject.toml`).
 
-## 2. Component Relationships
+---
 
-### Subsystem Boundaries
-- **Entry Points (`routers/`)**: Handle HTTP requests, parsing, and validation.
-- **Service Layer (`services/`)**: Orchestrates complex logic (e.g., Geocoding + SwissEph).
-- **Core Domain (`hd_features.py`, `hd_constants.py`)**: Pure functions containing the "physics" of Human Design.
-- **Utilities (`utils/`)**: Shared helpers for date handling, math, and serialization.
-- **Data (`data/`)**: Static assets (SVG layouts) loaded via `importlib.resources`.
+## 2. Architecture Visualization
 
-### Data Flow
-1.  **Request**: Client sends encoded birth data.
-2.  **Router**: Validates input using Pydantic schemas (`schemas/`).
-3.  **Service**:
-    - Resolves location (via `geolocation.py`).
-    - Calculates mechanics (via `hd_features.py`).
-    - Renders visual assets (via `chart_renderer.py`) loading `layout_data.json` from package resources.
-4.  **Response**: JSON or Image data returned to client.
+### 2.1 Component Interaction
+1. **API Layer (Routers)**: Receives HTTP requests, validates input using Pydantic schemas.
+2. **Service Layer**: Handles complex multi-step processes like geocoding (Nominatim), timezone resolution (TimezoneFinder), and composite orchestration.
+3. **Core Engine (Features)**: Performs precise astrological calculations using `pyswisseph` (Swiss Ephemeris).
+4. **Utility Layer**: Provides specialized helpers for date formatting, Western astrology, and JSON serialization.
+
+### 2.2 Data Flow
+`Client Request` -> `FastAPI Router` -> `Pydantic Validation` -> `Service/Utility (Preprocessing)` -> `Core Engine (Calculation)` -> `Serialization Helper` -> `JSON Response`
+
+---
 
 ## 3. Core Architectural Components
 
-### `api.py` (Application Root)
-- **Responsibility**: Bootstraps the FastAPI app, configures middleware, and includes routers.
-- **Implementation**: Uses `importlib.metadata` to retrieve version at runtime.
+### 3.1 API Routers (`src/humandesign/routers/`)
+- **General**: Handles `/calculate` and `/bodygraph`.
+- **Composite**: Handles relationships (`/analyze/composite`, `/analyze/compmatrix`, `/analyze/penta`).
+- **Transits**: Handles `/transits/daily` and `/transits/solar_return`.
 
-### `routers/` (Interface Adapters)
-- **Components**: `general.py`, `transits.py`, `composite.py`.
-- **Responsibility**: Map HTTP verbs to service calls.
+### 3.2 Core Calculation Engine (`src/humandesign/features/`)
+- **`core.py`**: The `hd_features` class managing planet positions and gate mappings.
+- **`attributes.py`**: Calculation of Type, Strategy, Authority, and Profile.
+- **`mechanics.py`**: Logic for Splits/Definitions and Penta group dynamics.
 
-### `services/` (Application Business Rules)
-- **Components**:
-    - `geolocation.py`: Adapter for `geopy`/`timezonefinder`.
-    - `chart_renderer.py`: Logic for generating BodyGraphs. Uses `importlib.resources` to read `data/layout_data.json` safely.
-    - `composite.py`: Orchestrator for multi-person analysis.
+### 3.3 Services (`src/humandesign/services/`)
+- **`geolocation.py`**: Integration with Nominatim for latitude/longitude resolution.
+- **`chart_renderer.py`**: SVG/PNG rendering logic for the BodyGraph.
 
-### `src/humandesign/features/` (Domain Core)
-- **Components**:
-    - `core.py`: Main `hd_features` class and core calculation entry points.
-    - `attributes.py`: Helper functions for attributes (Profile, Incarnation Cross).
-    - `mechanics.py`: Logic for Centers, Channels, and Definition mechanics.
-- **Responsibility**: The "Engine". Contains all calculation formulas for Gates, Lines, Tones, Bases, and Centers. Using a modular package structure.
+### 3.4 Utilities (`src/humandesign/utils/`)
+- **`astrology.py`**: Western zodiac calculations.
+- **`date_utils.py`**: ISO formatting and age calculation.
+- **`serialization.py`**: Custom JSON encoders for NumPy compatibility.
+
+---
 
 ## 4. Cross-Cutting Concerns
 
-### Authentication
-- **Pattern**: Bearer Token via `dependencies.verify_token` against `HD_API_TOKEN`.
+### 4.1 Authentication
+- Implemented via `dependencies.py` using a Bearer token verification system.
+- Enforced at the router level using FastAPI's `Depends(verify_token)`.
 
-### Configuration
-- **Source**: `.env` file or Environment Variables.
-- **Access**: `dependencies.py` resolves `.env` path dynamically relative to the package location.
+### 4.2 Error Handling
+- Use of `fastapi.HTTPException` for consistent error responses (400 for bad input, 500 for calculation errors).
+- Geocoding and timezone resolution include fallback logic (e.g., defaulting to UTC).
 
-- **Deployment Architecture**:
-  - **Structure**: Installed as a standard Python package (`pip install .`) in `/usr/local/lib/python3.12/site-packages/humandesign`.
-  - **Cleanup**: Build artifacts (`*.egg-info`) are excluded from source control and regenerated during install.
+### 4.3 Validation
+- Input validation is handled strictly by Pydantic models in `schemas/input_models.py`.
+- Includes custom validators for year ranges (1800-2100) and day-of-month logic (leap years).
 
-## 6. Extension Patterns
+---
 
-### Adding New Endpoints
-1.  Create validation model in `schemas/`.
-2.  Implement logic in `services/`.
-3.  Add route in `routers/` and register in `api.py`.
+## 5. Technology-Specific Patterns (Python/FastAPI)
 
-## 7. Architectural Decisions (ADRs)
+- **Asynchronous Programming**: FastAPI routes are designed for high-concurrency request handling.
+- **Dependency Enrichment**: Routing logic leverages common dependencies for clean code and shared state.
+- **Package Metadata**: Versioning and dependencies are managed via `pyproject.toml`, with `importlib.metadata` used for runtime version retrieval.
 
-### ADR-005: Modularization of Core Logic (v1.5.0)
-- **Decision**: Split monolithic `hd_features.py` into `humandesign.features` package.
-- **Reason**: The file grew too large (>1000 lines) making maintenance difficult. Modularization respects separation of concerns (Mechanics vs Attributes) and improves testability.
+---
 
-### ADR-004: Resource Loading via Importlib (v1.4.0)
-- **Decision**: Use `importlib.resources` and `importlib.metadata`.
-- **Reason**: Standard file paths (e.g. `../data`) fail when the package is installed in Docker. `importlib` ensures correct resolution in all environments.
+## 6. Testing Architecture
 
-### ADR-001: Src Layout (v1.4.0)
-- **Decision**: Move all code to `src/humandesign`.
-- **Reason**: Avoid import ambiguities, cleaner root directory, standard Python packaging practice.
+- **Core Tests**: Snapshot-based testing for astrological accuracy in `tests/test_core_calculations.py`.
+- **Integration Tests**: Verification of API endpoints and serialization in `tests/test_calculate_updates.py`.
+- **Data Validation Tests**: Boundary condition testing for Pydantic schemas in `tests/test_schemas.py`.
+
+---
+
+## 7. Blueprint for New Development
+
+### Adding a New Endpoint
+1. Define the input/output schemas in `src/humandesign/schemas/`.
+2. Implement the business logic in `services/` or a new module in `features/`.
+3. Create a new route in the appropriate router (or a new router file).
+4. Register the router in `src/humandesign/api.py`.
+5. Update `openapi.yaml` and `docs/API_DOCUMENTATION.md`.
+
+### Adding a New HD Metric
+1. Locate the relevant sub-module in `src/humandesign/features/`.
+2. Update the `hd_features` class or helper functions.
+3. Update `serialization.py` to include the new data in the JSON output.
+4. Add a regression test in `tests/`.
+
+---
+
+*Blueprint generated for Version 1.5.1 on 2025-12-30*

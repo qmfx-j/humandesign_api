@@ -1,6 +1,6 @@
 # Human Design API Documentation
 
-**Version:** 1.4.0  
+**Version:** 1.5.1  
 **Base URL:** `http://localhost:8000` (or your deployment URL)
 
 ## Overview
@@ -38,10 +38,12 @@ Get comprehensive Human Design calculations for a single person.
 | `hour` | int | Yes | Birth Hour (0-23) |
 | `minute` | int | Yes | Birth Minute (0-59) |
 | `second` | int | No | Birth Second (Default: 0) |
+| `gender` | string | No | Gender (None, male, female, etc. Default: male) |
+| `islive` | bool | No | Whether the person is alive (true) or deceased (false). (Default: true) |
 
 #### Example Request
 ```bash
-curl -X GET "http://localhost:8000/calculate?place=London,UK&year=1990&month=1&day=1&hour=12&minute=0&second=0" \
+curl -X GET "http://localhost:8000/calculate?place=Kirikkale,Turkey&year=1968&month=2&day=21&hour=11&minute=0" \
   -H "Authorization: Bearer <your_token>"
 ```
 
@@ -55,6 +57,10 @@ curl -X GET "http://localhost:8000/calculate?place=London,UK&year=1990&month=1&d
     "profile": "2/4: Hermit Opportunist",
     "definition": "Single Definition",
     "active_chakras": ["Sacral", "Root"],
+    "age": 35,
+    "zodiac_sign": "Capricorn",
+    "gender": "male",
+    "islive": true,
     ...
   },
   "gates": { ... },
@@ -206,4 +212,4 @@ curl -X POST "http://localhost:8000/analyze/penta" \
 | `500` | Internal Server Error |
 
 ---
-*Documentation generated for Human Design API v1.5.0*
+*Documentation generated for Human Design API v1.5.1*

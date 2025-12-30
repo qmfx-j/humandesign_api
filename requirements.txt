@@ -5,12 +5,15 @@ python_dateutil==2.9.0.post0
 pytz==2024.2
 pyswisseph==2.10.3.2
 tqdm==4.66.5
-fastapi==0.110.0
+fastapi>=0.115.0
 uvicorn==0.27.1
-pydantic==2.6.3
+pydantic>=2.7.0
 geopy==2.4.1
 timezonefinder
 python-dotenv
 matplotlib
 svgpath2mpl
 Pillow
+ruff
+pytest
+httpx

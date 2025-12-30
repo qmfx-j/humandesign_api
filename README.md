@@ -21,7 +21,7 @@ Whether you are building a mobile app, a professional dashboard, or a personal r
 *   **Detailed Pairwise Analysis**: Calculates granular relationship details (new/duplicated channels) for exactly two people via the `/analyze/composite` endpoint.
 *   **Transit Analysis**: Provides Daily Weather and Solar Return (Yearly Theme) calculations for advanced forecasting.
 *   **Penta Analysis**: Calculates Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, revealing active group energy fields.
-*   **Comprehensive Chart Data**: Returns Energy Type, Strategy, Authority, Profile, Incarnation Cross, Variables, and full Planetary/Gate positions (Gate, Line, Color, Tone, Base).
+*   **Comprehensive Chart Data**: Returns Energy Type, Strategy, Authority, Profile, Incarnation Cross, Variables, Age, Western Zodiac Sign, and full Planetary/Gate positions.
 *   **Robust Validation**: Strict input validation using Pydantic, supporting flexible data types (integers or strings) for ease of integration.
 *   **Docker Ready**: Simple deployment with Docker and Docker Compose.
 *   **OpenAPI Specification**: Fully documented API with `openapi.yaml` and interactive Swagger UI.
@@ -154,6 +154,8 @@ The project is organized as follows:
      "inc_cross": "The Right Angle Cross of the Maya (2)",
      "profile": "3/5: Martyr Heretic",
      "definition": "Split Definition",
+     "age": 35,
+     "zodiac_sign": "Cancer",
      ...
    },
    "gates": { ... },
@@ -349,6 +351,6 @@ The project is organized as follows:
     *   Tools like `openapi-generator` can use this file to generate API client code for various programming languages (e.g., Python, JavaScript, Java).
 
 ---
-*Documentation generated for Human Design API v1.5.0*
+*Documentation generated for Human Design API v1.5.1*
 
 

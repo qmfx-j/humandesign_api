@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2025-12-30
+
+### Added
+- **Features**: Added `age` and `zodiac_sign` fields to the `/calculate` response.
+- **Input**: Added optional `gender` and `islive` query parameters to `/calculate` and corresponding Pydantic schemas.
+- **Utilities**: Implemented `astrology` utility for Western zodiac calculation and `calculate_age` helper.
+- **Compatibility**: Upgraded `fastapi` and `pydantic` versions to resolve environment-specific dependency conflicts (Starlette/HTTPX).
+- **Usability**: Set default values for `/calculate` (1968 birth data) to pre-fill Swagger UI for easier testing.
+
+### Changed
+- **Formatting**: Updated `/calculate` output to return expanded profile names (e.g., "4/6: Opportunist Role Model") instead of raw numbers.
+- **Documentation**: Clarified `islive` parameter to indicate life status (True = Alive, False = Deceased).
+- **Defaults**: Updated default values for `gender` (`male`) and `islive` (`true`) across all schemas and endpoints.
+- **Refactoring**: Replaced deprecated `example` parameter with the modern `examples` list in all route definitions to eliminate `FastAPIDeprecationWarning`.
+
 ## [1.5.0] - 2025-12-23
 
 ### Added
