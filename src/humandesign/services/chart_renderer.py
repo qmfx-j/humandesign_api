@@ -249,10 +249,10 @@ if __name__ == "__main__":
     ],
     "definition": "Single Definition",
     "variables": {
-      "right_up": "right",
-      "right_down": "left",
-      "left_up": "right",
-      "left_down": "right"
+      "top_right": "right",
+      "bottom_right": "left",
+      "top_left": "right",
+      "bottom_left": "right"
     }
   },
   "gates": {

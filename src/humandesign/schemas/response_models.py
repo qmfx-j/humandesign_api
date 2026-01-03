@@ -1,11 +1,17 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 
+class VariableDetail(BaseModel):
+    value: str
+    name: str
+    aspect: str
+    def_type: str
+
 class Variables(BaseModel):
-    right_up: str
-    right_down: str
-    left_up: str
-    left_down: str
+    top_right: VariableDetail
+    bottom_right: VariableDetail
+    top_left: VariableDetail
+    bottom_left: VariableDetail
 
 class GeneralOutput(BaseModel):
     birth_date: str

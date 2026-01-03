@@ -14,26 +14,26 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Project-Wide Key Refactoring
-- [ ] Task: specific key replacement in `hd_constants.py` and core logic.
+- [x] Task: specific key replacement in `hd_constants.py` and core logic.
     - **Description:** Replace `right_up` -> `top_right`, `left_up` -> `top_left`, etc. in the core calculation logic.
     - **Step 1:** detailed `grep` to find all occurrences.
     - **Step 2:** Update unit tests primarily to expect new keys.
     - **Step 3:** Update `hd_constants.py` and any calculation modules.
     - **Step 4:** Verify tests pass.
-- [ ] Task: Refactor API Models.
-    - **Description:** Update Pydantic models to use the new naming convention.
-    - **Step 1:** Update `schemas.py` (or equivalent).
-    - **Step 2:** Ensure Pydantic validation passes with new keys.
+- [x] Task: Refactor API Models.
+    - **Description:** Update schemas.py (or pydantic models) to use new keys.
+    - **Step 1:** Update Pydantic models.
+    - **Step 2:** Ensure any transformation logic in serialization.py or routers maps correctly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: API Response Transformation
-- [ ] Task: Update Router/Controller Logic.
-    - **Description:** specific logic to construct the nested `variables` object in the API response using `VARIABLES_METADATA`.
-    - **Step 1:** Create `test_variables_response.py` asserting the complex nested structure.
-    - **Step 2:** Modify the route handler (e.g., `routers/general.py`) to build the dictionary dynamically.
+- [x] Task: Update Router/Controller Logic.
+    - **Description:** Ensure the API returns the new nested structure (value, name, aspect, def_type).
+    - **Step 1:** Create test `test_variables_structure.py` to assert the nested structure.
+    - **Step 2:** Modify `get_variables` in `attributes.py` to construct the full object.
     - **Step 3:** Run tests to confirm correct nesting and values.
-- [ ] Task: Final Cleanup.
+- [x] Task: Final Cleanup.
     - **Description:** Delete `.docs/hddata/variables.json` if confirmed unused.
-    - **Step 1:** Delete file.
-    - **Step 2:** Run full test suite.
+    - **Step 1:** Delete the file.
+    - **Step 2:** Run all tests affecting variables.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)

@@ -61,7 +61,7 @@ def get_variables(date_to_gate_dict):
         date_to_gate_dict(dict):output of hd_feature class 
                                     keys->[planets,label,longitude,gate,line,color,tone,base]
     Return:
-        variables(dict): keys-> ["right_up","right_down","left_up","left_down"]
+        variables(dict): keys-> ["top_right","bottom_right","top_left","bottom_left"]
     '''
     df = date_to_gate_dict
     idx = int(len(df["tone"])/2) #start idx of design values 
@@ -71,8 +71,23 @@ def get_variables(date_to_gate_dict):
             (df["tone"][idx]),#sun at design
             (df["tone"][idx+3]),#node at design
                 ) 
-    keys = ["right_up","right_down","left_up","left_down"] #arrows,variables
-    variables = {keys[idx]:"left" if tone<=3 else "right" for idx,tone in enumerate(tones)}
+    keys = ["top_right","bottom_right","top_left","bottom_left"] #arrows,variables
+    
+    variables = {}
+    for i, key in enumerate(keys):
+        tone = tones[i]
+        val = "left" if tone <= 3 else "right"
+        
+        # Get metadata from constants
+        meta = hd_constants.VARIABLES_METADATA.get(key, {})
+        def_type = meta.get("definitions", {}).get(val, {}).get("type", "Unknown")
+        
+        variables[key] = {
+            "value": val,
+            "name": meta.get("name", "Unknown"),
+            "aspect": meta.get("aspect", "Unknown"),
+            "def_type": def_type
+        }
 
     return variables 
 
