@@ -10,8 +10,21 @@ from ..services import chart_renderer as chart
 from ..services.geolocation import get_latitude_longitude
 from ..dependencies import verify_token
 from ..utils.date_utils import clean_birth_date_to_iso, clean_create_date_to_iso
+from ..schemas.general import HealthResponse
+from datetime import datetime
 
 router = APIRouter()
+
+@router.get("/health", response_model=HealthResponse)
+def health_check():
+    """Operational status and system info."""
+    from ..api import __version__
+    return {
+        "status": "ok",
+        "version": __version__,
+        "timestamp": datetime.now().isoformat(),
+        "dependencies": {"pyswisseph": "ready"}
+    }
 
 @router.get("/calculate")
 def calculate_hd(

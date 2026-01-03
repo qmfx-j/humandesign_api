@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+ 
+## [1.6.0] - 2026-01-03
+
+### Added
+- **System Health**: Implemented a new `GET /health` endpoint for operational monitoring.
+- **Architecture**: Created a centralized version extraction utility in `src/humandesign/utils/version.py` that reads directly from `pyproject.toml`.
+- **Validation**: Introduced `HealthResponse` Pydantic schema for standardized system responses.
+- **Testing**: Added comprehensive test suites for health endpoints, schemas, and versioning logic.
 
 ## [1.5.1] - 2025-12-30
 
