@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
  
+## [1.6.1] - 2026-01-03
+
+### Fixed
+- **Variables**: Resolved an issue where the `variables` (arrows) field in the API response was hardcoded. The output now correctly reflects dynamic calculations based on planetary tones.
+
 ## [1.6.0] - 2026-01-03
 
 ### Added

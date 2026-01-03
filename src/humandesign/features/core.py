@@ -362,7 +362,7 @@ def calc_single_hd_features(timestamp,report=False,channel_meaning=False,day_cha
                 display(pd.DataFrame(active_channels_dict))
          
     if day_chart_only==False:
-        return  typ,auth,inc_cross,inc_cross_typ,profile,definition,date_to_gate_dict,active_chakras,active_channels_dict, bdate, cdate
+        return  typ,auth,inc_cross,inc_cross_typ,profile,definition,date_to_gate_dict,active_chakras,active_channels_dict, bdate, cdate, variables
     else:
         return date_to_gate_dict
 
@@ -389,6 +389,7 @@ def unpack_single_features(single_result):
     return_dict["active_channel"] = single_result[8]
     return_dict["birth_date"] = single_result[9]
     return_dict["create_date"] = single_result[10]
+    return_dict["variables"] = single_result[11]
     
     return return_dict
 

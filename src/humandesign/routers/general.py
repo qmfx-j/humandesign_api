@@ -90,12 +90,7 @@ def calculate_hd(
             "active_chakras": list(single_result[7]),
             "inactive_chakras": list(set(hd_constants.CHAKRA_LIST) - set(single_result[7])),
             "definition": "{}".format(single_result[5]),
-            "variables": {
-                'right_up': 'right',
-                'right_down': 'left',
-                'left_up': 'right',
-                'left_down': 'right'
-            },
+            "variables": single_result[11],
             "age": age,
             "zodiac_sign": zodiac_sign,
             "gender": gender,
@@ -171,12 +166,7 @@ def get_bodygraph_image(
             "active_chakras": single_result[7],
             "inactive_chakras": set(hd_constants.CHAKRA_LIST) - set(single_result[7]),
             "definition": "{}".format(single_result[5]),
-            "variables": {
-                'right_up': 'right',
-                'right_down': 'left',
-                'left_up': 'right',
-                'left_down': 'right'
-            }
+            "variables": single_result[11]
         }
         general_json_str = cj.general(data)
         gates_json_str = cj.gatesJSON(single_result[6])
