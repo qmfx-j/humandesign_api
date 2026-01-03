@@ -11,6 +11,7 @@ from ..services.geolocation import get_latitude_longitude
 from ..dependencies import verify_token
 from ..utils.date_utils import clean_birth_date_to_iso, clean_create_date_to_iso
 from ..schemas.general import HealthResponse
+from ..utils.health_utils import check_swisseph_health
 from datetime import datetime
 
 router = APIRouter()
@@ -23,7 +24,9 @@ def health_check():
         "status": "ok",
         "version": __version__,
         "timestamp": datetime.now().isoformat(),
-        "dependencies": {"pyswisseph": "ready"}
+        "dependencies": {
+            "pyswisseph": check_swisseph_health()
+        }
     }
 
 @router.get("/calculate")

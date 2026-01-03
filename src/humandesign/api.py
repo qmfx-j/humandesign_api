@@ -8,13 +8,14 @@ import importlib.metadata
 
 from .utils.version import get_version
 
-try:
-    __version__ = importlib.metadata.version("humandesign-api")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = get_version()
+__version__ = get_version()
 
+# Fallback to metadata if toml fails
 if __version__ == "0.0.0":
-    __version__ = get_version()
+    try:
+        __version__ = importlib.metadata.version("humandesign-api")
+    except importlib.metadata.PackageNotFoundError:
+        pass
 
 app = FastAPI(title="Human Design API", version=__version__)
 
