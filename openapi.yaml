@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Human Design API
-  version: 1.7.1
+  version: 1.7.2
 paths:
   /calculate:
     get:
@@ -643,6 +643,23 @@ components:
         birth_place:
           type: string
           title: Birth Place
+        age:
+          type: integer
+          title: Age
+          description: Calculated age in years
+        gender:
+          type: string
+          title: Gender
+          default: male
+        islive:
+          type: boolean
+          title: Islive
+          description: Whether the person is alive (true) or deceased (false)
+          default: true
+        zodiac_sign:
+          type: string
+          title: Zodiac Sign
+          description: Western astrological sign
         energy_type:
           type: string
           title: Energy Type
@@ -670,23 +687,7 @@ components:
           title: Definition
         variables:
           $ref: '#/components/schemas/Variables'
-        age:
-          type: integer
-          title: Age
-          description: Calculated age in years
-        zodiac_sign:
-          type: string
-          title: Zodiac Sign
-          description: Western astrological sign
-        gender:
-          type: string
-          title: Gender
-          default: male
-        islive:
-          type: boolean
-          title: Islive
-          description: Whether the person is alive (true) or deceased (false)
-          default: true
+
       required:
       - birth_date
       - create_date

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+## [1.7.2] - 2026-01-13
+
+### Changed
+- Refactored `general` response structure to group demographics (`age`, `gender`, `islive`) and astrological info (`zodiac_sign`) immediate after the birth place.
+- Updated `VARIABLES_METADATA` terminology for Environment (bottom_left): Changed "Consistent" to "Observed" and "Variable" to "Observer".
+
  
 ## [1.7.1] - 2026-01-03
 

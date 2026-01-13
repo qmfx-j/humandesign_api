@@ -444,8 +444,8 @@ VARIABLES_METADATA = {
         "name": "Environment",
         "aspect": "Design (Body)",
         "definitions": {
-            "left": {"type": "Consistent"},
-            "right": {"type": "Variable"}
+            "left": {"type": "Observed"},
+            "right": {"type": "Observer"}
         }
     },
     "bottom_right": {

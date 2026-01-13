@@ -88,6 +88,10 @@ def general(data):
         "birth_date": data['birth_date'],
         "create_date": data['create_date'],
         "place": data.get('birth_place', ''), 
+        "age": data.get('age'),
+        "gender": data.get('gender'),
+        "islive": data.get('islive'),
+        "zodiac_sign": data.get('zodiac_sign'),
         
         # --- Type Info ---
         "energy_type": e_type,
@@ -104,11 +108,7 @@ def general(data):
         "defined_centers": [hd_constants.CHAKRA_NAMES_MAP.get(chakra, chakra) for chakra in data['active_chakras']],
         "undefined_centers": [hd_constants.CHAKRA_NAMES_MAP.get(chakra, chakra) for chakra in data['inactive_chakras']],
         "definition": hd_constants.DEFINITION_DB.get(str(data['definition']), data['definition']),
-        "variables": data['variables'],
-        "age": data.get('age'),
-        "zodiac_sign": data.get('zodiac_sign'),
-        "gender": data.get('gender'),
-        "islive": data.get('islive')
+        "variables": data['variables']
     }
     
     return json.dumps(output, indent=2)

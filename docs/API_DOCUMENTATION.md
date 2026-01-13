@@ -1,6 +1,6 @@
 # Human Design API Documentation
 
-**Version:** 1.7.1  
+**Version:** 1.7.2  
 **Base URL:** `http://localhost:8000` (or your deployment URL)
 
 ## Overview
@@ -52,15 +52,15 @@ curl -X GET "http://localhost:8000/calculate?place=Kirikkale,Turkey&year=1968&mo
 {
   "general": {
     "birth_date": "1990-01-01T12:00:00Z",
+    "age": 35,
+    "gender": "male",
+    "islive": true,
+    "zodiac_sign": "Capricorn",
     "energy_type": "Generator",
     "inner_authority": "Sacral",
     "profile": "2/4: Hermit Opportunist",
     "definition": "Single Definition",
     "active_chakras": ["Sacral", "Root"],
-    "age": 35,
-    "zodiac_sign": "Capricorn",
-    "gender": "male",
-    "islive": true,
     ...
   },
   "gates": { ... },

@@ -147,14 +147,16 @@ The project is organized as follows:
  {
    "general": {
      "birth_date": "1990-07-15T13:30:00Z",
+     "age": 35,
+     "gender": "male",
+     "islive": true,
+     "zodiac_sign": "Cancer",
      "energy_type": "Projector",
      "strategy": "Wait for the Invitation",
      "inner_authority": "Solar Plexus",
      "inc_cross": "The Right Angle Cross of the Maya (2)",
      "profile": "3/5: Martyr Heretic",
      "definition": "Split Definition",
-     "age": 35,
-     "zodiac_sign": "Cancer",
      ...
    },
    "gates": { ... },

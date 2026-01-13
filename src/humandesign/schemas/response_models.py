@@ -17,6 +17,10 @@ class GeneralOutput(BaseModel):
     birth_date: str
     create_date: str
     birth_place: Optional[str] = None
+    age: Optional[int] = Field(None, description="Calculated age in years")
+    gender: Optional[str] = "male"
+    islive: Optional[bool] = Field(True, description="Whether the person is still alive (True) or deceased (False)")
+    zodiac_sign: Optional[str] = Field(None, description="Western astrological sign")
     energy_type: str
     inner_authority: str
     inc_cross: str
@@ -25,10 +29,6 @@ class GeneralOutput(BaseModel):
     inactive_chakras: List[str]
     definition: str
     variables: Variables
-    age: Optional[int] = Field(None, description="Calculated age in years")
-    zodiac_sign: Optional[str] = Field(None, description="Western astrological sign")
-    gender: Optional[str] = "male"
-    islive: Optional[bool] = Field(True, description="Whether the person is still alive (True) or deceased (False)")
 
 class GateInfo(BaseModel):
     gate: int
