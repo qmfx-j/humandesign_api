@@ -12,6 +12,7 @@ class Variables(BaseModel):
     bottom_right: VariableDetail
     top_left: VariableDetail
     bottom_left: VariableDetail
+    short_code: str = Field(..., description="Standard shorthand for all four variables (e.g., 'PRL DRR')")
 
 class GeneralOutput(BaseModel):
     birth_date: str

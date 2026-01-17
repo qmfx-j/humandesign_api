@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Human Design API
-  version: 1.7.2
+  version: 1.7.3
 paths:
   /calculate:
     get:
@@ -732,11 +732,16 @@ components:
           $ref: '#/components/schemas/VariableDetail'
         bottom_left:
           $ref: '#/components/schemas/VariableDetail'
+        short_code:
+          type: string
+          title: Short Code
+          description: Standard shorthand for all four variables (e.g., 'PRL DRR')
       required:
       - top_right
       - bottom_right
       - top_left
       - bottom_left
+      - short_code
       title: Variables
     GateInfo:
       type: object

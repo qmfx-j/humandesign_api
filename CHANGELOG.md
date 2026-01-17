@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-01-17
+
+### Added
+- **Variable Shorthand**: Added `short_code` field to the `variables` response object (e.g., "PRL DRR") to standardize arrow direction summary.
+
+
 ## [1.7.2] - 2026-01-13
 
 ### Changed

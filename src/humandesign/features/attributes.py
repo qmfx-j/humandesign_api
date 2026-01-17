@@ -89,5 +89,14 @@ def get_variables(date_to_gate_dict):
             "def_type": def_type
         }
 
+    # Calculate Standard Shorthand (e.g., "PRL DRR")
+    # Tones: 0:Motivation(P-Top), 1:Perspective(P-Bottom), 2:Digestion(D-Top), 3:Environment(D-Bottom)
+    p_top = "R" if tones[0] > 3 else "L"
+    p_bot = "R" if tones[1] > 3 else "L"
+    d_top = "R" if tones[2] > 3 else "L"
+    d_bot = "R" if tones[3] > 3 else "L"
+    
+    variables["short_code"] = f"P{p_top}{p_bot} D{d_top}{d_bot}"
+
     return variables 
 
