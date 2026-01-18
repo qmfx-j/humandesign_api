@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-01-18
+### Added
+- **Enriched Metadata**: The `/transits/daily` endpoint now includes a comprehensive `meta` object with:
+    - **Bio**: Age, Place, Gender, IsAlive.
+    - **Astrology**: Zodiac Sign.
+    - **HD Core**: Energy Type, Strategy, Signature, Not-Self, Aura, Inner Authority, Profile, Incarnation Cross.
+    - **Mechanics**: Defined/Undefined Centers, Definition Type.
+    - **Channels**: List of formatted active channels (e.g., `6/59: The Channel of Mating (Reproduction)`).
+### Changed
+- **API Defaults**: Updated default query parameters for `/transits/daily` to `1968-02-21 11:00` (Kirikkale, Turkey) and `2025-01-10`.
+
 ## [1.8.0] - 2026-01-18
 
 ### Added

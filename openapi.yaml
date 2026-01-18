@@ -394,6 +394,39 @@ paths:
                         type: string
                       birth_date_utc:
                         type: string
+                      birth_date:
+                        type: string
+                        description: "Birth date in ISO format"
+                      create_date:
+                        type: string
+                        description: "Design/Creation date"
+                      place:
+                        type: string
+                        description: "Birth place"
+                      age:
+                        type: integer
+                      gender:
+                        type: string
+                      islive:
+                        type: boolean
+                      zodiac_sign:
+                        type: string
+                      energy_type:
+                        type: string
+                      strategy:
+                        type: string
+                      signature:
+                        type: string
+                      not_self:
+                        type: string
+                      aura:
+                        type: string
+                      inner_authority:
+                        type: string
+                      inc_cross:
+                        type: string
+                      profile:
+                        type: string
                       location:
                         type: string
                       type:
@@ -402,6 +435,27 @@ paths:
                         type: string
                       total_centers:
                         type: integer
+                      defined_centers:
+                        type: array
+                        items:
+                          type: string
+                      undefined_centers:
+                        type: array
+                        items:
+                          type: string
+                      definition:
+                        type: string
+                      channels:
+                        type: object
+                        properties:
+                          Channels:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                channel:
+                                  type: string
+                                  description: "Formatted channel string (e.g. '6/59: Name (Desc)')"
                   composite_changes:
                     type: object
                     properties:
