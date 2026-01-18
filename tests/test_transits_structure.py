@@ -2,9 +2,13 @@ import pytest
 from fastapi.testclient import TestClient
 from humandesign.api import app
 
+from humandesign.dependencies import verify_token
+
 client = TestClient(app)
 
-@pytest.mark.skip(reason="Not implemented yet - TDD Phase 1 Checkpoint")
+# Bypass auth
+app.dependency_overrides[verify_token] = lambda: True
+
 def test_transits_v180_structure():
     """
     Verify that the /transits/daily endpoint returns the enriched v1.8.0 structure.
