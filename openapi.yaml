@@ -382,7 +382,63 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      transit_date_local:
+                        type: string
+                      transit_date_utc:
+                        type: string
+                      birth_date_utc:
+                        type: string
+                      location:
+                        type: string
+                      type:
+                        type: string
+                      authority:
+                        type: string
+                      total_centers:
+                        type: integer
+                  composite_changes:
+                    type: object
+                    properties:
+                      new_channels:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            gates:
+                              type: string
+                            name:
+                              type: string
+                            description:
+                              type: string
+                      new_centers:
+                        type: array
+                        items:
+                          type: string
+                  planetary_transits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        planets:
+                          type: string
+                        gate:
+                          type: integer
+                        line:
+                          type: integer
+                        color:
+                          type: integer
+                        tone:
+                          type: integer
+                        base:
+                          type: integer
+                        lon:
+                          type: number
         '422':
           description: Validation Error
           content:

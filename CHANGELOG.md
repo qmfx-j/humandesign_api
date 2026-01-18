@@ -9,7 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.7.4] - 2026-01-18
+## [1.8.0] - 2026-01-18
+
+### Added
+- **Transits V2**: Enriched `GET /transits/daily` response with `meta`, `composite_changes`, and `planetary_transits` sections.
+    - **Meta**: Includes explicit Type, Authority, and Transit Date (Local/UTC).
+    - **Composite Changes**: Lists exactly which Channels and Centers are defined *by the transit connection*.
+    - **Planetary Transits**: Detailed breakdown of current planetary positions (Gate, Line, Color, Tone, Base).
+- **Metadata Enums**: Updated `hd_constants.py` with formalized `INNER_AUTHORITY_NAMES_MAP` (e.g., "Ego-Manifested Authority", "No Inner Authority").
 
 ### Changed
 - **Enhanced Authority Logic**: Refactored `get_auth` in `mechanics.py` to strictly follow the standard Authority Hierarchy:
