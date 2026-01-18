@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.4] - 2026-01-18
+
+### Changed
+- **Enhanced Authority Logic**: Refactored `get_auth` in `mechanics.py` to strictly follow the standard Authority Hierarchy:
+    1. **Emotional** (Solar Plexus)
+    2. **Sacral** (Sacral)
+    3. **Splenic** (Spleen)
+    4. **Ego** (Heart: Manifested or Projected)
+    5. **Self-Projected** (G-Center)
+    6. **Outer/Lunar** (No Inner Authority)
+- **Authority Mapping**: Updated `INNER_AUTHORITY_NAMES_MAP` in `hd_constants.py` to provide detailed authority names (e.g., "Solar Plexus, Emotional", "Heart & G Center, Ego Projected").
+
+
 ## [1.7.3] - 2026-01-17
 
 ### Added

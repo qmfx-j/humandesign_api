@@ -1,6 +1,6 @@
 # Human Design API Documentation
 
-**Version:** 1.7.3  
+**Version:** 1.7.4  
 **Base URL:** `http://localhost:8000` (or your deployment URL)
 
 ## Overview

@@ -77,20 +77,22 @@ CHAKRA_NAMES_MAP = {
     "GC": "G_Center",
     "SL": "Sacral",
     "SN": "Spleen",
-    "SP": "SolarPlexus",
+    "SP": "Solar Plexus",
     "RT": "Root",
     "HT": "Heart" # Assuming HT stands for Heart based on common chakra systems and GATES_CHAKRA_DICT
 }
 
+
 INNER_AUTHORITY_NAMES_MAP = {
-    "SP": "Solar Plexus",
-    "SL": "Sacral",
-    "SN": "Spleen",
-    "HT": "Heart",
-    "GC": "G Center",
-    "HT_GC": "Heart & G Center", # Assuming HT_GC is a combination
-    "outher": "Outer Authority", # Correcting "outher" to "Outer"
-    "unknown?": "Unknown" # Handling "unknown?"
+    "SP": "Solar Plexus, Emotional",   # 1. EMOTIONAL 
+    "SL": "Sacral, Sacral",         # 2. SACRAL 
+    "SN": "Spleen, Spleenic",         # 3. SPLENIC 
+    "HT": "Heart, Ego Manifested",          # 4. EGO MANIFESTED 
+    "GC": "G Center, Self Projected",       # 5. SELF-PROJECTED 
+    "HT_GC": "Heart & G Center, Ego Projected",    # EGO PROJECTED Assuming HT_GC is a combination
+    "lunar": "Lunar, Lunar",     # LUNAR AUTHORITY 
+    "outer": "Outer, No Inner Authority",     # NO INNER AUTHORITY (Mental Projector), Centers ARE defined (likely Head, Ajna, Throat), but no motors/authority centers.
+    "unknown?": "Unknown"           # Handling "unknown?"
 }
 
 CHANNEL_MEANING_DICT = {

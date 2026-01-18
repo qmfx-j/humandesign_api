@@ -4,5 +4,14 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: Refactor variables output, embedding data in constants and standardizing keys.
-*Link: [./conductor/tracks/refactor_variables_20260103/](./conductor/tracks/refactor_variables_20260103/)*
+## Active Tracks
+
+[No active tracks]
+
+---
+
+## Archived Tracks
+
+### [x] Track: Refactor variables output, embedding data in constants and standardizing keys.
+*Link: [./conductor/archive/refactor_variables_20260103/](./conductor/archive/refactor_variables_20260103/)*
+

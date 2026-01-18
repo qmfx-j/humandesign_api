@@ -49,7 +49,7 @@ def is_connected(active_channels_dict, *args):
             
     return True
 
-def get_auth(active_chakras,active_channels_dict): 
+def get_auth_old(active_chakras,active_channels_dict): 
     ''' 
         get authority from active chakras, 
         selection rules see #https://www.mondsteinsee.de/autoritaeten-des-human-design/
@@ -82,6 +82,67 @@ def get_auth(active_chakras,active_channels_dict):
     else: auth = "unknown?" #sanity check;-)
     
     return auth
+
+def get_auth(active_chakras, active_channels_dict): 
+    ''' 
+        Get authority based on the hierarchy of centers.
+        
+        Hierarchy:
+        1. Solar Plexus (SP) - Emotional
+        2. Sacral (SL) - Sacral
+        3. Spleen (SN) - Splenic
+        4. Heart (HT) - Ego Manifested (if connected to Throat) or Ego Projected (if connected to G)
+        5. G-Center (GC) - Self-Projected (if connected to Throat)
+        6. None - Mental (No Inner) or Lunar
+    '''
+    
+    # 1. EMOTIONAL (53%)
+    if "SP" in active_chakras:
+        return "SP"
+    
+    # 2. SACRAL (31%)
+    elif "SL" in active_chakras:
+        return "SL"
+    
+    # 3. SPLENIC (9%)
+    elif "SN" in active_chakras:
+        return "SN"
+    
+    # 4. EGO / HEART (1.5%)
+    # If Heart is defined, it's either Manifested (to Throat) or Projected (to G)
+    elif "HT" in active_chakras:
+        # Check connection to Throat (Ego-Manifested)
+        if is_connected(active_channels_dict, "HT", "TT"):
+            return "HT" 
+        # If not connected to Throat, it acts as Ego-Projected (usually connected to G)
+        # We return HT_GC to align with your map, or you could return just 'HT_Projected'
+        else:
+            return "HT_GC"
+
+    # 5. SELF-PROJECTED (2.5%)
+    # G-Center defined and connected to Throat (and no motors defined, which we ruled out above)
+    elif "GC" in active_chakras:
+        if is_connected(active_channels_dict, "GC", "TT"):
+            return "GC"
+        # Note: If GC is defined but NOT connected to Throat, and no motors are defined, 
+        # it is theoretically rare/impossible in standard calc without falling into other categories 
+        # or being a split definition. However, usually, Self-Projected requires the Throat link.
+
+    # 6. OUTER AUTHORITY & LUNAR (3%)
+    # If we are here, no Authority centers (SP, SL, SN, HT) are defined.
+    
+    # LUNAR AUTHORITY (Reflector)
+    # No centers are defined at all.
+    if len(active_chakras) == 0:
+        return "lunar"  # Map this to "Lunar Authority" in your JSON
+        
+    # NO INNER AUTHORITY (Mental Projector)
+    # Centers ARE defined (likely Head, Ajna, Throat), but no motors/authority centers.
+    else:
+        return "outer" # Map this to "No Inner Authority" in your JSON
+
+    return "unknown?"
+
 def get_typ(active_channels_dict, active_chakras): 
     ''' 
     get Energy-Type from active channels 

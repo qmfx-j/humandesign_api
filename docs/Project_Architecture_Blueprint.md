@@ -104,4 +104,4 @@ The Human Design API is built as a **Modular Monolith** using the **FastAPI** fr
 
 ---
 
-*Blueprint generated for Version 1.7.3 on 2026-01-17*
+*Blueprint generated for Version 1.7.4 on 2026-01-18*
