@@ -53,6 +53,7 @@ def get_solar_return(
 
 
 @router.get("/daily")
+@router.get("/daily")
 def get_daily_transit(
     year: int = Query(1968, description="Birth year"),
     month: int = Query(2, description="Birth month"),
@@ -61,24 +62,49 @@ def get_daily_transit(
     minute: int = Query(0, description="Birth minute (default 0)"),
     second: int = Query(0, description="Birth second (optional, default 0)"),
     place: str = Query("Kirikkale, Turkey", description="Birth place (city, country)"),
+    current_place: str = Query(None, description="Current location for transit calculation (optional, defaults to Birth Place)"),
     transit_year: int = Query(2025, description="Transit year to analyze"),
     transit_month: int = Query(1, description="Transit month to analyze"),
     transit_day: int = Query(10, description="Transit day to analyze"),
+    transit_hour: int = Query(12, description="Transit hour (local time at calculation place, default 12)"),
+    transit_minute: int = Query(0, description="Transit minute (default 0)"),
     authorized: bool = Depends(verify_token)
 ):
-    # Geocoding/timezone for the BIRTH location
-    latitude, longitude = get_latitude_longitude(place)
-    if latitude is None or longitude is None:
-        raise HTTPException(status_code=400, detail=f"Geocoding failed for place: '{place}'")
+    # 1. Process Birth Data (remains constant)
+    b_lat, b_lon = get_latitude_longitude(place)
+    if b_lat is None or b_lon is None:
+        raise HTTPException(status_code=400, detail=f"Geocoding failed for birth place: '{place}'")
+    
     tf = TimezoneFinder()
-    zone = tf.timezone_at(lat=latitude, lng=longitude) or 'Etc/UTC'
+    b_zone = tf.timezone_at(lat=b_lat, lng=b_lon) or 'Etc/UTC'
+    
     birth_time = (year, month, day, hour, minute, second)
-    hours = hd.get_utc_offset_from_tz(birth_time, zone)
-    birth_timestamp = tuple(list(birth_time) + [int(hours)])
+    b_offset_hours = hd.get_utc_offset_from_tz(birth_time, b_zone)
+    birth_timestamp = tuple(list(birth_time) + [int(b_offset_hours)])
 
-    # Transit timestamp (uses Birth location's local time/offset for the analysis moment)
-    transit_time = (transit_year, transit_month, transit_day, birth_time[3], birth_time[4], birth_time[5])
-    transit_timestamp = tuple(list(transit_time) + [int(hours)])
+    # 2. Determine Calculation Context (Location & Timezone)
+    calculation_place = current_place if current_place else place
+    
+    if current_place:
+        # Geocode current place
+        c_lat, c_lon = get_latitude_longitude(calculation_place)
+        if c_lat is None or c_lon is None:
+             raise HTTPException(status_code=400, detail=f"Geocoding failed for current place: '{calculation_place}'")
+        c_zone = tf.timezone_at(lat=c_lat, lng=c_lon) or 'Etc/UTC'
+    else:
+        # Re-use birth place info
+        c_lat, c_lon = b_lat, b_lon
+        c_zone = b_zone
+
+    # 3. Calculate Transit Timestamp
+    # Using the TRANSIT date/time components and the CURRENT/TARGET location's timezone
+    transit_local_tuple = (transit_year, transit_month, transit_day, transit_hour, transit_minute, 0)
+    
+    # Get offset for the transit date at the calculation location
+    # Note: Daylight savings might differ from birth date/location!
+    t_offset_hours = hd.get_utc_offset_from_tz(transit_local_tuple, c_zone)
+    
+    transit_timestamp = tuple(list(transit_local_tuple) + [int(t_offset_hours)])
 
     # Calculate the composite chart at the transit moment
     composite_data = process_transit_data(transit_timestamp, birth_timestamp, place)
@@ -199,6 +225,11 @@ def get_daily_transit(
                           # The user URL had &gender=male&islive=true.
                           # I should probably add them to parameters to be safe and accurate.
         "islive": True,   # Defaulting
+        
+        # Calculation Context (v1.9.0)
+        "transit_date_local": f"{transit_year}-{transit_month:02d}-{transit_day:02d} {transit_hour:02d}:{transit_minute:02d}", 
+        "transit_date_utc": composite_data.get("transit_date"),
+        "calculation_place": calculation_place,
         
         # Astrology
         "zodiac_sign": "Pisces", # Placeholder - logic requires date mapping, user requested specific update. 

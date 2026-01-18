@@ -38,6 +38,13 @@ Thumbs.db
 # Conductor
 conductor/
 # tests
-tests/
+tests
 tests/*
 
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+.tobedeleted/

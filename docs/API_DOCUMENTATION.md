@@ -104,10 +104,13 @@ Requires Birth Data (year...place) plus:
 | `transit_year` | int | Yes | Transit Year |
 | `transit_month` | int | Yes | Transit Month |
 | `transit_day` | int | Yes | Transit Day |
+| `current_place` | string | No | Current Location (defaults to Birth Place) |
+| `transit_hour` | int | No | Transit Hour (Default: 12) |
+| `transit_minute` | int | No | Transit Minute (Default: 0) |
 
 #### Example Request
 ```bash
-curl -X GET "http://localhost:8000/transits/daily?place=London,UK&year=1990&month=1&day=1&hour=12&minute=0&transit_year=2025&transit_month=1&transit_day=1" \
+curl -X GET "http://localhost:8000/transits/daily?place=London,UK&year=1990&month=1&day=1&hour=12&minute=0&transit_year=2025&transit_month=1&transit_day=1&current_place=New%20York,USA&transit_hour=9" \
   -H "Authorization: Bearer <your_token>"
 ```
 
@@ -212,4 +215,4 @@ curl -X POST "http://localhost:8000/analyze/penta" \
 | `500` | Internal Server Error |
 
 ---
-*Documentation generated for Human Design API v1.7.1*
+*Documentation generated for Human Design API v1.9.0*

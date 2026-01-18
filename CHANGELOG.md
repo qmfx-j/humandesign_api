@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-01-18
+### Added
+- **Location-Aware Transits**: Added `current_place` parameter to `/transits/daily` to calculate planetary positions based on the user's current location (timezone).
+- **Custom Transit Timing**: Added `transit_hour` and `transit_minute` parameters to specify the exact time of analysis (defaults to 12:00 Local Time).
+- **Metadata**: Response `meta` now includes `calculation_place`, `transit_date_local`, and `transit_date_utc`.
+
 ## [1.8.1] - 2026-01-18
 ### Added
 - **Enriched Metadata**: The `/transits/daily` endpoint now includes a comprehensive `meta` object with:

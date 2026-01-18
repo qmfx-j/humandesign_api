@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Human Design API
-  version: 1.7.4
+  version: 1.9.0
 paths:
   /calculate:
     get:
@@ -377,6 +377,32 @@ paths:
           description: Transit day to analyze
           title: Transit Day
         description: Transit day to analyze
+      - name: current_place
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Current location for transit calculation (optional, defaults to Birth Place)
+          title: Current Place
+        description: Current location for transit calculation (optional, defaults to Birth Place)
+      - name: transit_hour
+        in: query
+        required: false
+        schema:
+          type: integer
+          description: Transit hour (local time at calculation place, default 12)
+          default: 12
+          title: Transit Hour
+        description: Transit hour (local time at calculation place, default 12)
+      - name: transit_minute
+        in: query
+        required: false
+        schema:
+          type: integer
+          description: Transit minute (default 0)
+          default: 0
+          title: Transit Minute
+        description: Transit minute (default 0)
       responses:
         '200':
           description: Successful Response
@@ -426,6 +452,8 @@ paths:
                       inc_cross:
                         type: string
                       profile:
+                        type: string
+                      calculation_place:
                         type: string
                       location:
                         type: string

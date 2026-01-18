@@ -28,16 +28,65 @@ def process_transit_data(transit_date_timestamp, birth_timestamp, birth_place):
     auth = hd.get_auth(active_chakras, active_channels_dict) # The resulting 'transit' authority
     
     # 5. Get comparison data (New and Duplicated Channels/Chakras)
-    # We must mock the input for composite_chakras_channels.
-    persons_dict = {
-        "natal": birth_timestamp,
-        "transit": transit_date_timestamp # We treat transit as another "person" for comparison
-    }
-    # This comparison highlights what is new *to the combination*
-    new_channels, duplicated_channels, new_chakras, comp_chakras = hd.composite_chakras_channels(
-        persons_dict, "natal", "transit") 
+    # Refactored to avoid using hd.composite_chakras_channels which incorrectly 
+    # calculates the full chart (Personality + Design) for the transit timestamp.
+    # We only want to compare Composite (Natal + Transit Personality) vs Natal.
     
-    # Extract offset from birth_timestamp for the birth_date conversion
+    # Natal features from Step 1
+    # birth_features structure:
+    # 0:typ, 1:auth, 2:inc_cross, 3:inc_cross_typ, 4:profile, 5:definition, 
+    # 6:date_to_gate_dict, 7:active_chakras, 8:active_channels_dict
+    natal_active_chakras = set(birth_features[7])
+    natal_active_channels_dict = birth_features[8]
+
+    # Calculate New Centers
+    # active_chakras is the Composite set (from Step 4)
+    new_centers_list = list(set(active_chakras) - natal_active_chakras)
+    
+    # Calculate New Channels
+    # We compare the 'meaning' list (tuples of Name, Desc) or formatted strings.
+    # active_channels_dict is Composite.
+    
+    new_channels_data = {
+        "gate": [],
+        "ch_gate": [],
+        "meaning": []
+    }
+    
+    # Helper to create a unique key for channels (sorted tuple of gates)
+    def ch_key(g1, g2):
+        return tuple(sorted((g1, g2)))
+
+    # Get Natal Channel Keys
+    natal_keys = set()
+    if 'gate' in natal_active_channels_dict:
+        n_gates = natal_active_channels_dict['gate']
+        n_ch_gates = natal_active_channels_dict['ch_gate']
+        count_n = len(n_gates)
+        for i in range(count_n):
+            natal_keys.add(ch_key(n_gates[i], n_ch_gates[i]))
+
+    # Iterate Composite Channels and find new ones
+    if 'gate' in active_channels_dict:
+        c_gates = active_channels_dict['gate']
+        c_ch_gates = active_channels_dict['ch_gate']
+        c_meanings = active_channels_dict.get('meaning', [])
+        
+        count_c = len(c_gates)
+        for i in range(count_c):
+            g1 = c_gates[i]
+            g2 = c_ch_gates[i]
+            k = ch_key(g1, g2)
+            
+            if k not in natal_keys:
+                # It's new!
+                new_channels_data["gate"].append(g1)
+                new_channels_data["ch_gate"].append(g2)
+                # Handle meaning safely
+                m = c_meanings[i] if i < len(c_meanings) else ("Unknown", "")
+                new_channels_data["meaning"].append(m)
+
+    # offset for birth date
     birth_offset = birth_timestamp[6] 
     
     # 6. Structure output
@@ -47,9 +96,9 @@ def process_transit_data(transit_date_timestamp, birth_timestamp, birth_place):
         "birth_place": birth_place,
         "composite_type": typ,
         "composite_authority": auth,
-        "new_defined_channels": list(zip(new_channels["gate"], new_channels["ch_gate"])),
-        "new_channel_meanings": list(new_channels["meaning"]),
-        "new_defined_centers": list(new_chakras),
-        "total_defined_centers": len(comp_chakras),
+        "new_defined_channels": list(zip(new_channels_data["gate"], new_channels_data["ch_gate"])),
+        "new_channel_meanings": new_channels_data["meaning"],
+        "new_defined_centers": new_centers_list,
+        "total_defined_centers": len(active_chakras),
         "raw_transit_gates": day_gate_dict
     }
