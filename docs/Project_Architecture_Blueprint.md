@@ -1,107 +1,98 @@
-# Project Architecture Blueprint: Human Design API
+# Project Architecture Blueprint
 
-This document provides a comprehensive analysis of the architectural patterns, components, and implementation strategies used in the Human Design API. It serves as a definitive reference for maintaining architectural consistency and guiding future development.
+**Generated**: 2026-01-19
+**Version**: 1.9.1
+**Status**: Implementation-Ready
 
-## 1. Architectural Overview
+## 1. Architecture Detection and Analysis
 
-The Human Design API is built as a **Modular Monolith** using the **FastAPI** framework. It follows a layered approach that separates concerns between request handling, core business logic, and utility functions.
+### Technology Stack
+- **Language**: Python 3.12+
+- **Web Framework**: FastAPI (Asynchronous, Type-Safe)
+- **Data Processing**: NumPy, Pandas, Pyswisseph (Swiss Ephemeris)
+- **Geospatial**: Geopy, Timezonefinder
+- **Testing**: Pytest, Ruff
+- **Containerization**: Docker
+- **Package Management**: standard `pyproject.toml` (PEP 621)
 
-### Guiding Principles
-- **Separation of Concerns**: Use of `routers`, `services`, and `utils` to decouple HTTP logic from astrological calculations.
-- **Consistency**: Standardized JSON outputs (ISO dates, 3-decimal longitudes) and error handling.
-- **Extensibility**: Modular structure in `src/humandesign/features` allows adding new Human Design metrics without impacting existing logic.
-- **Portability**: Containerized with Docker, using standard Python packaging (`pyproject.toml`).
+### Architectural Pattern
+- **Modular Monolith**: The application is structured as a single deployable unit but internally organized into distinct modules (`routers`, `services`, `utils`, `features`) with clear separation of concerns.
+- **Layered Architecture**:
+  1.  **Interface Layer** (`routers`): Handles HTTP requests, validation (Pydantic), and response formatting.
+  2.  **Service Layer** (`services`, `features`): Encapsulates business logic, calculation engines, and external integrations.
+  3.  **Domain/Data Layer** (`schemas`, `hd_constants`): Defines data models and immutable domain constants.
+  4.  **Utility Layer** (`utils`): Shared cross-cutting concerns (logging, date manipulation, serialization).
 
----
+## 2. Architectural Overview
 
-## 2. Architecture Visualization
-
-### 2.1 Component Interaction
-1. **API Layer (Routers)**: Receives HTTP requests, validates input using Pydantic schemas.
-2. **Service Layer**: Handles complex multi-step processes like geocoding (Nominatim), timezone resolution (TimezoneFinder), and composite orchestration.
-3. **Core Engine (Features)**: Performs precise astrological calculations using `pyswisseph` (Swiss Ephemeris).
-4. **Utility Layer**: Provides specialized helpers for date formatting, Western astrology, and JSON serialization.
-
-### 2.2 Data Flow
-`Client Request` -> `FastAPI Router` -> `Pydantic Validation` -> `Service/Utility (Preprocessing)` -> `Core Engine (Calculation)` -> `Serialization Helper` -> `JSON Response`
-
----
+The Human Design API is designed as a **high-precision calculation engine** exposed via validatable HTTP endpoints. The guiding principles are:
+-   **Accuracy First**: Calculations (Swiss Ephemeris) must be precise to the second and arc-second.
+-   **Statelessness**: No persistent database provided; the API acts as a pure function `Input -> Calculation -> Output`.
+-   **Type Safety**: Strict Pydantic models for inputs and outputs ensure contract reliability.
+-   **Transparency**: Responses include metadata about calculation context (Locality, UTC offsets).
 
 ## 3. Core Architectural Components
 
-### 3.1 API Routers (`src/humandesign/routers/`)
-- **General**: Handles `/calculate` and `/bodygraph`.
-- **Composite**: Handles relationships (`/analyze/composite`, `/analyze/compmatrix`, `/analyze/penta`).
-- **Transits**: Handles `/transits/daily` and `/transits/solar_return`.
+### A. Routers (`src/humandesign/routers`)
+-   **Purpose**: Exposes API endpoints grouped by domain (`general`, `transits`, `composite`).
+-   **Responsibility**: Input parsing, dependency injection (`verify_token`), invoking services, and mapping results to JSON.
+-   **Interaction**: Calls `features` functions; depends on `schemas` for validation.
 
-### 3.2 Core Calculation Engine (`src/humandesign/features/`)
-- **`core.py`**: The `hd_features` class managing planet positions and gate mappings.
-- **`attributes.py`**: Calculation of Type, Strategy, Authority, and Profile.
-- **`mechanics.py`**: Logic for Splits/Definitions and Penta group dynamics.
+### B. Feature Engine (`src/humandesign/features`)
+-   **Purpose**: The "Brain" of the application. Contains Rave Cosmology and Human Design algorithms.
+-   **Internal Structure**:
+    -   `core`: Ephemeris calculations, planetary positioning.
+    -   `attributes`: Gates, Lines, Colors, Tones.
+    -   `mechanics`: Auth determination, Channel definition, Type logic.
+-   **Evolution**: Designed to be extensible for new calculation methods (e.g., Penta, Dream Rave) without breaking core logic.
 
-### 3.3 Services (`src/humandesign/services/`)
-- **`geolocation.py`**: Integration with Nominatim for latitude/longitude resolution.
-- **`chart_renderer.py`**: SVG/PNG rendering logic for the BodyGraph.
+### C. Utils (`src/humandesign/utils`)
+-   **Purpose**: Specialized implementation details isolated from business logic.
+-   **Components**:
+    -   `calculations.py`: Shared heavy-lifting (e.g., `process_transit_data`, `enrich_transit_metadata`).
+    -   `serialization.py`: Custom JSON encoders for NumPy types.
+    -   `astrology.py`: Western zodiac conversions.
 
-### 3.4 Utilities (`src/humandesign/utils/`)
-- **`astrology.py`**: Western zodiac calculations.
-- **`date_utils.py`**: ISO formatting and age calculation.
-- **`health_utils.py`**: Live dependency verification (Swiss Ephemeris).
-- **`version.py`**: Centralized version retrieval from `pyproject.toml`.
-- **`serialization.py`**: Custom JSON encoders for NumPy compatibility.
+## 4. Data Architecture
 
----
+-   **Domain Models**: Defined in `src/humandesign/schemas/input_models.py`. Pydantic classes enforce valid ranges (e.g., Month 1-12).
+-   **Constants**: `src/humandesign/hd_constants.py` acts as the single source of truth for static domain data (Center names, Authority mappings, Variable dictionaries).
+-   **Data Flow**:
+    `HTTP Request` -> `Pydantic Model` -> `Feature Engine (NumPy/Pandas)` -> `Dict/Native Types` -> `JSON Response`
 
-## 4. Cross-Cutting Concerns
+## 5. Cross-Cutting Concerns
 
-### 4.1 Monitoring & Health
-- **System Health**: A dedicated `/health` endpoint in `routers/general.py` provides real-time status of the API and its data dependencies (Swiss Ephemeris).
-- **Version Synchronization**: The system enforces a single-source-of-truth for versioning using `pyproject.toml`, retrieved via `utils/version.py`.
+-   **Authentication**: Bearer Token mechanism via `dependencies.verify_token`. Simple environment-based (`HD_API_TOKEN`) check.
+-   **Error Handling**: Centralized `HTTPException` usage in routers. Validation errors returned automatically by FastAPI/Pydantic (`422 Unprocessable Entity`).
+-   **Serialization**: Custom `NumpyEncoder` handles the impedance mismatch between calculation libraries (NumPy) and JSON output.
 
-### 4.2 Authentication
-- Implemented via `dependencies.py` using a Bearer token verification system.
-- Enforced at the router level using FastAPI's `Depends(verify_token)`.
+## 6. Service Communication Patterns
 
-### 4.3 Error Handling
-- Use of `fastapi.HTTPException` for consistent error responses (400 for bad input, 500 for calculation errors).
-- Geocoding and timezone resolution include fallback logic (e.g., defaulting to UTC).
+-   **Synchronous HTTP**: All processing is request-response based.
+-   **Stateless**: No caching layer or database connection pooling required internally.
+-   **Versioning**: Semantic Versioning (1.x.x) tracked in `pyproject.toml`.
 
-### 4.4 Validation
-- Input validation is handled strictly by Pydantic models in `schemas/input_models.py`.
-- Includes custom validators for year ranges (1800-2100) and day-of-month logic (leap years).
+## 7. Implementation Patterns
 
----
+### Validation Patern
+Use `Pydantic` with `pre=True` validators to offer "Forgiving Inputs" (coercing strings/leading zeros) while enforcing strict internal types.
 
-## 5. Technology-Specific Patterns (Python/FastAPI)
+### Calculation Pattern
+**Input Tuple**: Standardized `(year, month, day, hour, minute, second, utc_offset)` tuple used across all HD functions for consistency.
 
-- **Asynchronous Programming**: FastAPI routes are designed for high-concurrency request handling.
-- **Dependency Enrichment**: Routing logic leverages common dependencies for clean code and shared state.
+### Metadata Enrichment Pattern (New in 1.9.x)
+Use shared helpers (`enrich_transit_metadata`) to inject standardized context into different endpoints (Daily, Solar Return), ensuring consistent API surface area.
 
----
+## 8. Development Blueprint
 
-## 6. Testing Architecture
+### Adding a New Calculation Endpoint
+1.  **Define Schema**: Create Input/Output models in `schemas/`.
+2.  **Implement Logic**: Add calculation function to `features/` (or `utils/` if composite).
+3.  **Create Router**: Add endpoint to `routers/` using the schema.
+4.  **Register Router**: Include in `api.py`.
+5.  **Test**: Add integration test in `tests/`.
 
-- **Core Tests**: Snapshot-based testing for astrological accuracy in `tests/test_core_calculations.py`.
-- **Integration Tests**: Verification of API endpoints and serialization in `tests/test_calculate_updates.py`.
-- **Data Validation Tests**: Boundary condition testing for Pydantic schemas in `tests/test_schemas.py`.
-
----
-
-## 7. Blueprint for New Development
-
-### Adding a New Endpoint
-1. Define the input/output schemas in `src/humandesign/schemas/`.
-2. Implement the business logic in `services/` or a new module in `features/`.
-3. Create a new route in the appropriate router (or a new router file).
-4. Register the router in `src/humandesign/api.py`.
-5. Update `openapi.yaml` and `docs/API_DOCUMENTATION.md`.
-
-### Adding a New HD Metric
-1. Locate the relevant sub-module in `src/humandesign/features/`.
-2. Update the `hd_features` class or helper functions.
-3. Update `serialization.py` to include the new data in the JSON output.
-4. Add a regression test in `tests/`.
-
----
-
-*Blueprint generated for Version 1.9.0 on 2026-01-18*
+### Extending Metadata
+1.  Update `enrich_transit_metadata` in `utils/calculations.py`.
+2.  Update unit tests in `tests/test_utils_calculations.py`.
+3.  Verify impact on `/transits/daily` and `/transits/solar_return`.

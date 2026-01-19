@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2026-01-19
+### Changed
+- **Solar Return Parity**: Standardized `/transits/solar_return` output to match `/transits/daily`. Use the return structure `meta`, `composite_changes`, `planetary_transits`.
+- **Metadata**: Enhanced Solar Return metadata to include full chart details (Profile, Cross, Channels, etc.) using `enrich_transit_metadata`.
+- **Documentation**: Updated `sr_year_offset` to explicitly state `0` = Birth Year, `X` = Current/Future Year.
+
 ## [1.9.0] - 2026-01-18
 ### Added
 - **Location-Aware Transits**: Added `current_place` parameter to `/transits/daily` to calculate planetary positions based on the user's current location (timezone).

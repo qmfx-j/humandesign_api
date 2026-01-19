@@ -4,20 +4,20 @@ from .. import features as hd
 from .. import hd_constants
 from ..services.geolocation import get_latitude_longitude
 from ..dependencies import verify_token
-from ..utils.calculations import process_transit_data
+from ..utils.calculations import process_transit_data, enrich_transit_metadata
 
 router = APIRouter(prefix="/transits", tags=["transits"])
 
 @router.get("/solar_return")
 def get_solar_return(
-    year: int = Query(..., description="Birth year"),
-    month: int = Query(..., description="Birth month"),
-    day: int = Query(..., description="Birth day"),
-    hour: int = Query(..., description="Birth hour"),
+    year: int = Query(1968, description="Birth year"),
+    month: int = Query(2, description="Birth month"),
+    day: int = Query(21, description="Birth day"),
+    hour: int = Query(11, description="Birth hour"),
     minute: int = Query(0, description="Birth minute (default 0)"),
     second: int = Query(0, description="Birth second (optional, default 0)"),
-    place: str = Query(..., description="Birth place (city, country)"),
-    sr_year_offset: int = Query(0, description="Calculate Solar Return for X years after birth. 0 is the current SR."),
+    place: str = Query("Kirikkale, Turkey", description="Birth place (city, country)"),
+    sr_year_offset: int = Query(0, description="Years to add to birth year. 0 = Birth Year, 1 = 1st Birthday (1969), 58 = 2026 Birthday."),
     authorized: bool = Depends(verify_token)
 ):
     # Geocoding and timezone logic
@@ -45,14 +45,20 @@ def get_solar_return(
     # Calculate the full composite chart at the SR moment
     sr_composite_data = process_transit_data(sr_timestamp, birth_timestamp, place)
     
-    return {
-        "solar_return_year": sr_year_offset,
-        "solar_return_utc_date": f"{int(sr_year)}-{int(sr_month):02d}-{int(sr_day):02d}T{int(sr_hour):02d}:{int(sr_minute):02d}:{int(sr_second):02d}Z",
-        "sr_chart_analysis": sr_composite_data
-    }
+    # Format Response using shared helper
+    return enrich_transit_metadata(
+        birth_timestamp=birth_timestamp,
+        transit_year=int(sr_year),
+        transit_month=int(sr_month),
+        transit_day=int(sr_day),
+        transit_hour=int(sr_hour),
+        transit_minute=int(sr_minute),
+        place=place,
+        calculation_place=place, # Solar Return uses birth place for calculation context in this logic
+        composite_data=sr_composite_data
+    )
 
 
-@router.get("/daily")
 @router.get("/daily")
 def get_daily_transit(
     year: int = Query(1968, description="Birth year"),
