@@ -638,6 +638,102 @@ def get_penta(persons_dict,report=False):
     percentage = round(sum_penta_gates/12*100,2)
     return percentage, penta_dict
 
+def get_penta_v2(participants_data):
+    """
+    Enhanced Penta Analysis (v2) returns a semantic JSON structure.
+    Args:
+        participants_data (dict): Dictionary of Person ID -> List of Active Gates (integers).
+                                  Example: {"User1": [1, 8, 31], "User2": [7, ...]}
+    Returns:
+        dict: Semantic JSON response with Channels, Gaps, and Zones.
+    """
+    # 1. Initialize Gate Ownership
+    gate_ownership = {g: [] for g in hd_constants.PENTA_GATES}
+    
+    # 2. Map Participants to Gates
+    for person_id, gates in participants_data.items():
+        # Ensure gates are iterable integers
+        if not gates: 
+            continue
+        for g in gates:
+            if g in gate_ownership:
+                gate_ownership[g].append(person_id)
+
+    # 3. Build Analysis by Zone
+    penta_analysis = {}
+    total_active_channels = 0
+    missing_elements = [] # format: "Gate X"
+    
+    # We iterate through the defined Channels to respect the Zone hierarchy
+    # But Channels are in PENTA_CHANNELS (flat dict), linked to Zones.
+    # It's cleaner to restructure:
+    # Initialize Zones in response
+    penta_analysis["upper_penta"] = {
+        "label": hd_constants.PENTA_ZONES["Upper"]["label"],
+        "channels": {}
+    }
+    penta_analysis["lower_penta"] = {
+        "label": hd_constants.PENTA_ZONES["Lower"]["label"],
+        "channels": {}
+    }
+
+    # Iterate all defined Penta Channels
+    for ch_key, ch_info in hd_constants.PENTA_CHANNELS.items():
+        zone = ch_info["zone"] # "Upper" or "Lower"
+        zone_key = "upper_penta" if zone == "Upper" else "lower_penta"
+        
+        g1, g2 = ch_info["gates"]
+        owners_g1 = gate_ownership.get(g1, [])
+        owners_g2 = gate_ownership.get(g2, [])
+        
+        # Penta Logic: Channel is Active if Group has BOTH gates.
+        # It DOES NOT require a single person to have the full channel.
+        # It DOES NOT require different people. (One person having both activates it for the group too).
+        is_active = (len(owners_g1) > 0) and (len(owners_g2) > 0)
+        
+        status_text = "Active"
+        if is_active:
+            total_active_channels += 1
+        else:
+            missing = []
+            if not owners_g1: missing.append(f"Gate {g1}")
+            if not owners_g2: missing.append(f"Gate {g2}")
+            status_text = f"Gap - Missing {', '.join(missing)}"
+            missing_elements.extend(missing)
+            
+        # Build Channel Object
+        channel_obj = {
+            "name": ch_info["name"],
+            "active": is_active,
+            "composition": {
+                str(g1): owners_g1,
+                str(g2): owners_g2
+            },
+            "status": status_text
+        }
+        
+        penta_analysis[zone_key]["channels"][ch_key] = channel_obj
+
+    # 4. Final Meta and Summary
+    group_size = len(participants_data)
+    unique_missing = sorted(list(set(missing_elements)), key=lambda x: int(x.split()[1]))
+    
+    response = {
+        "meta": {
+            "group_size": group_size,
+            "penta_formed": 3 <= group_size <= 5
+        },
+        "penta_analysis": penta_analysis,
+        "summary": {
+            "total_active_channels": total_active_channels,
+            "missing_crucial_elements": unique_missing
+        }
+    }
+    
+    return response
+
+
+
 
 
 class hd_composite:

@@ -470,3 +470,19 @@ VARIABLES_METADATA = {
         }
     }
 }
+
+PENTA_GATES = [1, 2, 5, 7, 8, 13, 14, 15, 29, 31, 33, 46]
+
+PENTA_CHANNELS = {
+    "8-1":  {"name": "Implementation", "zone": "Upper", "gates": (8, 1)},
+    "31-7": {"name": "Planning",       "zone": "Upper", "gates": (31, 7)},
+    "33-13": {"name": "Outreach",      "zone": "Upper", "gates": (33, 13)},
+    "15-5": {"name": "Flow",           "zone": "Lower", "gates": (15, 5)},
+    "2-14": {"name": "Resources",      "zone": "Lower", "gates": (2, 14)},
+    "46-29": {"name": "Work",          "zone": "Lower", "gates": (46, 29)},
+}
+
+PENTA_ZONES = {
+    "Upper": {"label": "Direction & Consciousness"},
+    "Lower": {"label": "Generation & Form"}
+}
