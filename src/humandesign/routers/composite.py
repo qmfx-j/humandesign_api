@@ -140,83 +140,10 @@ def analyze_composite(
     }
 
 
+
+
 @router.post("/analyze/penta")
 def analyze_penta(
-    inputs: Dict[str, PersonInput] = Body(
-        ...,
-        examples=[{
-             "person1": {
-                "place": "Berlin, Germany",
-                "year": 1985,
-                "month": 6,
-                "day": 15,
-                "hour": 14,
-                "minute": 30
-            },
-             "person2": {
-                "place": "New York, USA",
-                "year": 1980,
-                "month": 2,
-                "day": 10,
-                "hour": 9,
-                "minute": 15
-            },
-             "person3": {
-                "place": "London, UK",
-                "year": 1990,
-                "month": 12,
-                "day": 5,
-                "hour": 18,
-                "minute": 45
-            }
-        }],
-        description="Dictionary of 3-5 people for Penta analysis."
-    ),
-    authorized: bool = Depends(verify_token)
-):
-    """
-    Calculate Penta (Group Analysis) for a group of people.
-    Returns the match percentage and details of active Penta gates.
-    """
-    # Validation
-    if len(inputs) < 2:
-         raise HTTPException(status_code=400, detail="Penta analysis requires at least 2 people.")
-
-    persons_dict = {}
-    
-    # Process inputs
-    for name, p_input in inputs.items():
-        try:
-            latitude, longitude = get_latitude_longitude(p_input.place)
-            if latitude is None or longitude is None:
-                 raise HTTPException(status_code=400, detail=f"Geocoding failed for {name} place: '{p_input.place}'")
-            
-            tf = TimezoneFinder()
-            zone = tf.timezone_at(lat=latitude, lng=longitude) or 'Etc/UTC'
-            
-            birth_time = (p_input.year, p_input.month, p_input.day, p_input.hour, p_input.minute, 0)
-            hours = hd.get_utc_offset_from_tz(birth_time, zone)
-            
-            # Construct (Y,M,D,H,M,S,Offset)
-            timestamp = (p_input.year, p_input.month, p_input.day, p_input.hour, p_input.minute, 0, hours)
-            persons_dict[name] = timestamp
-            
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error processing input for {name}: {str(e)}")
-
-    # Call get_penta
-    try:
-        percentage, details_dict = hd.get_penta(persons_dict, report=False)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error in Penta calculation: {str(e)}")
-
-    return {
-        "penta_match_percentage": percentage,
-        "active_penta_gates": details_dict
-    }
-
-@router.post("/analyze/penta/v2")
-def analyze_penta_v2(
     request: PentaRequest = Body(
         ...,
         examples=[{
