@@ -326,6 +326,51 @@ The project is organized as follows:
  }
  ```
  
+
+ ### 7. `POST /analyze/penta/v2`
+
+ Calculates the **Group Dynamics (Penta)** using the Sovereign Standard (Consultant-Level Interpretation).
+
+ #### Request Body
+ ```json
+ {
+   "group_type": "family", // or "business"
+   "participants": {
+     "Person A": { "place": "City, Country", "year": 1985, "month": 6, "day": 15, "hour": 14, "minute": 30 },
+     "Person B": { ... }
+   }
+ }
+ ```
+
+ #### Example Request
+ ```bash
+ curl -X POST "http://localhost:9021/analyze/penta/v2" \
+      -H "Authorization: Bearer your_secret_token_here" \
+      -H "Content-Type: application/json" \
+      -d @penta_v2_payload.json
+ ```
+
+ #### Response
+ ```json
+ {
+   "functional_roles": { "Planning": ["Person A"] },
+   "penta_anatomy": {
+     "upper_penta": {
+       "channels": {
+         "31-7": {
+           "business_label": "Administration & Planning",
+           "contributors": {
+             "Person A": {
+               "gate_31": { "lines": [6], "line_labels": ["Administrator (Objective)"] }
+             }
+           }
+         }
+       }
+     }
+   }
+ }
+ ```
+
  ---
  
  ## API Documentation

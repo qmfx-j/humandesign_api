@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-01-19
+### Added
+- **Penta Analysis V2**: New endpoint `POST /analyze/penta/v2`.
+    - **Sovereign Standard**: Consultant-grade interpretation with zero hallucinations.
+    - **Contextual Semantics**: API dynamically adjusts output language for "Business" vs "Family" group types (e.g., "Toxic Environment" vs "Chaotic Home").
+    - **Functional Role Assignment**: Explicitly maps contributors to functional roles (e.g., `"Planning": ["User A"]`).
+    - **Operational Style (Line Semantics)**: Interprets the *style* of contribution based on line data (e.g., "Line 1: Authoritarian", "Line 6: Administrator").
+    - **Gap Analysis**: Detailed breakdown of missing gates/skills with severity (Critical/Moderate) and impact descriptions.
+    - **Advanced Metrics**: Includes Stability Score, Vision vs Action Score, and Backbone Integrity checks.
+
+### Changed
+- **HD Constants**: Added extensive semantic maps (`FAMILY_SKILLS_MAP`, `FAMILY_SHADOW_MAP`, `PENTA_LINE_KEYWORD_MAP`) to support V2 logic.
+- **Core Features**: Refactored `get_penta_v2` in `core.py` to implement the new Diamond/Sovereign standards.
+
+
 ## [1.9.1] - 2026-01-19
 ### Changed
 - **Solar Return Parity**: Standardized `/transits/solar_return` output to match `/transits/daily`. Use the return structure `meta`, `composite_changes`, `planetary_transits`.

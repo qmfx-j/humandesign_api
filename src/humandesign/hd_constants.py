@@ -473,16 +473,102 @@ VARIABLES_METADATA = {
 
 PENTA_GATES = [1, 2, 5, 7, 8, 13, 14, 15, 29, 31, 33, 46]
 
-PENTA_CHANNELS = {
-    "8-1":  {"name": "Implementation", "zone": "Upper", "gates": (8, 1)},
-    "31-7": {"name": "Planning",       "zone": "Upper", "gates": (31, 7)},
-    "33-13": {"name": "Outreach",      "zone": "Upper", "gates": (33, 13)},
-    "15-5": {"name": "Flow",           "zone": "Lower", "gates": (15, 5)},
-    "2-14": {"name": "Resources",      "zone": "Lower", "gates": (2, 14)},
-    "46-29": {"name": "Work",          "zone": "Lower", "gates": (46, 29)},
+PENTA_DEFINITIONS = {
+    "upper_penta": {
+        "label": "Direction & Consciousness",
+        "channels": {
+            "8-1":   {"name": "Implementation", "gates": [8, 1],  "required": True, "tags": ["demonstration", "public_presence"], "gap_msg": "Invisible to the outside world."},
+            "31-7":  {"name": "Planning",       "gates": [31, 7], "required": False, "tags": ["leadership", "administration"], "gap_msg": "Anarchy or lack of direction."},
+            "33-13": {"name": "Outreach",       "gates": [33, 13],"required": False, "tags": ["memory", "accounting", "history"], "gap_msg": "Poor customer relations or lack of memory."}
+        }
+    },
+    "lower_penta": {
+        "label": "Generation & Form",
+        "channels": {
+            "15-5":  {"name": "Flow",           "gates": [15, 5], "required": False, "tags": ["rhythm", "magnetism", "culture"], "gap_msg": "Chaos, lack of rhythm, or cultural toxicities."},
+            "2-14":  {"name": "Resources",      "gates": [2, 14], "required": True, "tags": ["capital", "energy", "fuel"], "gap_msg": "Financial instability or lack of fuel."},
+            "46-29": {"name": "Work",           "gates": [46, 29],"required": False, "tags": ["commitment", "execution", "discovery"], "gap_msg": "Low commitment or failure to execute tasks."}
+        }
+    }
 }
 
 PENTA_ZONES = {
     "Upper": {"label": "Direction & Consciousness"},
     "Lower": {"label": "Generation & Form"}
 }
+
+# Business Maps
+BUSINESS_SKILLS_MAP = {
+    2: "Accounting",
+    14: "Capacity",
+    8: "Public Relations",
+    1: "Implementation",
+    15: "Culture",
+    5: "Rituals/Patterns",
+    31: "Administration",
+    7: "Planning",
+    33: "Oversight",
+    13: "Coordination",
+    46: "Discovery",
+    29: "Commitment"
+}
+
+BUSINESS_SHADOW_MAP = {
+    2: "Scarcity",
+    14: "Lack of Resources",
+    8: "Invisibility",
+    1: "Lack of Innovation",
+    15: "Toxic Environment",
+    5: "Chaos",
+    31: "Anarchy",
+    7: "Directionless",
+    33: "Amnesia",
+    13: "Information Silos",
+    46: "Disconnection",
+    29: "Unreliable"
+}
+
+# Sovereign Standard: Operational Styles (Lines)
+PENTA_LINE_KEYWORD_MAP = {
+    1: "Authoritarian (Foundational)",
+    2: "Democrat (Collaborative)",
+    3: "Anarchist (Adaptive)",
+    4: "Abdicator (Delegator)",
+    5: "General (Practical)",
+    6: "Administrator (Objective)"
+}
+
+# Family Maps (Diamond Standard)
+FAMILY_SKILLS_MAP = {
+    2: "Budgeting",
+    14: "Resources",
+    8: "Expression",
+    1: "Creativity",
+    15: "Love/Flow",
+    5: "Rhythm",
+    31: "Discipline",
+    7: "Future Direction",
+    33: "Tradition",
+    13: "Listening",
+    46: "Physical Activity",
+    29: "Reliability"
+}
+
+FAMILY_SHADOW_MAP = {
+    2: "Scarcity",
+    14: "Lack of Means",
+    8: "Unheard",
+    1: "Stagnation",
+    15: "Chaotic Home",
+    5: "Timelessness",
+    31: "Disorder",
+    7: "Drifting",
+    33: "Amnesia",
+    13: "Secrets",
+    46: "Sedentary",
+    29: "Flaky"
+}
+
+# Legacy Fallback
+BG5_SKILLS_MAP = BUSINESS_SKILLS_MAP
+BG5_SHADOW_MAP = BUSINESS_SHADOW_MAP

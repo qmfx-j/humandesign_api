@@ -200,6 +200,97 @@ curl -X POST "http://localhost:8000/analyze/penta" \
     "person2": { "place": "New York, USA", "year": 1992, "month": 5, "day": 20, "hour": 18, "minute": 30 },
     "person3": { "place": "Berlin, DE", "year": 1985, "month": 3, "day": 15, "hour": 9, "minute": 15 }
   }'
+    "person3": { "place": "Berlin, DE", "year": 1985, "month": 3, "day": 15, "hour": 9, "minute": 15 }
+  }'
+```
+
+### Group Penta Analysis (v2) - AI-Native
+Enhanced Penta Analysis returning a hierarchical, semantic JSON structure with Channels, Gaps, and Functional Zones. Optimized for LLM interpretation.
+
+**Endpoint:** `POST /analyze/penta/v2`
+
+#### Request Body
+Same as `/analyze/penta` (Dictionary of 3-5 person objects).
+
+#### Example Response
+```json
+  "meta": {
+    "group_size": 4,
+    "penta_formed": true,
+    "penta_type": "Family",
+    "vortex_intensity": "Stable",
+    "analysis_timestamp": "2026-01-19T00:00:00Z"
+  },
+  "analytical_metrics": {
+    "stability_score": 70,
+    "vision_score": 66,
+    "action_score": 33,
+    "bottlenecks": ["dogan"],
+    "backbone_integrity": {
+      "flow_15_5": "Missing",
+      "resources_2_14": "Strong",
+      "work_46_29": "Strong"
+    },
+    "dependency_map": {
+      "single_point_of_failure": ["dogan"], 
+      "shadow_areas": ["Flow"]
+    }
+  },
+  "penta_anatomy": {
+    "upper_penta": {
+      "label": "Direction & Vision",
+      "channels": {
+        "8-1": {
+          "name": "Implementation",
+          "status": "Active",
+          "type": "DOM",
+          "label": "Solo-Driven",
+          "contributors": {
+            "dogan": {
+              "gate_8": { "lines": [1], "polarities": ["Design"] },
+              "gate_1": { "lines": [1], "polarities": ["Design"] }
+            }
+          },
+          "bottleneck_risks": ["dogan"],
+          "gap_analysis": null
+        },
+        "31-7": {
+          "name": "Planning",
+          "status": "Inactive",
+          "type": "VOID",
+          "label": "Inactive",
+          "contributors": {}, 
+          "gap_analysis": {
+            "missing_gates": [7, 31],
+            "severity": "MODERATE",
+            "impact": "Anarchy or lack of direction."
+          }
+        }
+      }
+    },
+    "lower_penta": {
+      "label": "Action & Generation",
+      "channels": {
+        "2-14": {
+          "name": "Resources",
+          "status": "Active",
+          "type": "MIXED", 
+          "label": "Mixed (Solo + Electromagnetic)",
+          "contributors": {
+            "ece": { "gate_2": { "lines": [4, 5], "polarities": ["Design"] } },
+            "birce": { "gate_14": { "lines": [2], "polarities": ["Personality"] } }
+          },
+          "bottleneck_risks": [],
+          "gap_analysis": null
+        }
+      }
+    }
+  },
+  "hiring_logic": {
+    "urgent_needs": [7, 15],
+    "insight": "Group has 2/3 Backbone channels. Vision dominates."
+  }
+}
 ```
 
 ---

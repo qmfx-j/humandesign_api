@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, validator
-from typing import Union
+from typing import Union, Dict
 
 # Input Model
 class PersonInput(BaseModel):
@@ -11,6 +11,9 @@ class PersonInput(BaseModel):
     minute: Union[int, str] = Field(..., description="Birth minute (0-59)")
     gender: str = Field("male", description="Gender (e.g., male, female, other)")
     islive: bool = Field(True, description="Whether the person is still alive (True) or deceased (False)")
+    latitude: Union[float, None] = Field(None, description="Optional: Latitude for direct input (bypassing geocoding)")
+    longitude: Union[float, None] = Field(None, description="Optional: Longitude for direct input (bypassing geocoding)")
+
 
     @validator('year', 'month', 'day', 'hour', 'minute', pre=True)
     def parse_int(cls, v):
@@ -69,3 +72,14 @@ class PersonInput(BaseModel):
         if v > days_in_month.get(month, 31):
              raise ValueError(f"Invalid day {v} for month {month} in year {year}")
         return v
+
+class PentaRequest(BaseModel):
+    participants: Dict[str, PersonInput] = Field(..., description="Dictionary of participants (3-5 people)")
+    group_type: str = Field("family", description="Type of group analysis: 'family' (default) or 'business'")
+
+    @validator('group_type')
+    def validate_group_type(cls, v):
+        allowed = ['family', 'business']
+        if v.lower() not in allowed:
+            raise ValueError(f"group_type must be one of {allowed}")
+        return v.lower()

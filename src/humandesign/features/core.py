@@ -611,122 +611,250 @@ def get_penta(persons_dict,report=False):
         identity_dict = get_single_hd_features(persons_dict,person,'date_to_gate_dict')
         person_gate_list=np.array(identity_dict["gate"])
         person_penta_gates = np.intersect1d(person_gate_list,np.array(list(penta_dict.keys())))
-
-        for key in penta_dict.keys():
-            if key in person_penta_gates:
-                penta_dict[key]=[person] + penta_dict[key]
-
     result_dict = {elem:pd.Series(persons_dict.keys()).isin(penta_dict[elem]) 
                    for elem in penta_dict.keys()}
     penta_gates_bool = [(any(result_dict[key])) for key in result_dict.keys()]
     sum_penta_gates = sum(penta_gates_bool)
     
-    # Prepare details dict
-    # Convert dataframe-like boolean structure to simple dict
-    # We want to know for each penta gate, is it active? And maybe who activates it?
-    # The existing logic builds `penta_dict` where values are lists of persons.
-    # So `penta_dict` itself is the details dict.
-    
-    if report:
-        df = pd.DataFrame(result_dict) 
-        df.loc[df.shape[0]+1,:] = [any(df[col]) for col in df.columns]
-        df = df.replace({False:"o",True:"x"})
-        df["index"] = list(persons_dict.keys())+["all"]
-        df = df.set_index("index",drop=True)
-        print(df)
-        
     percentage = round(sum_penta_gates/12*100,2)
     return percentage, penta_dict
 
-def get_penta_v2(participants_data):
+def analyze_dynamics_gold(owners_g1, owners_g2):
     """
-    Enhanced Penta Analysis (v2) returns a semantic JSON structure.
+    Determines the social dynamic of a channel with Gold Standard Codes.
+    Returns: (Type Code, Label, Contributors Dict)
+    """
+    set_g1 = set(o['id'] for o in owners_g1)
+    set_g2 = set(o['id'] for o in owners_g2)
+    all_participants = set_g1.union(set_g2)
+    
+    if not set_g1 or not set_g2:
+        return "VOID", "Inactive", []
+    
+    # Check for Solo/Dominant (One person has BOTH gates)
+    solo_owners = set_g1.intersection(set_g2)
+    
+    if len(solo_owners) > 0:
+        if len(all_participants) == 1:
+             return "DOM", "Solo-Driven", list(solo_owners)
+        else:
+             return "MIXED", "Mixed (Solo + EM)", list(all_participants)
+             
+    # Competition Logic (Friction)
+    # If multiple people on same gate.
+    if len(set_g1) > 1 or len(set_g2) > 1:
+        return "COMP", "Electromagnetic with Friction", list(all_participants)
+
+    return "EM", "Electromagnetic", list(all_participants)
+
+def get_penta_v2(participants_data, group_type="family"):
+    """
+    Gold Standard Penta Analysis (v2)
     Args:
-        participants_data (dict): Dictionary of Person ID -> List of Active Gates (integers).
-                                  Example: {"User1": [1, 8, 31], "User2": [7, ...]}
-    Returns:
-        dict: Semantic JSON response with Channels, Gaps, and Zones.
+        participants_data: Dict[str, Dict] containing 'gate', 'line', 'label' lists.
+        group_type: 'family' or 'business'
     """
-    # 1. Initialize Gate Ownership
+    # 1. Initialize Detailed Ownership Map
     gate_ownership = {g: [] for g in hd_constants.PENTA_GATES}
     
-    # 2. Map Participants to Gates
-    for person_id, gates in participants_data.items():
-        # Ensure gates are iterable integers
-        if not gates: 
-            continue
-        for g in gates:
-            if g in gate_ownership:
-                gate_ownership[g].append(person_id)
-
-    # 3. Build Analysis by Zone
-    penta_analysis = {}
-    total_active_channels = 0
-    missing_elements = [] # format: "Gate X"
-    
-    # We iterate through the defined Channels to respect the Zone hierarchy
-    # But Channels are in PENTA_CHANNELS (flat dict), linked to Zones.
-    # It's cleaner to restructure:
-    # Initialize Zones in response
-    penta_analysis["upper_penta"] = {
-        "label": hd_constants.PENTA_ZONES["Upper"]["label"],
-        "channels": {}
-    }
-    penta_analysis["lower_penta"] = {
-        "label": hd_constants.PENTA_ZONES["Lower"]["label"],
-        "channels": {}
-    }
-
-    # Iterate all defined Penta Channels
-    for ch_key, ch_info in hd_constants.PENTA_CHANNELS.items():
-        zone = ch_info["zone"] # "Upper" or "Lower"
-        zone_key = "upper_penta" if zone == "Upper" else "lower_penta"
-        
-        g1, g2 = ch_info["gates"]
-        owners_g1 = gate_ownership.get(g1, [])
-        owners_g2 = gate_ownership.get(g2, [])
-        
-        # Penta Logic: Channel is Active if Group has BOTH gates.
-        # It DOES NOT require a single person to have the full channel.
-        # It DOES NOT require different people. (One person having both activates it for the group too).
-        is_active = (len(owners_g1) > 0) and (len(owners_g2) > 0)
-        
-        status_text = "Active"
-        if is_active:
-            total_active_channels += 1
-        else:
-            missing = []
-            if not owners_g1: missing.append(f"Gate {g1}")
-            if not owners_g2: missing.append(f"Gate {g2}")
-            status_text = f"Gap - Missing {', '.join(missing)}"
-            missing_elements.extend(missing)
-            
-        # Build Channel Object
-        channel_obj = {
-            "name": ch_info["name"],
-            "active": is_active,
-            "composition": {
-                str(g1): owners_g1,
-                str(g2): owners_g2
-            },
-            "status": status_text
-        }
-        
-        penta_analysis[zone_key]["channels"][ch_key] = channel_obj
-
-    # 4. Final Meta and Summary
+    # 2. Parse Inputs
     group_size = len(participants_data)
-    unique_missing = sorted(list(set(missing_elements)), key=lambda x: int(x.split()[1]))
     
+    for person_id, p_data in participants_data.items():
+        if isinstance(p_data, list):
+            for g in p_data:
+                if g in gate_ownership:
+                    gate_ownership[g].append({"id": person_id, "polarity": "Unknown", "line": 0})
+        elif isinstance(p_data, dict):
+            gates = p_data.get("gate", [])
+            lines = p_data.get("line", [])
+            labels = p_data.get("label", [])
+            for i, g in enumerate(gates):
+                if g in gate_ownership:
+                    lbl = labels[i] if i < len(labels) else "prs"
+                    pol = "Design" if lbl == "des" else "Personality"
+                    ln = lines[i] if i < len(lines) else 0
+                    gate_ownership[g].append({"id": person_id, "polarity": pol, "line": ln})
+
+    # 3. Build Analysis
+    penta_anatomy = {
+        "upper_penta": {"label": "Direction & Vision", "channels": {}},
+        "lower_penta": {"label": "Action & Generation", "channels": {}}
+    }
+    
+    metrics = {
+        "total_channels": 0,
+        "upper_active": 0,
+        "lower_active": 0,
+        "bottlenecks": set(),
+        "missing_gates_freq": {g: 0 for g in hd_constants.PENTA_GATES},
+        "backbone_status": {}
+    }
+
+    score_channels_backbone = ["15-5", "2-14", "46-29"]
+    active_backbone_count = 0
+    functional_roles = {}
+    
+    # Diamond Standard: Context Swtiching
+    if group_type.lower() == "family":
+        skills_map = hd_constants.FAMILY_SKILLS_MAP
+        shadow_map = hd_constants.FAMILY_SHADOW_MAP
+    else:
+        # Fallback to current maps if renamed or use legacy if available
+        # Check if BUSINESS_SKILLS_MAP exists, else use BG5
+        if hasattr(hd_constants, "BUSINESS_SKILLS_MAP"):
+            skills_map = hd_constants.BUSINESS_SKILLS_MAP
+            shadow_map = hd_constants.BUSINESS_SHADOW_MAP
+        else:
+            skills_map = hd_constants.BG5_SKILLS_MAP
+            shadow_map = hd_constants.BG5_SHADOW_MAP
+
+    for zone_key, zone_def in hd_constants.PENTA_DEFINITIONS.items():
+        # zone_key is "upper_penta" etc.
+
+        for ch_key, ch_def in zone_def['channels'].items():
+            g1, g2 = ch_def['gates']
+            ch_name = ch_def['name']
+
+            owners_g1 = gate_ownership.get(g1, [])
+            owners_g2 = gate_ownership.get(g2, [])
+
+            # --- Dynamics ---
+            type_code, type_label, drivers = analyze_dynamics_gold(owners_g1, owners_g2)
+            is_active = (type_code != "VOID")
+            
+            # Semantic Context
+            skill_g1 = skills_map.get(g1, "Unknown")
+            skill_g2 = skills_map.get(g2, "Unknown")
+            business_label = f"{skill_g1} & {skill_g2}"
+
+            channel_node = {
+                "name": ch_name,
+                "business_label": business_label, # Is actually Context Label now
+                "status": "Active" if is_active else "Inactive",
+                "type": type_code,
+                "label": type_label,
+                "contributors": {}, 
+                "gap_analysis": None
+            }
+            
+            if is_active:
+                metrics["total_channels"] += 1
+                if zone_key == "upper_penta": metrics["upper_active"] += 1
+                if zone_key == "lower_penta": metrics["lower_active"] += 1
+                
+                if ch_key in score_channels_backbone:
+                    active_backbone_count += 1
+                    metrics["backbone_status"][ch_key] = "Strong"
+                
+                # Build Contributors & Functional Roles
+                all_participant_ids = set()
+                role_players = set()
+
+                def add_contrib(gate, objs):
+                    for o in objs:
+                        pid = o['id']
+                        all_participant_ids.add(pid)
+                        role_players.add(pid)
+                        if pid not in channel_node["contributors"]:
+                             channel_node["contributors"][pid] = {}
+                        
+                        g_key = f"gate_{gate}"
+                        if g_key not in channel_node["contributors"][pid]:
+                            channel_node["contributors"][pid][g_key] = {"lines": [], "polarities": set()}
+                        
+                        channel_node["contributors"][pid][g_key]["lines"].append(o['line'])
+                        channel_node["contributors"][pid][g_key]["polarities"].add(o['polarity'])
+                        
+                        # Sovereign Standard: Line Semantics
+                        if "line_labels" not in channel_node["contributors"][pid][g_key]:
+                             channel_node["contributors"][pid][g_key]["line_labels"] = []
+                        line_desc = hd_constants.PENTA_LINE_KEYWORD_MAP.get(o['line'], "Unknown")
+                        channel_node["contributors"][pid][g_key]["line_labels"].append(line_desc)
+
+                add_contrib(g1, owners_g1)
+                add_contrib(g2, owners_g2)
+                
+                # Cleanup Polarities (set -> list)
+                for pid in channel_node["contributors"]:
+                    for gk in channel_node["contributors"][pid]:
+                         channel_node["contributors"][pid][gk]["polarities"] = list(channel_node["contributors"][pid][gk]["polarities"])
+                
+                # Add to Functional Roles
+                if ch_name not in functional_roles:
+                    functional_roles[ch_name] = []
+                functional_roles[ch_name].extend(list(role_players))
+                functional_roles[ch_name] = sorted(list(set(functional_roles[ch_name])))
+                
+                # Bottlenecks (DOM)
+                if type_code == "DOM":
+                    for d in drivers: metrics["bottlenecks"].add(d)
+
+            else:
+                # Inactive
+                if ch_key in score_channels_backbone: metrics["backbone_status"][ch_key] = "Missing"
+                
+                missing_gates = []
+                missing_skills = []
+                shadow_themes = []
+
+                if not owners_g1: 
+                    missing_gates.append(g1)
+                    missing_skills.append(skill_g1)
+                    shadow_themes.append(shadow_map.get(g1, "Dysfunction"))
+                    metrics["missing_gates_freq"][g1] += 1
+                
+                if not owners_g2: 
+                    missing_gates.append(g2)
+                    missing_skills.append(skill_g2)
+                    shadow_themes.append(shadow_map.get(g2, "Dysfunction"))
+                    metrics["missing_gates_freq"][g2] += 1
+                
+                channel_node["gap_analysis"] = {
+                    "missing_gates": missing_gates,
+                    "missing_skills": missing_skills,
+                    "shadow_themes": shadow_themes,
+                    "severity": "CRITICAL" if ch_key in score_channels_backbone else "MODERATE",
+                    "impact": ch_def.get("gap_msg", "Inactive")
+                }
+
+            penta_anatomy[zone_key]["channels"][ch_key] = channel_node
+    
+    # 4. Metrics & Scores
+    # Stability: 3/3 = 100, 2/3 = 70, 1/3 = 40, 0 = 10
+    score_map = {3: 100, 2: 70, 1: 40, 0: 10}
+    stability_score = score_map.get(active_backbone_count, 10)
+    
+    # Vision Score (Upper Active / 3 * 100)
+    vision_score = round((metrics["upper_active"] / 3) * 100)
+    # Action Score (Lower Active / 3 * 100)
+    # Note: Using 3 as total per zone denominator
+    action_score = round((metrics["lower_active"] / 3) * 100)
+
+    # Hiring Logic
+    needs = [g for g, c in metrics["missing_gates_freq"].items() if c > 0]
+    # Simple sort by ID for stability, or could use frequency
+    needs.sort(key=lambda x: metrics["missing_gates_freq"][x], reverse=True)
+
     response = {
         "meta": {
             "group_size": group_size,
-            "penta_formed": 3 <= group_size <= 5
+            "penta_formed": 3 <= group_size <= 5,
+            "penta_type": group_type.capitalize(),
+            "analysis_timestamp": "2026-01-19T00:00:00Z"
         },
-        "penta_analysis": penta_analysis,
-        "summary": {
-            "total_active_channels": total_active_channels,
-            "missing_crucial_elements": unique_missing
+        "analytical_metrics": {
+            "stability_score": stability_score,
+            "vision_score": vision_score,
+            "action_score": action_score,
+            "bottlenecks": list(metrics["bottlenecks"]),
+            "backbone_integrity": metrics["backbone_status"]
+        },
+        "functional_roles": functional_roles, # Diamond Feature
+        "penta_anatomy": penta_anatomy,
+        "hiring_logic": {
+            "urgent_needs": needs[:3],
+            "insight": f"Group has {active_backbone_count}/3 Backbone channels. {'Vision' if vision_score > action_score else 'Action'} dominates."
         }
     }
     
