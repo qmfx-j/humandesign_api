@@ -206,10 +206,27 @@ def get_penta_dynamics(person_gates_dict):
         else:
             shadows.append(hd_constants.BUSINESS_SHADOW_MAP.get(g, f"Gate {g}"))
             
+    # --- Total Centers (Energy Density) ---
+    # Construct a robust pseudo-gate-dict for the group
+    gates_list = list(combined_gates)
+    group_gate_dict = {
+        "gate": gates_list,
+        "label": ["grp"] * len(gates_list),
+        "planets": ["Group"] * len(gates_list)
+    }
+    try:
+        # Use a secondary dict to avoid in-place issues if necessary
+        _, active_chakras = hd.get_channels_and_active_chakras(group_gate_dict)
+        total_centers = len(active_chakras)
+    except Exception as e:
+        print(f"Error calculating group centers: {e}")
+        total_centers = 0
+
     return {
         "active_skills": skills,
         "penta_gaps": shadows,
-        "is_functional": len(shadows) == 0
+        "is_functional": len(shadows) == 0,
+        "total_defined_centers": total_centers
     }
 
 def get_lunar_phase_flag(jd):
@@ -411,182 +428,6 @@ def process_person_data(name, data):
         print(f"Error processing person {name}: {e}")
         return None, None
 
-def process_composite_matrix(persons_input):
-    """
-    Main handler for /compmatrix endpoint. (Traditional)
-    """
-    processed_persons_dict = {}
-    utc_birthdata_dict = {}
-    
-    for name, data in persons_input.items():
-        if hasattr(data, "dict"):
-            data = data.dict()
-        ts, details = process_person_data(name, data)
-        if ts:
-            processed_persons_dict[name] = ts
-            utc_birthdata_dict[name] = details
-            
-    combinations_list = []
-    if len(processed_persons_dict) >= 2:
-        result_df = hd.get_composite_combinations(processed_persons_dict)
-        combinations_list = result_df.to_dict(orient="records")
-        for combo in combinations_list:
-            if "new_chakra" in combo and isinstance(combo["new_chakra"], list):
-                combo["new_chakra"] = [hd_constants.CHAKRA_NAMES_MAP.get(c, c) for c in combo["new_chakra"]]
-
-    return sanitize_for_json({"persons": utc_birthdata_dict, "combinations": combinations_list})
-
-def process_maia_matrix(persons_input):
-    """
-    New handler for /maiamatrix endpoint. (Professional Maia Mechanics)
-    """
-    processed_persons_dict = {}
-    utc_birthdata_dict = {}
-    person_gates_map = {}
-    person_gate_planet_map = {} # gate -> List[planet_name]
-    person_nodes_map = {} # set of node gates
-    person_definition_map = {}
-    
-    for name, data in persons_input.items():
-        if hasattr(data, "dict"):
-            data = data.dict()
-        ts, details = process_person_data(name, data)
-        if ts:
-            processed_persons_dict[name] = ts
-            utc_birthdata_dict[name] = details
-            hd_rawData = hd.calc_single_hd_features(ts, report=False, channel_meaning=True)
-            hd_unpacked = hd.unpack_single_features(hd_rawData)
-            
-            gates = set(hd_unpacked["date_to_gate_dict"]["gate"])
-            person_gates_map[name] = gates
-            person_definition_map[name] = hd_unpacked["definition"]
-            
-            # Extract planet triggers
-            gate_to_planet = {}
-            nodes = set()
-            raw_gates = hd_unpacked["date_to_gate_dict"]["gate"]
-            raw_planets = hd_unpacked["date_to_gate_dict"]["planets"]
-            for i in range(len(raw_gates)):
-                g = int(raw_gates[i])
-                p_name = raw_planets[i]
-                if g not in gate_to_planet:
-                    gate_to_planet[g] = []
-                gate_to_planet[g].append(p_name)
-                if p_name in ["North_Node", "South_Node"]:
-                    nodes.add(g)
-            
-            person_gate_planet_map[name] = gate_to_planet
-            if 'full_activations' not in locals():
-                full_activations = {}
-            full_activations[name] = details.get("activations", {})
-            
-            person_nodes_map[name] = nodes
-            
-    group_size = len(processed_persons_dict)
-    penta_info = None
-    if 3 <= group_size <= 5:
-        penta_info = get_penta_dynamics(person_gates_map)
-        
-    combinations_list = []
-    if len(processed_persons_dict) >= 2:
-        result_df = hd.get_composite_combinations(processed_persons_dict)
-        combinations_list = result_df.to_dict(orient="records")
-        
-        for combo in combinations_list:
-            if "new_chakra" in combo and isinstance(combo["new_chakra"], list):
-                combo["new_chakra"] = [hd_constants.CHAKRA_NAMES_MAP.get(c, c) for c in combo["new_chakra"]]
-            
-            p1_name, p2_name = combo["id"], combo["other_person"]
-            p1_gates = person_gates_map.get(p1_name, set())
-            p2_gates = person_gates_map.get(p2_name, set())
-            combined_gates = p1_gates.union(p2_gates)
-            
-            # --- Professional Maia Enrichments ---
-            chakra_count = combo.get("chakra_count", 0)
-            connection_label = get_connection_classification(chakra_count)
-            combo["connection_code"] = connection_label
-            
-            new_channels = combo.get("new_channels", [])
-            ch_meanings = combo.get("new_ch_meaning", [])
-            
-            maia_details = []
-            circuitry_counts = {"Individual": 0, "Tribal": 0, "Collective": 0, "Integration": 0}
-            flavors = []
-            
-            # Map channel list to (gate, ch_gate) to match constants
-            for i, channel in enumerate(new_channels):
-                g1, g2 = channel
-                # Check circuitry
-                c_key = tuple(sorted((g1, g2)))
-                c_type_short = hd_constants.circuit_typ_dict.get(c_key, "Unknown")
-                c_group = hd_constants.circuit_group_typ_dict.get(c_type_short, "Unknown")
-                if c_group in circuitry_counts:
-                    circuitry_counts[c_group] += 1
-                
-                # Planetary Flavors
-                p1_triggers = person_gate_planet_map.get(p1_name, {}).get(g1, ["None"]) + \
-                             person_gate_planet_map.get(p1_name, {}).get(g2, ["None"])
-                p2_triggers = person_gate_planet_map.get(p2_name, {}).get(g1, ["None"]) + \
-                             person_gate_planet_map.get(p2_name, {}).get(g2, ["None"])
-                             
-                p1_flavor = [t for t in p1_triggers if t != "None"]
-                p2_flavor = [t for t in p2_triggers if t != "None"]
-                
-                flavors.append(f"{'/'.join(p1_flavor)}-{'/'.join(p2_flavor)}")
-
-                # Map activations for SubLineDetail
-                maia_activations = []
-                for p_name, act in full_activations.get(p1_name, {}).items():
-                    if act["gate"] in channel:
-                        maia_activations.append(act)
-                for p_name, act in full_activations.get(p2_name, {}).items():
-                    if act["gate"] in channel:
-                        maia_activations.append(act)
-
-                maia_details.append({
-                    "channel": channel,
-                    "meaning": ch_meanings[i] if i < len(ch_meanings) else "Unknown",
-                    "type": classify_maia_connection(p1_gates, p2_gates, channel),
-                    "circuitry": get_sub_circuit_detail(channel),
-                    "planetary_trigger": f"P1:{'/'.join(p1_flavor)} | P2:{'/'.join(p2_flavor)}",
-                    "activations": maia_activations
-                })
-            combo["maia_details"] = maia_details
-            
-            # --- Synergy Block (Ultra Professional 10x) ---
-            p1_details = utc_birthdata_dict.get(p1_name, {})
-            p2_details = utc_birthdata_dict.get(p2_name, {})
-            
-            is_bridged = (person_definition_map.get(p1_name, "1") != "1" or person_definition_map.get(p2_name, "1") != "1") and chakra_count >= 8
-            
-            # Love Gates logic (Gates 10, 15, 25, 46, 5, 14, 29 etc. - checking what's in constants)
-            # Standard Love Gates of G: 10, 15, 25, 46 + Others
-            love_gates_list = [10, 15, 25, 46, 5, 2, 29]
-            active_love_gates = [g for g in love_gates_list if g in combined_gates]
-            
-            dynamics = calculate_center_dynamics(
-                p1_details.get("defined_centers", []),
-                p2_details.get("defined_centers", [])
-            )
-            space_count = list(dynamics.values()).count("open_window")
-            
-            combo["synergy"] = {
-                "thematic_label": connection_label,
-                "bridge_active": is_bridged,
-                "center_dynamics": dynamics,
-                "aura_dynamic": get_aura_dynamic(p1_details.get("energy_type"), p2_details.get("energy_type")),
-                "love_gate_highlights": active_love_gates,
-                "space_count": space_count,
-                "circuitry_dominant": max(circuitry_counts, key=circuitry_counts.get) if any(circuitry_counts.values()) else "None",
-                "profile_resonance": get_profile_resonance(p1_details.get("profile"), p2_details.get("profile")),
-                "node_resonance": get_node_resonance(person_nodes_map.get(p1_name, set()), person_nodes_map.get(p2_name, set())),
-                "dominant_sub_circuit": get_sub_circuit_detail(new_channels[0]) if new_channels else "Multiple/Neutral",
-                "planetary_flavor_summary": flavors[0] if flavors else "Neutral",
-                "group_dynamic_summary": f"Penta Structure ({group_size})" if penta_info else f"Pairwise ({group_size})",
-                "penta_details": penta_info
-            }
-
-    return sanitize_for_json({"persons": utc_birthdata_dict, "combinations": combinations_list})
 
 def process_hybrid_analysis(participants, group_type="family", verbosity="all"):
     """

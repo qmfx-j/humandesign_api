@@ -53,6 +53,7 @@ class PentaDetail(BaseModel):
     active_skills: List[str]
     penta_gaps: List[str]
     is_functional: bool
+    total_defined_centers: Optional[int] = Field(None, description="Total number of centers defined by the collective group")
 
 class SubLineDetail(BaseModel):
     gate: int
@@ -98,6 +99,8 @@ class CombinationItem(BaseModel):
     chakra_count: int
     new_channels: List[List[int]]
     new_ch_meaning: List[str]
+    duplicated_channels: List[List[int]] = Field([], description="Channels already possessed by both participants individually (stability)")
+    duplicated_ch_meaning: List[str] = Field([], description="Meanings of the duplicated channels")
     connection_code: str = Field(..., description="The 9-0 etc. connection classification code")
     maia_details: List[MaiaDetail] = Field(..., description="Deep Maian connection types for each channel")
     synergy: SynergyDetail = Field(..., description="Professional synergy and conditioning dynamics")
@@ -124,9 +127,7 @@ class CompositePersonDetail(BaseModel):
     activations: Optional[Dict[str, SubLineDetail]] = Field(None, description="Full planetary activation matrix")
     channels: List[Dict]
 
-class CompMatrixResponse(BaseModel):
-    persons: Dict[str, CompositePersonDetail]
-    combinations: List[CombinationItem]
+
 
 class HybridAnalysisResponse(BaseModel):
     meta: Optional[MetaDetail] = Field(None, description="Engine provenance and calculation metadata")

@@ -7,8 +7,8 @@ from .. import hd_constants
 from ..services.geolocation import get_latitude_longitude, tf
 from ..dependencies import verify_token
 from ..schemas.input_models import PersonInput, PentaRequest, HybridAnalysisRequest
-from ..schemas.response_models import CompMatrixResponse, HybridAnalysisResponse
-from ..services.composite import process_composite_matrix, process_maia_matrix, process_hybrid_analysis
+from ..schemas.response_models import HybridAnalysisResponse
+from ..services.composite import process_hybrid_analysis
 
 router = APIRouter()
 
@@ -71,86 +71,7 @@ def get_hybrid_analysis(
 
     return JSONResponse(content=result)
 
-@router.post("/analyze/compmatrix")
-def get_composite_matrix(
-    inputs: Dict[str, PersonInput] = Body(
-        ...,
-        examples=[{
-            "person1": {
-                "place": "Berlin, Germany",
-                "year": 1985,
-                "month": 6,
-                "day": 15,
-                "hour": 14,
-                "minute": 30
-            },
-            "person2": {
-                "place": "Munich, Germany",
-                "year": 1988,
-                "month": 11,
-                "day": 22,
-                "hour": 9,
-                "minute": 15
-            }
-        }],
-        description="Dictionary of people where keys are names (e.g., person1, person2) and values are birth details."
-    ),
-    authorized: bool = Depends(verify_token)
-):
-    """
-    Calculate Human Design features for multiple people and analyze their composite combinations (matrix).
-    """
-    # 1. Validate Input (Implicitly done by Pydantic)
-    if not inputs:
-        raise HTTPException(status_code=400, detail="Input dictionary cannot be empty.")
 
-    # 2. Process via Handler
-    try:
-        result = process_composite_matrix(inputs)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing composite matrix: {str(e)}")
-
-    return JSONResponse(content=result)
-
-@router.post("/analyze/maiamatrix", response_model=CompMatrixResponse)
-def get_maia_matrix(
-    inputs: Dict[str, PersonInput] = Body(
-        ...,
-        examples=[{
-            "person1": {
-                "place": "Berlin, Germany",
-                "year": 1985,
-                "month": 6,
-                "day": 15,
-                "hour": 14,
-                "minute": 30
-            },
-            "person2": {
-                "place": "Munich, Germany",
-                "year": 1988,
-                "month": 11,
-                "day": 22,
-                "hour": 9,
-                "minute": 15
-            }
-        }],
-        description="Dictionary of people for Professional Maia Relational Matrix analysis."
-    ),
-    authorized: bool = Depends(verify_token)
-):
-    """
-    Calculate Professional Maia Relational Matrix (deep pairwise analysis).
-    Includes connection types (Electromagnetic, etc.) and 9-0 classification codes.
-    """
-    if not inputs:
-        raise HTTPException(status_code=400, detail="Input dictionary cannot be empty.")
-
-    try:
-        result = process_maia_matrix(inputs)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing maia matrix: {str(e)}")
-
-    return JSONResponse(content=result)
 
 @router.post("/analyze/composite")
 def analyze_composite(

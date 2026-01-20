@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-01-20
+### Removed (Breaking Changes)
+- **Deactivated `/analyze/compmatrix`**: Removed the redundant traditional matrix analysis endpoint. Use `POST /analyze/maia-penta` with `verbosity="partial"` for a modern alternative.
+- **Deactivated `/analyze/maiamatrix`**: Removed the legacy Professional Maia Relational Matrix endpoint. It has been fully superseded by the high-performance Hybrid engine (`POST /analyze/maia-penta`).
+- **Clean Service Layer**: Pruned 200+ lines of redundant code in `src/humandesign/services/composite.py` that served the deactivated endpoints.
+- **Schema Cleanup**: Removed `CompMatrixResponse` from response models.
+
+### Changed
+- **Consolidation**: Officially promoted **Maia-Penta Hybrid Analysis** as the sole flagship engine for professional-grade group and relational dynamics.
+- **Version Bump**: Major version jump to v3.0.0 to reflect the removal of legacy endpoints (Breaking Changes).
+
+
 ## [2.2.0] - 2026-01-20
 ### Added
 - **Maia-Penta Hybrid Analysis (10x)**: New endpoint `POST /analyze/maia-penta` for professional-grade group and relational analysis.

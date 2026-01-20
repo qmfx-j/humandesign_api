@@ -16,14 +16,13 @@ Whether you are building a mobile app, a professional dashboard, or a personal r
 
 *   **High-Fidelity Maia Matrix v2**: Advanced relational analysis with planetary triggers, nodal resonance, and sub-circuit details.
 *   **Penta Analysis 2.0**: Enhanced Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, providing high-level semantic analysis (Sovereign Standard).
-*   **Maia-Penta Hybrid Analysis**: New `POST /analyze/maia-penta` endpoint for professional composite + group dynamics in a single request.
+*   **Maia-Penta Hybrid Analysis**: Flagship `POST /analyze/maia-penta` endpoint for professional composite + group dynamics in a single request.
 *   **Grounded 10x Interpretation**: Consultant-grade psychology-grounded reports with zero-jargon semantic output.
 *   **Global Performance (Sub-20ms)**: Integrated `TimezoneFinder` Singleton and geocoding bypass to achieve 100x lower latency.
 *   **Coordinate Support**: All endpoints now support optional `latitude` and `longitude` parameters to bypass geocoding services for maximum precision and speed.
 *   **FastAPI Backend**: High-performance, async-ready Python web framework.
 *   **Precise Calculations**: Uses `pyswisseph` for Swiss Ephemeris accuracy and `geopy`/`timezonefinder` for reliable location and timezone resolution.
 *   **BodyGraph Visualization**: Generates high-fidelity, transparent BodyGraph charts in PNG, SVG, and JPG formats via the `/bodygraph` endpoint.
-*   **Composite Analysis**: Calculates relationship mechanics (connection channels, centers) between multiple people via the `/compmatrix` endpoint.
 *   **Detailed Pairwise Analysis**: Calculates granular relationship details (new/duplicated channels) for exactly two people via the `/analyze/composite` endpoint.
 *   **Transit Analysis**: Provides Daily Weather and Solar Return (Yearly Theme) calculations for advanced forecasting.
 *   **Comprehensive Chart Data**: Returns Energy Type, Strategy, Authority, Profile, Incarnation Cross, Variables, Age, Western Zodiac Sign, and full Planetary/Gate positions.

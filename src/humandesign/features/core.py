@@ -571,23 +571,38 @@ def get_composite_combinations(persons_dict):
     Return:
         pd.Dataframe of composite features of every pair combination in persons dict
     '''
-    result_dict = {"id":[],"other_person":[],"new_chakra":[],"chakra_count":[],"new_channels":[],"new_ch_meaning":[]}
+    result_dict = {
+        "id": [],
+        "other_person": [],
+        "new_chakra": [],
+        "chakra_count": [],
+        "new_channels": [],
+        "new_ch_meaning": [],
+        "duplicated_channels": [],
+        "duplicated_ch_meaning": []
+    }
     
-    for idx,combination in enumerate(list(itertools.combinations(persons_dict.keys(),2))):
+    for idx, combination in enumerate(list(itertools.combinations(persons_dict.keys(), 2))):
 
         identity = combination[0]
         other_person = combination[1]
-        new_channels,dupl_channels,new_chakras,comp_chakras = composite_chakras_channels(
-            persons_dict,identity,other_person)
+        new_channels, dupl_channels, new_chakras, comp_chakras = composite_chakras_channels(
+            persons_dict, identity, other_person)
 
-        result_dict["id"] = result_dict["id"] + [identity]
-        result_dict["other_person"] = result_dict["other_person"] + [other_person]
-        result_dict["new_chakra"] = result_dict["new_chakra"] + [list(new_chakras)]
-        result_dict["chakra_count"] = result_dict["chakra_count"] + [int(len(comp_chakras))]
-        result_dict["new_channels"] = result_dict["new_channels"] + [list(zip(new_channels["gate"],new_channels["ch_gate"]))]
-        result_dict["new_ch_meaning"] = result_dict["new_ch_meaning"] + [list(new_channels["meaning"])]
+        result_dict["id"].append(identity)
+        result_dict["other_person"].append(other_person)
+        result_dict["new_chakra"].append(list(new_chakras))
+        result_dict["chakra_count"].append(int(len(comp_chakras)))
+        
+        # New Enahnced Channels
+        result_dict["new_channels"].append(list(zip(new_channels["gate"], new_channels["ch_gate"])))
+        result_dict["new_ch_meaning"].append(list(new_channels["meaning"]))
+        
+        # Duplicated (Shared) Stability Channels
+        result_dict["duplicated_channels"].append(list(zip(dupl_channels["gate"], dupl_channels["ch_gate"])))
+        result_dict["duplicated_ch_meaning"].append(list(dupl_channels["meaning"]))
 
-    result_df = pd.DataFrame(dict([(k,pd.Series(v)) for k,v in result_dict.items()]))
+    result_df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in result_dict.items()]))
     
     return result_df
 
