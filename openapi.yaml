@@ -1047,7 +1047,45 @@ components:
         penta_details:
           $ref: '#/components/schemas/PentaDetail'
           nullable: true
+        variable_synergy:
+          $ref: '#/components/schemas/VariableSynergyDetail'
+          nullable: true
+        environmental_resonance_detail:
+          $ref: '#/components/schemas/EnvironmentalResonanceDetail'
+          nullable: true
       title: SynergyDetail
+    VariableSynergyDetail:
+      type: object
+      properties:
+        alignment:
+          type: string
+          description: "High-level alignment type (e.g., 'Symmetrical Force', 'Polarized')"
+        operational_insight:
+          type: string
+          description: "Business/Tactical insight based on arrow combination"
+        lifestyle_insight:
+          type: string
+          description: "Relational/Daily life insight based on arrow combination"
+        shorthand_synergy:
+          type: string
+          description: "Shorthand code for the synergy (e.g., 'Strategic-Heavy')"
+    EnvironmentalResonanceDetail:
+      type: object
+      properties:
+        resonance_type:
+          type: string
+          description: "e.g. 'Shared Frequency', 'Harmonic Pull', 'Individual Path'"
+        gates:
+          type: array
+          items:
+            type: integer
+          description: "The gates triggering the resonance"
+        operational_insight:
+          type: string
+          description: "Business context for the nodal environment"
+        lifestyle_insight:
+          type: string
+          description: "Relational context for the nodal environment"
 
     CombinationItem:
       type: object

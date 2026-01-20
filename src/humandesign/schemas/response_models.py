@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 
 class VariableDetail(BaseModel):
     value: str
@@ -13,6 +13,18 @@ class Variables(BaseModel):
     top_left: VariableDetail
     bottom_left: VariableDetail
     short_code: str = Field(..., description="Standard shorthand for all four variables (e.g., 'PRL DRR')")
+
+class VariableSynergyDetail(BaseModel):
+    alignment: str = Field(..., description="High-level alignment type (e.g., 'Symmetrical Force', 'Polarized')")
+    operational_insight: str = Field(..., description="Business/Tactical insight based on arrow combination")
+    lifestyle_insight: str = Field(..., description="Relational/Daily life insight based on arrow combination")
+    shorthand_synergy: str = Field(..., description="Shorthand code for the synergy (e.g., 'Strategic-Heavy')")
+
+class EnvironmentalResonanceDetail(BaseModel):
+    resonance_type: str = Field(..., description="e.g. 'Shared Frequency', 'Harmonic Pull', 'Individual Path'")
+    gates: List[int] = Field(..., description="The gates triggering the resonance")
+    operational_insight: str = Field(..., description="Business context for the nodal environment")
+    lifestyle_insight: str = Field(..., description="Relational context for the nodal environment")
 
 class GeneralOutput(BaseModel):
     birth_date: str
@@ -91,6 +103,8 @@ class SynergyDetail(BaseModel):
     planetary_flavor_summary: str = Field(..., description="The dominant planetary quality of the attraction (e.g., Venus-Mars)")
     group_dynamic_summary: str = Field(..., description="Classification of the group structure (Dyad, Penta, Wa)")
     penta_details: Optional[PentaDetail] = Field(None, description="Detailed Penta dynamics for groups of 3-5")
+    variable_synergy: Optional[VariableSynergyDetail] = Field(None, description="Detailed analysis of Variable (Arrow) compatibility")
+    environmental_resonance_detail: Optional[EnvironmentalResonanceDetail] = Field(None, description="Detailed nodal environment resonance analysis")
 
 class CombinationItem(BaseModel):
     id: str
