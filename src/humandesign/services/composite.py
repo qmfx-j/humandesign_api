@@ -5,6 +5,7 @@ from datetime import datetime
 from .geolocation import get_latitude_longitude, tf
 import swisseph as swe
 import pytz
+from ..schemas.response_models import EnvironmentalResonanceDetail, VariableSynergyDetail
 
 def sanitize_for_json(data):
     """
@@ -158,18 +159,120 @@ def get_profile_resonance(p1_profile_str, p2_profile_str):
         pass
     return "Neutral Partnership"
 
+def calculate_variable_synergy(v1, v2):
+    """
+    Analyzes synergy between Variables (Arrows).
+    Returns VariableSynergyDetail.
+    """
+    if not v1 or not v2:
+        return VariableSynergyDetail(
+            alignment="Individual Flow",
+            operational_insight="No combined synergy recorded. Focus on individual strategic arrows.",
+            lifestyle_insight="Individual cognitive styles. Follow personal digestion and environment variables.",
+            shorthand_synergy="Neutral"
+        )
+
+    # Extract values safely
+    p1_tr = v1.get("top_right", {}).get("value")
+    p2_tr = v2.get("top_right", {}).get("value")
+    
+    # Simple logic for Motivation (Top Right)
+    alignment = "Individual Flow"
+    op_insight = "Shared operational vision."
+    life_insight = "Shared cognitive rhythm."
+    shorthand = "Mixed"
+
+    if p1_tr and p2_tr:
+        if p1_tr == p2_tr:
+            direction = "Strategic" if p1_tr == "left" else "Receptive"
+            alignment = f"Symmetrical Force ({direction})"
+            if direction == "Strategic":
+                op_insight = "Double-Strategic Execution. High focus on 'How to get there'. Fast implementation, potential for tactical clashing."
+                life_insight = "High-Activity lifestyle. Both need to feel like they are 'doing' and 'achieving'."
+            else:
+                op_insight = "Deep Receptive Flow. Focus on 'What is happening'. Great for creative brainstorming and intuitive sensing."
+                life_insight = "Slow-burn lifestyle. Both need space and 'being' rather than constant achievement."
+            shorthand = f"{direction}-Heavy"
+        else:
+            alignment = "Polarized Harmony"
+            op_insight = "The Architect and the Artist. One provides the strategic plan, the other provides the depth and visionary color."
+            life_insight = "Dynamic Cognitive Balance. One leads the agenda while the other holds the presence and sensory space."
+            shorthand = "Dynamic-Balanced"
+
+    return VariableSynergyDetail(
+        alignment=alignment,
+        operational_insight=op_insight,
+        lifestyle_insight=life_insight,
+        shorthand_synergy=shorthand
+    )
+
 def get_node_resonance(p1_nodes, p2_nodes):
     """
-    Calculates Nodal Environmental resonance.
-    p1_nodes, p2_nodes = set of gates for North/South nodes.
+    Calculates Nodal Environmental resonance for legacy string-based output.
     """
-    try:
-        common = p1_nodes.intersection(p2_nodes)
-        if common:
-            return f"Shared Environment ({len(common)} Node Resonance)"
-    except Exception:
-        pass
-    return "Individual Environmental Paths"
+    detail = get_detailed_node_resonance(p1_nodes, p2_nodes)
+    if detail.resonance_type == "Individual Path":
+        return "Individual Environmental Paths"
+    return f"{detail.resonance_type} ({len(detail.gates)} Resonance)"
+
+def get_detailed_node_resonance(p1_nodes, p2_nodes):
+    """
+    Enhanced Nodal Resonance calculation.
+    Detects same-gate (Shared Frequency) and connecting-gate (Harmonic Pull).
+    """
+    res_type = "Individual Path"
+    gates = []
+    op_insight = "Individual environmental paths. Focus on internal guidance for workspace and career growth."
+    life_insight = "Personal lifestyle paths. No direct environmental overlap; healthy independence in social circles."
+    
+    # Ensure they are sets
+    p1_nodes = set(p1_nodes)
+    p2_nodes = set(p2_nodes)
+
+    # 1. Shared Frequency (Intersection)
+    common = p1_nodes.intersection(p2_nodes)
+    if common:
+        res_type = "Shared Frequency"
+        gates = sorted(list(common))
+        op_insight = f"Shared Industry/Niche alignment. You are triggered by the same environmental themes (Gates {gates})."
+        life_insight = f"Shared social frequency. You naturally gravitate towards the same people and places."
+        return EnvironmentalResonanceDetail(
+            resonance_type=res_type,
+            gates=gates,
+            operational_insight=op_insight,
+            lifestyle_insight=life_insight
+        )
+
+    # 2. Harmonic Pull (Forms Channel)
+    p1_list = list(p1_nodes)
+    p2_list = list(p2_nodes)
+    
+    channels = hd_constants.CHANNEL_MEANING_DICT.keys()
+    for g1 in p1_list:
+        for g2 in p2_list:
+            chan = None
+            if (g1, g2) in channels: chan = (g1, g2)
+            elif (g2, g1) in channels: chan = (g2, g1)
+            
+            if chan:
+                res_type = "Harmonic Pull"
+                gates = sorted([g1, g2])
+                chan_name = hd_constants.CHANNEL_MEANING_DICT[chan][0]
+                op_insight = f"Harmonic Market Fit via the Channel of {chan_name}. You bridge each other's environmental gaps, creating a complete business ecosystem."
+                life_insight = f"Destined Environmental Connection. Together, you navigate life with a shared sense of {chan_name}, attracting specific opportunities."
+                return EnvironmentalResonanceDetail(
+                    resonance_type=res_type,
+                    gates=gates,
+                    operational_insight=op_insight,
+                    lifestyle_insight=life_insight
+                )
+
+    return EnvironmentalResonanceDetail(
+        resonance_type=res_type,
+        gates=gates,
+        operational_insight=op_insight,
+        lifestyle_insight=life_insight
+    )
 
 def get_sub_circuit_detail(channel):
     """
@@ -609,7 +712,10 @@ def process_hybrid_analysis(participants, group_type="family", verbosity="all"):
                 "dominant_sub_circuit": get_sub_circuit_detail(new_channels[0]) if new_channels else "Multiple/Neutral",
                 "planetary_flavor_summary": flavors[0] if flavors else "Neutral",
                 "group_dynamic_summary": f"Penta Structure ({len(processed_persons_dict)})" if penta_dynamics else f"Pairwise ({len(processed_persons_dict)})",
-                "penta_details": penta_dynamics # Include penta context in pair if relevant, though redundant
+                "penta_details": penta_dynamics, # Include penta context in pair if relevant, though redundant
+                # v3.1.0 Relational Intelligence
+                "variable_synergy": calculate_variable_synergy(p1_details.get("variables"), p2_details.get("variables")).model_dump(),
+                "environmental_resonance_detail": get_detailed_node_resonance(person_nodes_map.get(p1_name, set()), person_nodes_map.get(p2_name, set())).model_dump()
             }
             
             dyad_matrix.append(combo)

@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [Unreleased]
+## [3.1.0] - 2026-01-20
+### Added
+- **Relational Intelligence Refinements**: Expanded `/analyze/maia-penta` with high-fidelity synergy insights.
+- **Environmental Resonance Detail**: New logic to detect "Shared Frequency" and "Harmonic Pull" in Nodal environments, including dual-aspect insights (Business vs. Lifestyle).
+- **Variable Synergy Model**: Comprehensive analysis of "Strategic vs. Receptive" arrow combinations, providing tactical collaboration and relationship lifestyle advice.
+- **Schema Expansion**: Added `environmental_resonance_detail` and `variable_synergy` objects to the `SynergyDetail` response model.
 
 ## [3.0.0] - 2026-01-20
 ### Removed (Breaking Changes)
