@@ -9,7 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2026-01-19
+## [2.1.0] - 2026-01-20
+### Added
+- **High-Fidelity Maia Matrix v2**: Enhanced the relational engine with deep technical insights.
+    - **Planetary Triggers**: Detects which planet is "unlocking" a specific channel or gate in the relationship.
+    - **Nodal Environmental Resonance**: Maps North/South Node positions to environmental harmony or friction.
+    - **Deep Sub-Circuit Detail**: Identifies dominant sub-circuits (e.g., Sensing, Logic, Ego) in the synergy.
+    - **Planetary Flavor Summary**: Semantic summary of the composite's "astrological flavor."
+    - **Group Dynamic Detection**: Automatically detects if a group qualifies as a **Penta** (3-5 people) or **Wa** (10+ people) and adds dedicated summary blocks.
+- **Grounded 10x Interpretation Engine**: Major upgrade to the Professional Maia Relational prompt.
+    - **Technical Authority**: 10x improvement in psychological grounding and mechanical accuracy.
+    - **Semantic Cleanse**: Zero-jargon output for better cross-industry accessibility (Business/Family).
+    - **Conditional Logic**: Intelligent handling of specific user questions and context notes.
+- **Penta Integration**: Integrated Penta dynamics directly into the Maia Matrix synergy blocks.
+
+### Fixed
+- **Test Stability**: Implemented a geocoding bypass for IANA Timezone names (e.g., "Europe/London") to prevent network rate-limiting/timeouts during `pytest` execution.
+- **Reliability**: Updated all geocoding-dependent endpoints (`/calculate`, `/analyze/*`, `/transits/*`) to favor provided timezone names, ensuring 100% deterministic test results.
+
+### Changed
+- **Response Models**: Added `planetary_trigger`, `node_resonance`, `dominant_sub_circuit`, and `penta_details` to `CompMatrixResponse` schemas.
 ### Added
 - **Penta Analysis 2.0**: Upgraded `POST /analyze/penta` to use the new Sovereign Standard engine.
     - **Breaking Change**: Legacy 1.x Penta endpoint logic has been removed. The endpoint now returns the V2 hierarchical structure.

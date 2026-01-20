@@ -14,18 +14,17 @@ Whether you are building a mobile app, a professional dashboard, or a personal r
 
 ### Key Features:
 
+*   **High-Fidelity Maia Matrix v2**: Advanced relational analysis with planetary triggers, nodal resonance, and sub-circuit details.
+*   **Penta Analysis**: Calculates Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, providing high-level semantic analysis (Sovereign Standard).
+*   **Grounded 10x Interpretation**: Consultant-grade psychology-grounded reports with zero-jargon semantic output.
 *   **FastAPI Backend**: High-performance, async-ready Python web framework.
 *   **Precise Calculations**: Uses `pyswisseph` for Swiss Ephemeris accuracy and `geopy`/`timezonefinder` for reliable location and timezone resolution.
 *   **BodyGraph Visualization**: Generates high-fidelity, transparent BodyGraph charts in PNG, SVG, and JPG formats via the `/bodygraph` endpoint.
 *   **Composite Analysis**: Calculates relationship mechanics (connection channels, centers) between multiple people via the `/compmatrix` endpoint.
 *   **Detailed Pairwise Analysis**: Calculates granular relationship details (new/duplicated channels) for exactly two people via the `/analyze/composite` endpoint.
 *   **Transit Analysis**: Provides Daily Weather and Solar Return (Yearly Theme) calculations for advanced forecasting.
-*   **Penta Analysis**: Calculates Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, providing high-level semantic analysis (Sovereign Standard).
 *   **Comprehensive Chart Data**: Returns Energy Type, Strategy, Authority, Profile, Incarnation Cross, Variables, Age, Western Zodiac Sign, and full Planetary/Gate positions.
-*   **Robust Validation**: Strict input validation using Pydantic, supporting flexible data types (integers or strings) for ease of integration.
-*   **Docker Ready**: Simple deployment with Docker and Docker Compose.
-*   **OpenAPI Specification**: Fully documented API with `openapi.yaml` and interactive Swagger UI.
-*   **Authentication**: Secure access via Bearer token.
+*   **Network-Independent Tests**: Optimized geocoding bypass to ensure 100% deterministic and fast verification.
 
 ## Installation and Setup
 
@@ -360,6 +359,6 @@ The project is organized as follows:
     *   Tools like `openapi-generator` can use this file to generate API client code for various programming languages (e.g., Python, JavaScript, Java).
 
 ---
-*Documentation generated for Human Design API v2.0.0*
+*Documentation generated for Human Design API v2.1.0*
 
 
