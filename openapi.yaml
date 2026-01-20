@@ -571,42 +571,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
       - HTTPBearer: []
-  /analyze/compmatrix:
+  /analyze/maia-penta:
     post:
-      summary: Analyze Composite Matrix
-      description: "Calculate Human Design features for multiple people and analyze their composite combinations (matrix).\n\nInput:\n{\n    \"person1\": { \"place\": \"City, Country\", \"year\": 1990, \"month\": 1, \"day\": 1, \"hour\": 12, \"minute\": 0 },\n    \"person2\": { ... }\n}"
-      operationId: analyze_compmatrix_post
+      summary: Analyze Maia-Penta Hybrid
+      description: "Unified flagship endpoint for Family/Group Harmony. Combines pairwise Matrix dynamics AND holistic Penta group analysis.\n\nInput:\n{\n    \"group_type\": \"family\",\n    \"verbosity\": \"all\",\n    \"participants\": { \"p1\": { ... }, \"p2\": { ... } }\n}"
+      operationId: analyze_maia_penta_post
       requestBody:
         content:
           application/json:
             schema:
-              additionalProperties:
-                $ref: '#/components/schemas/PersonInput'
-              type: object
-              title: Inputs
-              description: Dictionary of people where keys are names (e.g., person1, person2) and values are birth details.
-            example:
-              person1:
-                place: Berlin, Germany
-                year: 1985
-                month: 6
-                day: 15
-                hour: 14
-                minute: 30
-              person2:
-                place: Munich, Germany
-                year: 1988
-                month: 11
-                day: 22
-                hour: 9
-                minute: 15
+              $ref: '#/components/schemas/HybridAnalysisRequest'
         required: true
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/HybridAnalysisResponse'
         '422':
           description: Validation Error
           content:
@@ -619,39 +601,13 @@ paths:
   /analyze/penta:
     post:
       summary: Analyze Penta (Sovereign Standard)
-      description: "Enhanced Penta Analysis returning a hierarchical, semantic JSON structure with Channels, Gaps, and Functional Zones (Upper/Lower).\n\nInput:\n{\n    \"person1\": { ... },\n    \"person2\": { ... },\n    \"person3\": { ... }\n}"
-      operationId: analyze_penta_analyze_penta_post
+      description: "Enhanced Penta Analysis (v2) returning a hierarchical, semantic JSON structure with Channels, Gaps, and Functional Zones (Upper/Lower).\n\nInput:\n{\n    \"group_type\": \"family\",\n    \"participants\": { \"p1\": { ... }, \"p2\": { ... }, \"p3\": { ... } }\n}"
+      operationId: analyze_penta_post
       requestBody:
         content:
           application/json:
             schema:
-              additionalProperties:
-                $ref: '#/components/schemas/PersonInput'
-              type: object
-              title: Inputs
-              description: Dictionary of 3-5 people for Penta analysis.
-            example:
-              person1:
-                place: Berlin, Germany
-                year: 1985
-                month: 6
-                day: 15
-                hour: 14
-                minute: 30
-              person2:
-                place: New York, USA
-                year: 1980
-                month: 2
-                day: 10
-                hour: 9
-                minute: 15
-              person3:
-                place: London, UK
-                year: 1990
-                month: 12
-                day: 5
-                hour: 18
-                minute: 45
+              $ref: '#/components/schemas/PentaRequest'
         required: true
       responses:
         '200':
@@ -724,6 +680,16 @@ components:
           default: true
           title: Islive
           description: Whether the person is alive (true) or deceased (false)
+        latitude:
+          type: number
+          nullable: true
+          title: Latitude
+          description: "Optional: Latitude for birth place (bypassing geocoding)"
+        longitude:
+          type: number
+          nullable: true
+          title: Longitude
+          description: "Optional: Longitude for birth place (bypassing geocoding)"
       type: object
       required:
       - place
@@ -920,6 +886,294 @@ components:
       - name
       - gates
       title: ChannelInfo
+    PentaRequest:
+      type: object
+      properties:
+        participants:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PersonInput'
+          description: "Dictionary of participants (3-5 people)"
+        group_type:
+          type: string
+          default: family
+          description: "Type of group analysis: 'family' (default) or 'business'"
+      required:
+        - participants
+      title: PentaRequest
+
+    HybridAnalysisRequest:
+      type: object
+      properties:
+        participants:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PersonInput'
+          description: "Dictionary of participants (2+ people)"
+        group_type:
+          type: string
+          default: family
+          description: "Type of group analysis: 'family' (default) or 'business'"
+        verbosity:
+          type: string
+          default: all
+          description: "Detail level: 'all' (default) or 'partial'"
+      required:
+        - participants
+      title: HybridAnalysisRequest
+
+    PentaDetail:
+      type: object
+      properties:
+        active_skills:
+          type: array
+          items:
+            type: string
+        penta_gaps:
+          type: array
+          items:
+            type: string
+        is_functional:
+          type: boolean
+        total_defined_centers:
+          type: integer
+          nullable: true
+          description: "Total number of centers defined by the collective group"
+      title: PentaDetail
+
+    SubLineDetail:
+      type: object
+      properties:
+        gate:
+          type: integer
+        line:
+          type: integer
+        color:
+          type: integer
+        tone:
+          type: integer
+        base:
+          type: integer
+        planet:
+          type: string
+        position:
+          type: string
+          description: "High-precision planetary position (e.g., '12.450')"
+      title: SubLineDetail
+
+    MetaDetail:
+      type: object
+      properties:
+        engine:
+          type: string
+        ephemeris:
+          type: string
+        timestamp:
+          type: string
+      title: MetaDetail
+
+    MaiaDetail:
+      type: object
+      properties:
+        channel:
+          type: array
+          items:
+            type: integer
+          description: "The two gates forming the channel"
+        meaning:
+          type: array
+          items:
+            type: string
+          description: "The spiritual and mechanical names of the channel"
+        type:
+          type: string
+          description: "Maia classification: Electromagnetic, Compromise, Dominance, or Companionship"
+        circuitry:
+          type: string
+          description: "The Human Design circuitry group (Individual, Tribal, Collective)"
+        planetary_trigger:
+          type: string
+          description: "The planets activating the gates in this connection"
+        activations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubLineDetail'
+          description: "High-fidelity activation data (Gate, Line, Color, Tone, Base)"
+      title: MaiaDetail
+
+    SynergyDetail:
+      type: object
+      properties:
+        thematic_label:
+          type: string
+          description: "Professional Maian theme (e.g. '8-1 Have some fun')"
+        bridge_active:
+          type: boolean
+          description: "True if this combination bridges a split definition"
+        center_dynamics:
+          type: object
+          additionalProperties:
+            type: string
+          description: "Conditioning dynamic for each center (fixed, conditioning_p1_to_p2, etc.)"
+        aura_dynamic:
+          type: string
+          description: "Professional label for Type-to-Type energetic interaction"
+        love_gate_highlights:
+          type: array
+          items:
+            type: integer
+          description: "List of active G-Center love gates in the connection"
+        space_count:
+          type: integer
+          description: "Number of completely open centers in the composite (Relational Space)"
+        circuitry_dominant:
+          type: string
+          description: "The dominant circuitry group in the partnership"
+        profile_resonance:
+          type: string
+          description: "Resonance or Harmony level between the two profiles"
+        node_resonance:
+          type: string
+          description: "Resonance level between the South and North Nodes (Environmental Fit)"
+        dominant_sub_circuit:
+          type: string
+          description: "Maximum detail on the sub-circuitry (e.g., Knowing vs. Logical)"
+        planetary_flavor_summary:
+          type: string
+          description: "The dominant planetary quality of the attraction (e.g., Venus-Mars)"
+        group_dynamic_summary:
+          type: string
+          description: "Classification of the group structure (Dyad, Penta, Wa)"
+        penta_details:
+          $ref: '#/components/schemas/PentaDetail'
+          nullable: true
+      title: SynergyDetail
+
+    CombinationItem:
+      type: object
+      properties:
+        id:
+          type: string
+        other_person:
+          type: string
+        new_chakra:
+          type: array
+          items:
+            type: string
+        chakra_count:
+          type: integer
+        new_channels:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+        new_ch_meaning:
+          type: array
+          items:
+            type: string
+        duplicated_channels:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+        duplicated_ch_meaning:
+          type: array
+          items:
+            type: string
+        connection_code:
+          type: string
+          description: "The 9-0 etc. connection classification code"
+        maia_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaiaDetail'
+        synergy:
+          $ref: '#/components/schemas/SynergyDetail'
+      title: CombinationItem
+
+    CompositePersonDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        place:
+          type: string
+        tz:
+          type: string
+        birth_date:
+          type: string
+        create_date:
+          type: string
+        energy_type:
+          type: string
+        strategy:
+          type: string
+          nullable: true
+        signature:
+          type: string
+          nullable: true
+        not_self:
+          type: string
+          nullable: true
+        aura:
+          type: string
+          nullable: true
+        inner_authority:
+          type: string
+        inc_cross:
+          type: string
+        profile:
+          type: string
+        defined_centers:
+          type: array
+          items:
+            type: string
+        undefined_centers:
+          type: array
+          items:
+            type: string
+        definition:
+          type: string
+        variables:
+          $ref: '#/components/schemas/Variables'
+          nullable: true
+        lunar_context:
+          type: string
+          nullable: true
+          description: "Lunar phase at birth"
+        activations:
+          type: object
+          additionalProperties:
+             $ref: '#/components/schemas/SubLineDetail'
+          nullable: true
+          description: "Full planetary activation matrix"
+        channels:
+          type: array
+          items:
+            type: object
+      title: CompositePersonDetail
+
+    HybridAnalysisResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/MetaDetail'
+          nullable: true
+        participants:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CompositePersonDetail'
+          nullable: true
+        penta_dynamics:
+          $ref: '#/components/schemas/PentaDetail'
+          nullable: true
+        dyad_matrix:
+          type: array
+          items:
+            $ref: '#/components/schemas/CombinationItem'
+      title: HybridAnalysisResponse
   securitySchemes:
     HTTPBearer:
       type: http
