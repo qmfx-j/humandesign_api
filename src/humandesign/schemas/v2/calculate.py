@@ -35,12 +35,18 @@ class GeneralSectionV2(BaseModel):
     create_date: str
     birth_place: str
     energy_type: str
+    strategy: str
+    signature: str
+    not_self: str
+    aura: str
     inner_authority: str
     inc_cross: str
     profile: str
+    defined_centers: List[str]
+    undefined_centers: List[str]
+    definition: str
     active_chakras: List[str]
     inactive_chakras: List[str]
-    definition: str
     variables: VariablesV2
     age: int
     zodiac_sign: str

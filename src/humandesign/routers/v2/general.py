@@ -58,18 +58,59 @@ def calculate_hd_v2(
 
     # 6. Format Data for V2 Response
     try:
+        # Get type details for semantic fields
+        type_details = hd_constants.TYPE_DETAILS_MAP.get(single_result[0], hd_constants.TYPE_DETAILS_MAP["Unknown"])
+        
+        # Map chakra abbreviations to full names
+        chakra_map = {
+            "HD": "Head", "AA": "Ajna", "TT": "Throat", "GC": "G_Center",
+            "HT": "Heart", "SN": "Spleen", "SP": "Solar Plexus",
+            "SL": "Sacral", "RT": "Root"
+        }
+        
+        # Get full names for centers
+        active_chakras_abbr = list(single_result[7])
+        inactive_chakras_abbr = list(set(hd_constants.CHAKRA_LIST) - set(single_result[7]))
+        defined_centers = [chakra_map.get(c, c) for c in active_chakras_abbr]
+        undefined_centers = [chakra_map.get(c, c) for c in inactive_chakras_abbr]
+        
+        # Get full profile name
+        profile_tuple = tuple(single_result[4])
+        profile_full = hd_constants.PROFILE_DB.get(profile_tuple, f"{single_result[4][0]}/{single_result[4][1]}")
+        
+        # Get full definition name
+        definition_full = hd_constants.DEFINITION_DB.get(str(single_result[5]), str(single_result[5]))
+        
+        # Get full authority name (map abbreviations)
+        authority_map = {
+            "SP": "Emotional Authority",
+            "SL": "Sacral Authority",
+            "SN": "Splenic Authority",
+            "HT": "Ego Authority",
+            "GC": "Self-Projected Authority",
+            "outher auth": "Outer Authority",
+            "no auth": "Mental Authority (Outer Authority)"
+        }
+        authority_full = authority_map.get(single_result[1], single_result[1])
+        
         # Build General Section
         general_data = {
             "birth_date": clean_birth_date_to_iso(single_result[9], hours),
             "create_date": clean_create_date_to_iso(single_result[10]),
             "birth_place": request.place,
             "energy_type": single_result[0],
-            "inner_authority": single_result[1],
-            "inc_cross": f"{single_result[2]}", # Simplified for now
-            "profile": f"{single_result[4][0]}/{single_result[4][1]}",
-            "active_chakras": list(single_result[7]),
-            "inactive_chakras": list(set(hd_constants.CHAKRA_LIST) - set(single_result[7])),
-            "definition": "{}".format(single_result[5]),
+            "strategy": type_details["strategy"],
+            "signature": type_details["signature"],
+            "not_self": type_details["not_self"],
+            "aura": type_details["aura"],
+            "inner_authority": authority_full,
+            "inc_cross": f"{single_result[2]}",  # Keep encoded for now, can enhance later
+            "profile": profile_full,
+            "defined_centers": defined_centers,
+            "undefined_centers": undefined_centers,
+            "definition": definition_full,
+            "active_chakras": active_chakras_abbr,
+            "inactive_chakras": inactive_chakras_abbr,
             "variables": single_result[11],
             "age": age,
             "zodiac_sign": zodiac_sign,
