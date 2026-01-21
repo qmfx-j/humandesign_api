@@ -48,6 +48,7 @@ tests/*
 htmlcov/
 
 .tobedeleted/
+.notshared/
 .ruff_cache/
 
 # reports

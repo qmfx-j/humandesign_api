@@ -8,7 +8,7 @@ from ...utils import serialization as cj
 from ...services.geolocation import get_latitude_longitude, tf
 from ...dependencies import verify_token
 from ...utils.date_utils import clean_birth_date_to_iso, clean_create_date_to_iso
-from ...schemas.v2.calculate import CalculateRequestV2, CalculateResponseV2, GeneralSectionV2, GateV2
+from ...schemas.v2.calculate import CalculateRequestV2, CalculateResponseV2, GeneralSectionV2, GateV2, AdvancedSectionV2
 from ...services.masking import OutputMaskingService
 
 router = APIRouter(prefix="/v2", tags=["v2"])
@@ -113,20 +113,48 @@ def calculate_hd_v2(
         channels_v2 = json.loads(channels_json_str).get("Channels", [])
 
         # Construct Full Response (Unmasked)
-        full_response = {
-            "general": general_data,
-            "personality_gates": pers_gates,
-            "design_gates": dest_gates,
-            "channels": channels_v2,
-            "mechanics": None, # Placeholder for Phase 2
-            "advanced": None   # Placeholder for Phase 3
-        }
+        full_response = CalculateResponseV2(
+            general=GeneralSectionV2(**general_data),
+            personality_gates=pers_gates,
+            design_gates=dest_gates,
+            channels=channels_v2,
+            mechanics=None, # Placeholder for Phase 2
+            advanced=None   # Placeholder for Phase 3
+        )
         
         # Apply Enrichment
         from ...services.enrichment import EnrichmentService
-        enrich_service = EnrichmentService()
-        enriched_response = enrich_service.enrich_response(full_response)
+        from ...services.dream_rave import DreamRaveEngine
+        from ...services.global_cycles import GlobalCycleEngine
+        from datetime import date
         
+        # --- Phase 2: Enrichment ---
+        enrichment_service = EnrichmentService()
+        enriched_response = enrichment_service.enrich_response(full_response)
+        
+        # --- Phase 3: Advanced Mechanics ---
+        dream_engine = DreamRaveEngine()
+        cycle_engine = GlobalCycleEngine()
+        
+        # Prepare data for Dream Rave (using simple set of gate numbers)
+        all_active_gates = set()
+        for v in enriched_response.personality_gates.values():
+            all_active_gates.add(v.gate)
+        for v in enriched_response.design_gates.values():
+            all_active_gates.add(v.gate)
+        
+        dream_out = dream_engine.analyze(all_active_gates)
+        
+        # Calculate date for Global Cycles
+        calc_date = date(request.year, request.month, request.day)
+        cycle_out = cycle_engine.get_cycle(calc_date)
+        
+        enriched_response.advanced = AdvancedSectionV2(
+            dream_rave=dream_out,
+            global_cycle=cycle_out
+        )
+
+        # --- Output Masking ---
         # Apply Masking
         masked_response = OutputMaskingService.apply_mask(
             enriched_response, 

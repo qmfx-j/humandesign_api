@@ -28,6 +28,7 @@ class OutputMaskingService:
         return result
 
     @staticmethod
-    def apply_mask(result: Dict[str, Any], include: Optional[List[str]] = None, exclude: Optional[List[str]] = None) -> Dict[str, Any]:
-        """Entry point for masking logic."""
-        return OutputMaskingService.mask_dict(result, include, exclude)
+    def apply_mask(result: Any, include: Optional[List[str]] = None, exclude: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Entry point for masking logic. Supports Pydantic models."""
+        data = result if isinstance(result, dict) else result.model_dump(exclude_none=True)
+        return OutputMaskingService.mask_dict(data, include, exclude)

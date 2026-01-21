@@ -44,27 +44,35 @@ class EnrichmentService:
             
         return None
 
-    def enrich_response(self, response_data: Dict[str, Any]) -> Dict[str, Any]:
+    def enrich_response(self, response_data: Any) -> Any:
         """
-        Recursively enrich the response structure.
+        Recursively enrich the response structure. Supports both dicts and Pydantic models.
         """
+        is_model = hasattr(response_data, "personality_gates")
+        
         for gate_key in ["personality_gates", "design_gates"]:
-            if gate_key in response_data and response_data[gate_key]:
-                for planet, gate_data in response_data[gate_key].items():
-                    if isinstance(gate_data, dict):
-                        enriched = self.enrich_gate(
-                            gate_data.get("gate"), 
-                            gate_data.get("line"),
-                            planet
-                        )
-                        gate_data.update(enriched)
-                    else:
-                        # If it's a Pydantic model
+            gates = getattr(response_data, gate_key) if is_model else response_data.get(gate_key)
+            
+            if gates:
+                # Handle both dict of models and dict of dicts
+                iterator = gates.items() if hasattr(gates, "items") else gates
+                
+                for planet, gate_data in iterator:
+                    is_gate_model = not isinstance(gate_data, dict)
+                    
+                    if is_gate_model:
                         enriched = self.enrich_gate(gate_data.gate, gate_data.line, planet)
                         gate_data.gate_name = enriched.get("gate_name")
                         gate_data.gate_summary = enriched.get("gate_summary")
                         gate_data.line_name = enriched.get("line_name")
                         gate_data.line_description = enriched.get("line_description")
                         gate_data.fixation = enriched.get("fixation")
+                    else:
+                        enriched = self.enrich_gate(
+                            gate_data.get("gate"), 
+                            gate_data.get("line"),
+                            planet
+                        )
+                        gate_data.update(enriched)
                     
         return response_data

@@ -60,10 +60,25 @@ class GateV2(BaseModel):
     line_description: Optional[str] = None
     fixation: Optional[Dict[str, Any]] = None
 
+class DreamRaveOutput(BaseModel):
+    activated_centers: List[str]
+    activated_gates: List[int]
+    status: str
+
+class GlobalCycleOutput(BaseModel):
+    great_cycle: str
+    cycle_cross: str
+    gates: List[int]
+    description: str
+
+class AdvancedSectionV2(BaseModel):
+    dream_rave: Optional[DreamRaveOutput] = None
+    global_cycle: Optional[GlobalCycleOutput] = None
+
 class CalculateResponseV2(BaseModel):
     general: Optional[GeneralSectionV2] = None
     mechanics: Optional[Dict[str, Any]] = None # To be populated in Phase 2
-    advanced: Optional[Dict[str, Any]] = None # To be populated in Phase 3
+    advanced: Optional[AdvancedSectionV2] = None
     personality_gates: Optional[Dict[str, GateV2]] = None
     design_gates: Optional[Dict[str, GateV2]] = None
     channels: Optional[List[Dict[str, Any]]] = None
