@@ -203,14 +203,12 @@ def calculate_hd_v2(
         
         dream_rave_output = dream_engine.analyze(all_gates)
         
-        # Get birth date for global cycle
-        birth_date_str = general_data["birth_date"]
-        birth_year = int(birth_date_str[:4])
-        birth_month = int(birth_date_str[5:7])
-        birth_day = int(birth_date_str[8:10])
-        birth_date_obj = date(birth_year, birth_month, birth_day)
+        # Get birth year for global cycle (use input year, not UTC-converted)
+        # The global cycle is based on the year of birth, not the exact UTC timestamp
+        birth_year_for_cycle = request.year
+        birth_date_for_cycle = date(birth_year_for_cycle, request.month, request.day)
         
-        global_cycle_output = cycle_engine.get_cycle(birth_date_obj)
+        global_cycle_output = cycle_engine.get_cycle(birth_date_for_cycle)
         
         # Update response with advanced mechanics
         from ...schemas.v2.calculate import AdvancedSectionV2
