@@ -54,7 +54,11 @@ class GateV2(BaseModel):
     tone: int
     base: int
     lon: float
-    fixation: Optional[Dict[str, Any]] = None # To be populated in Phase 2
+    gate_name: Optional[str] = None
+    gate_summary: Optional[str] = None
+    line_name: Optional[str] = None
+    line_description: Optional[str] = None
+    fixation: Optional[Dict[str, Any]] = None
 
 class CalculateResponseV2(BaseModel):
     general: Optional[GeneralSectionV2] = None

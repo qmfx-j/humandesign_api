@@ -103,9 +103,14 @@ def calculate_hd_v2(
             "advanced": None   # Placeholder for Phase 3
         }
         
+        # Apply Enrichment
+        from ...services.enrichment import EnrichmentService
+        enrich_service = EnrichmentService()
+        enriched_response = enrich_service.enrich_response(full_response)
+        
         # Apply Masking
         masked_response = OutputMaskingService.apply_mask(
-            full_response, 
+            enriched_response, 
             include=request.include, 
             exclude=request.exclude
         )
