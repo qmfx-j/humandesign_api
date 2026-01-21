@@ -623,6 +623,35 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
       - HTTPBearer: []
+  /v2/calculate:
+    post:
+      summary: Calculate Human Design (V2)
+      description: "Flagship V2 endpoint: Verbose by default, supports partial output masking, semantic enrichment, and advanced mechanics."
+      operationId: calculate_hd_v2_post
+      tags:
+        - v2
+      security:
+        - HTTPBearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculateRequestV2'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculateResponseV2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
 components:
   schemas:
     HTTPValidationError:
@@ -1212,6 +1241,186 @@ components:
           items:
             $ref: '#/components/schemas/CombinationItem'
       title: HybridAnalysisResponse
+
+    CalculateRequestV2:
+      type: object
+      required:
+        - year
+        - month
+        - day
+        - hour
+        - minute
+        - place
+      properties:
+        year:
+          type: integer
+          default: 1968
+        month:
+          type: integer
+          default: 2
+        day:
+          type: integer
+          default: 21
+        hour:
+          type: integer
+          default: 11
+        minute:
+          type: integer
+          default: 0
+        second:
+          type: integer
+          default: 0
+        place:
+          type: string
+          default: "Kirikkale, Turkey"
+        gender:
+          type: string
+          default: "male"
+        islive:
+          type: boolean
+          default: true
+        latitude:
+          type: number
+          nullable: true
+        longitude:
+          type: number
+          nullable: true
+        include:
+          type: array
+          items:
+            type: string
+          nullable: true
+        exclude:
+          type: array
+          items:
+            type: string
+          nullable: true
+      title: CalculateRequestV2
+
+    CalculateResponseV2:
+      type: object
+      properties:
+        general:
+          $ref: '#/components/schemas/GeneralSectionV2'
+        personality_gates:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GateV2'
+        design_gates:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GateV2'
+        channels:
+          type: array
+          items:
+            type: object
+        mechanics:
+          type: object
+          nullable: true
+        advanced:
+          type: object
+          nullable: true
+      title: CalculateResponseV2
+
+    GeneralSectionV2:
+      type: object
+      properties:
+        birth_date:
+          type: string
+        create_date:
+          type: string
+        birth_place:
+          type: string
+        energy_type:
+          type: string
+        inner_authority:
+          type: string
+        inc_cross:
+          type: string
+        profile:
+          type: string
+        active_chakras:
+          type: array
+          items:
+            type: string
+        inactive_chakras:
+          type: array
+          items:
+            type: string
+        definition:
+          type: string
+        variables:
+          $ref: '#/components/schemas/VariablesV2'
+        age:
+          type: integer
+        zodiac_sign:
+          type: string
+        gender:
+          type: string
+        islive:
+          type: boolean
+      title: GeneralSectionV2
+
+    VariablesV2:
+      type: object
+      properties:
+        top_right:
+          $ref: '#/components/schemas/VariableItemV2'
+        bottom_right:
+          $ref: '#/components/schemas/VariableItemV2'
+        top_left:
+          $ref: '#/components/schemas/VariableItemV2'
+        bottom_left:
+          $ref: '#/components/schemas/VariableItemV2'
+        short_code:
+          type: string
+      title: VariablesV2
+
+    VariableItemV2:
+      type: object
+      properties:
+        value:
+          type: string
+        name:
+          type: string
+        aspect:
+          type: string
+        def_type:
+          type: string
+      title: VariableItemV2
+
+    GateV2:
+      type: object
+      properties:
+        gate:
+          type: integer
+        line:
+          type: integer
+        color:
+          type: integer
+        tone:
+          type: integer
+        base:
+          type: integer
+        lon:
+          type: number
+        gate_name:
+          type: string
+          nullable: true
+        gate_summary:
+          type: string
+          nullable: true
+        line_name:
+          type: string
+          nullable: true
+        line_description:
+          type: string
+          nullable: true
+        fixation:
+          type: object
+          nullable: true
+      title: GateV2
+
   securitySchemes:
     HTTPBearer:
       type: http
