@@ -37,12 +37,7 @@ Thumbs.db
 .docs/
 # Conductor
 conductor/
-# tests
-tests
-tests/*
-
-
-# Coverage
+# reports
 .coverage
 .coverage.*
 htmlcov/
@@ -53,4 +48,3 @@ htmlcov/
 
 # reports
 reports/
-.gitignore

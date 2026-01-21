@@ -1,7 +1,7 @@
 # Project Architecture Blueprint
 
-**Generated:** 2026-01-20
-**Version:** 3.0.0
+**Generated:** 2026-01-21
+**Version:** 3.3.0
 **Project:** Human Design API
 
 ## 1. Architecture Detection and Analysis
@@ -11,7 +11,8 @@
 -   **Web Framework:** FastAPI (Async)
 -   **Server:** Uvicorn
 -   **Astrology Engine:** `pyswisseph` (Swiss Ephemeris)
--   **Geospatial:** `geopy`, `timezonefinder`
+-   **Geospatial:** `geopy`, `timezonefinder` (Singleton)
+-   **Semantic Engine:** SQLite (`hd_data.sqlite`)
 -   **Visualization:** `matplotlib`, `svgpath2mpl`
 -   **Containerization:** Docker, Docker Compose
 
@@ -21,7 +22,7 @@ The application is structured into distinct layers with clear separation of conc
 
 ## 2. Architectural Overview
 
-The **Human Design API** is a stateless, high-performance calculation engine. Reaching **v3.0.0**, it has completed a significant architectural consolidation, retiring legacy endpoints to focus on the **Maia-Penta Hybrid Analysis**—a professional-grade engine for complex relational and group dynamics.
+The **Human Design API** is a high-performance calculation engine. Reaching **v3.3.0**, it features the **V2 Calculate Upgrade**—a semantic-first API that provides full human-readable descriptions, integrated with the **Maia-Penta Hybrid Analysis** flagships.
 
 **Guiding Principles:**
 1.  **Statelessness:** Strict Input-Process-Output workflow.
@@ -44,6 +45,7 @@ The **Human Design API** is a stateless, high-performance calculation engine. Re
     -   `core.py`: Complex algorithms (Hybrid, Penta, Relational).
     -   `mechanics.py`: System rules (Authority, Centers).
     -   `attributes.py`: Static data (Gates, Channels).
+    - `v2/calculate`: The high-fidelity endpoint with nested hierarchy.
 
 ### C. Service Layer (`src/humandesign/services/`)
 -   **Purpose:** Cross-cutting technical utilities.
@@ -58,8 +60,10 @@ The **Human Design API** is a stateless, high-performance calculation engine. Re
 3.  **Astro-Calculation:** Swiss Ephemeris calculates planetary longitudes (base data).
 4.  **Rave Transformation:** Base data mapped to Gates/Lines/Tones.
 5.  **Relational Synthesis:** Hybrid engine correlates participants' planetary triggers and nodal environmental resonance.
-6.  **Penta Projection:** Functional group gaps calculated based on unified group mechanics.
-7.  **Egress:** High-fidelity JSON response returned.
+6.  **Semantic Enrichment:** SQLite layer resolves gates and incarnation crosses to human-readable strings.
+7.  **Advanced Mechanics:** Dream Rave and Global Cycle analysis applied to high-fidelity tracks.
+8.  **Penta Projection:** Functional group gaps calculated based on unified group mechanics.
+9.  **Egress:** High-fidelity JSON response returned.
 
 ## 5. Cross-Cutting Concerns
 
@@ -77,8 +81,8 @@ The **Human Design API** is a stateless, high-performance calculation engine. Re
 
 ## 7. Deployment Architecture
 
--   **Docker:** Optimized multi-stage build (~520MB).
--   **Registry:** Publicly available at `dturkuler/humandesign_api:3.0.0`.
+-   **Docker:** Optimized multi-stage build (~521MB).
+-   **Registry:** Publicly available at `dturkuler/humandesign_api:3.3.0`.
 -   **Configuration:** 12-Factor app principles via environment variables.
 
 ## 8. Development Blueprint
@@ -90,4 +94,4 @@ The **Human Design API** is a stateless, high-performance calculation engine. Re
 4.  **Verification:** Assert parity with snapshots and new TDD requirements.
 
 ---
-*Blueprint automatically updated for Version 3.0.0 Release Cycle.*
+*Blueprint automatically updated for Version 3.3.0 Release Cycle.*

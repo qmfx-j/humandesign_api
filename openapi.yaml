@@ -1281,9 +1281,11 @@ components:
           default: true
         latitude:
           type: number
+          format: float
           nullable: true
         longitude:
           type: number
+          format: float
           nullable: true
         include:
           type: array
@@ -1304,24 +1306,22 @@ components:
       properties:
         general:
           $ref: '#/components/schemas/GeneralSectionV2'
-        personality_gates:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/GateV2'
-        design_gates:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/GateV2'
+        centers:
+          $ref: '#/components/schemas/CentersV2'
         channels:
           type: array
           items:
             type: object
+          nullable: true
+        variables:
+          $ref: '#/components/schemas/VariablesV2'
+        gates:
+          $ref: '#/components/schemas/GatesV2'
         mechanics:
           type: object
           nullable: true
         advanced:
-          type: object
-          nullable: true
+          $ref: '#/components/schemas/AdvancedSectionV2'
       title: CalculateResponseV2
 
     GeneralSectionV2:
@@ -1333,13 +1333,6 @@ components:
           type: string
         birth_place:
           type: string
-        energy_type:
-          type: string
-        inner_authority:
-          type: string
-        inc_cross:
-          type: string
-        profile:
           type: string
         active_chakras:
           type: array
