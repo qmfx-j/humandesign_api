@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [3.2.0] - 2026-01-21
+### Added
+- **Localization Infrastructure**: Overhauled interpretation report prompts (`daily_transit`, `question`, `solar_return`, `penta`) to support dynamic language output via `{{LANGUAGE}}` variable.
+- **Prompt Standardization**: Migrated all hardcoded Turkish headers and logic in interpretation prompts to English, enabling global localization while maintaining the original logic structure.
+
 ## [3.1.0] - 2026-01-20
 ### Added
 - **Relational Intelligence Refinements**: Expanded `/analyze/maia-penta` with high-fidelity synergy insights.

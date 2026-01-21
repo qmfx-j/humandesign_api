@@ -235,7 +235,7 @@ def get_detailed_node_resonance(p1_nodes, p2_nodes):
         res_type = "Shared Frequency"
         gates = sorted(list(common))
         op_insight = f"Shared Industry/Niche alignment. You are triggered by the same environmental themes (Gates {gates})."
-        life_insight = f"Shared social frequency. You naturally gravitate towards the same people and places."
+        life_insight = "Shared social frequency. You naturally gravitate towards the same people and places."
         return EnvironmentalResonanceDetail(
             resonance_type=res_type,
             gates=gates,
@@ -251,8 +251,10 @@ def get_detailed_node_resonance(p1_nodes, p2_nodes):
     for g1 in p1_list:
         for g2 in p2_list:
             chan = None
-            if (g1, g2) in channels: chan = (g1, g2)
-            elif (g2, g1) in channels: chan = (g2, g1)
+            if (g1, g2) in channels:
+                chan = (g1, g2)
+            elif (g2, g1) in channels:
+                chan = (g2, g1)
             
             if chan:
                 res_type = "Harmonic Pull"
