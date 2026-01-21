@@ -14,6 +14,7 @@ Whether you are building a mobile app, a professional dashboard, or a personal r
 
 ### Key Features:
 
+*   **V2 Calculate API (NEW)**: High-performance `POST /v2/calculate` with semantic enrichment, Dream Rave, and Global Cycle support.
 *   **High-Fidelity Maia Matrix v2**: Advanced relational analysis with planetary triggers, nodal resonance, and sub-circuit details.
 *   **Penta Analysis 2.0**: Enhanced Group Dynamics (3-5 people) via the `/analyze/penta` endpoint, providing high-level semantic analysis (Sovereign Standard).
 *   **Maia-Penta Hybrid Analysis**: Flagship `POST /analyze/maia-penta` endpoint for professional composite + group dynamics in a single request.
@@ -361,6 +362,6 @@ The project is organized as follows:
     *   Tools like `openapi-generator` can use this file to generate API client code for various programming languages (e.g., Python, JavaScript, Java).
 
 ---
-*Documentation generated for Human Design API v2.2.0*
+*Documentation generated for Human Design API v3.3.0*
 
 

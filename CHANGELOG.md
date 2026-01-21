@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [3.3.0] - 2026-01-21
+### Added
+- **V2 Calculate API (10x Upgrade)**: Launched the high-fidelity `POST /v2/calculate` endpoint.
+    - **Semantic Enrichment**: Direct lookup for full, human-readable descriptions of Incarnation Crosses, Centers, and Gates using a local SQLite architecture.
+    - **Nested Hierarchy**: Restructured the response into a logical hierarchy: `general`, `centers`, `channels`, `variables`, `gates`, `advanced`.
+    - **Advanced Mechanics**: Integrated **Dream Rave** (activated gates/centers) and **Global Cycles** (Cycle Cross/Great Cycle) directly into the API response.
+    - **Fixations Explicit & Structural**: Semantic logic for gate/line fixations (Exaltation/Detriment) is now structural and machine-readable.
+- **Test Stability**: Implemented coordinate-based test payloads for all composite and penta tests to bypass geocoding rate limits during high-frequency CLI verification.
+
+### Fixed
+- **Global Cycle 2027 Transition**: Resolved a timezone conversion bug where Jan 1st, 2027 births were incorrectly assigned to "Cross of Planning" due to UTC shift. Now uses input year for era determination.
+- **V2 Schema Parity**: Achieved 100% semantic parity with V1 while maintaining V2's performance and design advantages.
+
 ## [3.2.0] - 2026-01-21
 ### Added
 - **Localization Infrastructure**: Overhauled interpretation report prompts (`daily_transit`, `question`, `solar_return`, `penta`) to support dynamic language output via `{{LANGUAGE}}` variable.
