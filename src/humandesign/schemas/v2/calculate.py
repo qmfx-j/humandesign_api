@@ -45,8 +45,6 @@ class GeneralSectionV2(BaseModel):
     defined_centers: List[str]
     undefined_centers: List[str]
     definition: str
-    active_chakras: List[str]
-    inactive_chakras: List[str]
     variables: VariablesV2
     age: int
     zodiac_sign: str
