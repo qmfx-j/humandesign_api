@@ -1,7 +1,7 @@
 # Human Design API Documentation
 
-**Version:** 2.0.0
-**Base URL:** `http://localhost:8000` (or your deployment URL)
+**Version:** 3.3.2
+**Base URL:** `http://localhost:8000` (or `https://api.humandesign.ai`)
 
 ## Overview
 
@@ -21,92 +21,95 @@ Authorization: Bearer <your_token>
 
 ---
 
-## 1. General Endpoints
+## 1. Core Endpoints
 
-### Calculate Chart
-Get comprehensive Human Design calculations for a single person.
+### Calculate Chart (V2 Flagship)
+The high-fidelity calculation engine (v2). Returns a semantic, hierarchical JSON response with optional "sparse fieldset" masking.
 
-**Endpoint:** `GET /calculate`
+**Endpoint:** `POST /v2/calculate`
 
-#### Parameters
-| Name | Type | Required | Description |
+#### Request Body
+```json
+{
+  "year": 1990,
+  "month": 1,
+  "day": 12,
+  "hour": 8,
+  "minute": 0,
+  "place": "New York, USA",
+  "include": ["general", "gates.personality"],
+  "exclude": ["channels"]
+}
+```
+
+| Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `place` | string | Yes | "City, Country" (e.g., "London, UK") |
 | `year` | int | Yes | Birth Year |
 | `month` | int | Yes | Birth Month (1-12) |
 | `day` | int | Yes | Birth Day (1-31) |
 | `hour` | int | Yes | Birth Hour (0-23) |
 | `minute` | int | Yes | Birth Minute (0-59) |
-| `second` | int | No | Birth Second (Default: 0) |
-| `gender` | string | No | Gender (None, male, female, etc. Default: male) |
-| `islive` | bool | No | Whether the person is alive (true) or deceased (false). (Default: true) |
-
-#### Example Request
-```bash
-curl -X GET "http://localhost:8000/calculate?place=Kirikkale,Turkey&year=1968&month=2&day=21&hour=11&minute=0" \
-  -H "Authorization: Bearer <your_token>"
-```
+| `place` | string | Yes | "City, Country" (e.g., "London, UK") |
+| `latitude` | float | No | Explicit Latitude (bypasses geocoding) |
+| `longitude` | float | No | Explicit Longitude (bypasses geocoding) |
+| `include` | list[str] | No | Whitelist fields (supports dot syntax: `gates.personality`) |
+| `exclude` | list[str] | No | Blacklist fields |
 
 #### Example Response
 ```json
 {
   "general": {
-    "birth_date": "1990-01-01T12:00:00Z",
-    "age": 35,
-    "gender": "male",
-    "islive": true,
-    "zodiac_sign": "Capricorn",
     "energy_type": "Generator",
-    "inner_authority": "Sacral",
-    "profile": "2/4: Hermit Opportunist",
-    "definition": "Single Definition",
-    "active_chakras": ["Sacral", "Root"],
-    ...
+    "inner_authority": "Sacral Authority",
+    "profile": "4/6: Opportunist Role Model",
+    "inc_cross": "The Right Angle Cross of Planning (37/40 | 9/16)",
+    "definition": "Split Definition"
   },
-  "gates": { ... },
-  "channels": { ... }
+  "centers": {
+    "defined": ["Sacral", "Root"],
+    "undefined": ["Head", "Ajna", "Throat", "G_Center", "Heart", "Solar Plexus", "Spleen"]
+  },
+  "gates": {
+    "personality": {
+      "Sun": {
+        "gate": 61,
+        "line": 1, 
+        "gate_name": "The Gate of Inner Truth",
+        "fixation": { "type": "Exalted", "value": "Up" }
+      }
+    }
+  },
+  "advanced": {
+    "dream_rave": { ... },
+    "global_cycle": { ... }
+  }
 }
 ```
 
-### Get BodyGraph Image
-Render a visual bodygraph chart.
+### System Health
+Check API operational status.
 
-**Endpoint:** `GET /bodygraph`
-
-#### Parameters
-Same as `/calculate`, plus:
-| Name | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `fmt` | string | `png` | Image format (`png`, `svg`, `jpg`) |
-
-#### Example Request
-```bash
-curl -X GET "http://localhost:8000/bodygraph?place=London,UK&year=1990&month=1&day=1&hour=12&minute=0&fmt=png" \
-  -H "Authorization: Bearer <your_token>" \
-  --output chart.png
-```
-
-<img src="../src/humandesign/static/bodygraph_sample.png" alt="alt text" width="50%" />
+**Endpoint:** `GET /health`
 
 ---
 
 ## 2. Transit Analysis
 
 ### Daily Transit ("Weather")
-Analyze the "Weather of the Day" by combining a birth chart with the current transit field.
+Analyze the "Weather of the Day" by combining a birth chart with the current transit field. Supports "Travel Mode" (calculating transits relative to current location).
 
 **Endpoint:** `GET /transits/daily`
 
 #### Parameters
-Requires Birth Data (year...place) plus:
 | Name | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
-| `transit_year` | int | Yes | Transit Year |
-| `transit_month` | int | Yes | Transit Month |
-| `transit_day` | int | Yes | Transit Day |
-| `current_place` | string | No | Current Location (defaults to Birth Place) |
-| `transit_hour` | int | No | Transit Hour (Default: 12) |
-| `transit_minute` | int | No | Transit Minute (Default: 0) |
+| `place` | string | Yes | Birth Place |
+| `year`, `month`, `day`, `hour`, `minute` | int | Yes | Birth Date/Time |
+| `transit_year` | int | Yes | Target Year |
+| `transit_month` | int | Yes | Target Month |
+| `transit_day` | int | Yes | Target Day |
+| `current_place` | string | No | **New:** Current User Location (for timezone-aware transits) |
+| `transit_hour` | int | No | **New:** Target Hour (Local time at current_place) |
 
 #### Example Request
 ```bash
@@ -114,172 +117,49 @@ curl -X GET "http://localhost:8000/transits/daily?place=London,UK&year=1990&mont
   -H "Authorization: Bearer <your_token>"
 ```
 
-#### Example Response
-```json
-{
-  "transit_date": "2025-01-01",
-  "analysis": {
-    "composite_type": "Manifesting Generator",
-    "new_defined_centers": ["Throat", "SolarPlexus"],
-    ...
-  }
-}
-```
-
 ### Solar Return
-Calculate the Yearly Theme for a specific year.
+Calculate the Yearly Theme (Solar Return).
 
 **Endpoint:** `GET /transits/solar_return`
-
-#### Additional Parameters
-| Name | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `sr_year_offset` | int | 0 | 0 = Current SR, 1 = Next Year's SR |
-
-#### Example Request
-```bash
-curl -X GET "http://localhost:8000/transits/solar_return?place=London,UK&year=1990&month=1&day=1&hour=12&minute=0&sr_year_offset=0" \
-  -H "Authorization: Bearer <your_token>"
-```
+*Parameters similar to Daily Transit, with `sr_year_offset` (0=Birth Year, 1=First Return).*
 
 ---
 
-## 3. Relationship & Group Analysis
+## 3. Relationship & Group Analysis (Professional)
 
-### Pairwise Composite Analysis
-Detailed mechanics for exactly two people. Returns new channels and centers formed by the connection.
+### Maia-Penta Hybrid Analysis (Flagship)
+The unified engine for relationship mechanics. Combines **Maia Matrix** (Pairwise Synergy) and **Penta** (Group Dynamics) into a single high-fidelity report.
 
-**Endpoint:** `POST /analyze/composite`
+**Endpoint:** `POST /analyze/maia-penta`
 
 #### Request Body
 ```json
 {
-  "person1": { "place": "London, UK", "year": 1990, "month": 1, "day": 1, "hour": 12, "minute": 0 },
-  "person2": { "place": "New York, USA", "year": 1992, "month": 5, "day": 20, "hour": 18, "minute": 30 }
+  "participants": {
+    "Alice": { "place": "London, UK", "year": 1990, "month": 1, "day": 1, "hour": 12, "minute": 0 },
+    "Bob": { "place": "New York, USA", "year": 1992, "month": 5, "day": 20, "hour": 18, "minute": 30 }
+  },
+  "group_type": "family",
+  "verbosity": "all"
 }
 ```
 
-#### Example Request
-```bash
-curl -X POST "http://localhost:8000/analyze/composite" \
-  -H "Authorization: Bearer <your_token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "person1": { "place": "London, UK", "year": 1990, "month": 1, "day": 1, "hour": 12, "minute": 0 },
-    "person2": { "place": "New York, USA", "year": 1992, "month": 5, "day": 20, "hour": 18, "minute": 30 }
-  }'
-```
+#### Response Features
+*   **Synergy**: Connection Types (Electromagnetic, Dominance, Companionship, Split).
+*   **Planetary Triggers**: Which planet activates which channel (e.g., "Mars activates 59-6").
+*   **Nodal Resonance**: Environmental harmony analysis.
+*   **Penta Dynamics**: Functional roles (if 3+ people).
 
-#### Example Response (v1.3.0 Standard)
-```json
-{
-  "participants": ["person1", "person2"],
-  "new_channels": [
-    { "gate": 59, "ch_gate": 6, "meaning": ["Mating", "A d. focused on reproduction"] }
-  ],
-  "new_chakras": ["SolarPlexus", "Throat"],
-  "composite_chakras": ["Sacral", "Root", "SolarPlexus", "Throat", "Ajna"]
-}
-```
-
-
-
-### Group Penta Analysis (Sovereign Standard)
-Enhanced Penta Analysis returning a hierarchical, semantic JSON structure with Channels, Gaps, and Functional Zones. Optimized for LLM interpretation.
+### Group Penta Analysis (V2)
+Dedicated endpoint for analyzing functional groups (3-5 people).
 
 **Endpoint:** `POST /analyze/penta`
 
 #### Request Body
-Dictionary of 3-5 people (similar structure to Composite) plus optional `group_type` ("family" or "business").
 ```json
 {
-  "participants": {
-    "person1": { ... },
-    "person2": { ... },
-    "person3": { ... }
-  },
-  "group_type": "family"
-}
-```
-
-#### Example Response
-```json
-  "meta": {
-    "group_size": 4,
-    "penta_formed": true,
-    "penta_type": "Family",
-    "vortex_intensity": "Stable",
-    "analysis_timestamp": "2026-01-19T00:00:00Z"
-  },
-  "analytical_metrics": {
-    "stability_score": 70,
-    "vision_score": 66,
-    "action_score": 33,
-    "bottlenecks": ["dogan"],
-    "backbone_integrity": {
-      "flow_15_5": "Missing",
-      "resources_2_14": "Strong",
-      "work_46_29": "Strong"
-    },
-    "dependency_map": {
-      "single_point_of_failure": ["dogan"], 
-      "shadow_areas": ["Flow"]
-    }
-  },
-  "penta_anatomy": {
-    "upper_penta": {
-      "label": "Direction & Vision",
-      "channels": {
-        "8-1": {
-          "name": "Implementation",
-          "status": "Active",
-          "type": "DOM",
-          "label": "Solo-Driven",
-          "contributors": {
-            "dogan": {
-              "gate_8": { "lines": [1], "polarities": ["Design"] },
-              "gate_1": { "lines": [1], "polarities": ["Design"] }
-            }
-          },
-          "bottleneck_risks": ["dogan"],
-          "gap_analysis": null
-        },
-        "31-7": {
-          "name": "Planning",
-          "status": "Inactive",
-          "type": "VOID",
-          "label": "Inactive",
-          "contributors": {}, 
-          "gap_analysis": {
-            "missing_gates": [7, 31],
-            "severity": "MODERATE",
-            "impact": "Anarchy or lack of direction."
-          }
-        }
-      }
-    },
-    "lower_penta": {
-      "label": "Action & Generation",
-      "channels": {
-        "2-14": {
-          "name": "Resources",
-          "status": "Active",
-          "type": "MIXED", 
-          "label": "Mixed (Solo + Electromagnetic)",
-          "contributors": {
-            "ece": { "gate_2": { "lines": [4, 5], "polarities": ["Design"] } },
-            "birce": { "gate_14": { "lines": [2], "polarities": ["Personality"] } }
-          },
-          "bottleneck_risks": [],
-          "gap_analysis": null
-        }
-      }
-    }
-  },
-  "hiring_logic": {
-    "urgent_needs": [7, 15],
-    "insight": "Group has 2/3 Backbone channels. Vision dominates."
-  }
+  "participants": { "A": {...}, "B": {...}, "C": {...} },
+  "group_type": "business" 
 }
 ```
 
@@ -296,4 +176,4 @@ Dictionary of 3-5 people (similar structure to Composite) plus optional `group_t
 | `500` | Internal Server Error |
 
 ---
-*Documentation generated for Human Design API v2.0.0*
+*Documentation updated for v3.3.2*
