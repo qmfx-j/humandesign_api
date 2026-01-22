@@ -1,6 +1,6 @@
 # Human Design API Documentation
 
-**Version:** 3.3.2
+**Version:** 3.4.0
 **Base URL:** `http://localhost:8000` (or `https://api.humandesign.ai`)
 
 ## Overview
@@ -176,4 +176,4 @@ Dedicated endpoint for analyzing functional groups (3-5 people).
 | `500` | Internal Server Error |
 
 ---
-*Documentation updated for v3.3.2*
+*Documentation updated for v3.4.0*
