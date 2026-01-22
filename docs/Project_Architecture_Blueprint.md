@@ -1,7 +1,7 @@
 # Project Architecture Blueprint
 
-**Generated:** 2026-01-21
-**Version:** 3.3.0
+**Generated:** 2026-01-22
+**Version:** 3.3.2
 **Project:** Human Design API
 
 ## 1. Architecture Detection and Analysis
@@ -22,7 +22,7 @@ The application is structured into distinct layers with clear separation of conc
 
 ## 2. Architectural Overview
 
-The **Human Design API** is a high-performance calculation engine. Reaching **v3.3.0**, it features the **V2 Calculate Upgrade**—a semantic-first API that provides full human-readable descriptions, integrated with the **Maia-Penta Hybrid Analysis** flagships.
+The **Human Design API** is a high-performance calculation engine. Reaching **v3.3.2**, it features the **V2 Calculate Upgrade**—a semantic-first API that provides full human-readable descriptions, integrated with the **Maia-Penta Hybrid Analysis** flagships.
 
 **Guiding Principles:**
 1.  **Statelessness:** Strict Input-Process-Output workflow.
@@ -35,9 +35,9 @@ The **Human Design API** is a high-performance calculation engine. Reaching **v3
 ### A. API Layer (`src/humandesign/routers/`)
 -   **Purpose:** HTTP Interface, validation, and orchestration.
 -   **Key Components:**
-    -   `general.py`: Root endpoints (`/calculate`, `/bodygraph`, `/health`).
+    -   `general.py`: Root endpoints (`/calculate`, `/bodygraph`, `/health`). **V3.3.2 Fix:** Enhanced geocoding robustness.
     -   `transits.py`: Temporal logic (`/daily`, `/solar_return`).
-    -   `composite.py`: Multi-person track. **V3 Update:** Retired `/compmatrix` and `/maiamatrix`. Features the `/analyze/maia-penta` flagship.
+    -   `composite.py`: Multi-person track. Features the `/analyze/maia-penta` flagship.
 
 ### B. Feature Engine (`src/humandesign/features/`)
 -   **Purpose:** Domain logic implementation.
@@ -45,18 +45,20 @@ The **Human Design API** is a high-performance calculation engine. Reaching **v3
     -   `core.py`: Complex algorithms (Hybrid, Penta, Relational).
     -   `mechanics.py`: System rules (Authority, Centers).
     -   `attributes.py`: Static data (Gates, Channels).
-    - `v2/calculate`: The high-fidelity endpoint with nested hierarchy.
+    -   `v2/calculate`: The high-fidelity endpoint with nested hierarchy.
 
 ### C. Service Layer (`src/humandesign/services/`)
 -   **Purpose:** Cross-cutting technical utilities.
 -   **Key Components:**
     -   `chart_renderer.py`: Visual generation.
-    -   `composite.py`: Orchestration for multi-participant jobs. **V3 Update:** Pruned redundant legacy matrix logic.
+    -   `composite.py`: Orchestration for multi-participant jobs.
+    -   `enrichment.py`: Semantic enrichment using SQLite.
+    -   `dream_rave.py` & `global_cycles.py`: Advanced mechanics engines.
 
-## 4. Data Flow (v3.0.0 optimized)
+## 4. Data Flow (v3.3.0+ optimized)
 
 1.  **Ingress:** Pydantic validation of birth/transit parameters.
-2.  **Bio-Resolution:** Conversion of city names to (Lat/Lon) with optional bypass support.
+2.  **Bio-Resolution:** Conversion of city names to (Lat/Lon) with optional bypass support (Zero-Coordinate fix applied in v3.3.2).
 3.  **Astro-Calculation:** Swiss Ephemeris calculates planetary longitudes (base data).
 4.  **Rave Transformation:** Base data mapped to Gates/Lines/Tones.
 5.  **Relational Synthesis:** Hybrid engine correlates participants' planetary triggers and nodal environmental resonance.
@@ -81,8 +83,8 @@ The **Human Design API** is a high-performance calculation engine. Reaching **v3
 
 ## 7. Deployment Architecture
 
--   **Docker:** Optimized multi-stage build (~521MB).
--   **Registry:** Publicly available at `dturkuler/humandesign_api:3.3.0`.
+-   **Docker:** Optimized multi-stage build (~447MB).
+-   **Registry:** Publicly available at `dturkuler/humandesign_api:3.3.2`.
 -   **Configuration:** 12-Factor app principles via environment variables.
 
 ## 8. Development Blueprint
@@ -94,4 +96,4 @@ The **Human Design API** is a high-performance calculation engine. Reaching **v3
 4.  **Verification:** Assert parity with snapshots and new TDD requirements.
 
 ---
-*Blueprint automatically updated for Version 3.3.0 Release Cycle.*
+*Blueprint automatically updated for Version 3.3.2 Release Cycle.*
