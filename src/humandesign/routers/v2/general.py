@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import JSONResponse
 import json
 
 from ... import features as hd
@@ -8,7 +7,7 @@ from ...utils import serialization as cj
 from ...services.geolocation import get_latitude_longitude, tf
 from ...dependencies import verify_token
 from ...utils.date_utils import clean_birth_date_to_iso, clean_create_date_to_iso
-from ...schemas.v2.calculate import CalculateRequestV2, CalculateResponseV2, GeneralSectionV2, GateV2, AdvancedSectionV2, CentersV2, GatesV2
+from ...schemas.v2.calculate import CalculateRequestV2, CalculateResponseV2, GeneralSectionV2, GateV2, CentersV2, GatesV2
 from ...services.masking import OutputMaskingService
 
 router = APIRouter(prefix="/v2", tags=["v2"])
@@ -96,7 +95,6 @@ def calculate_hd_v2(
         
         # Get full incarnation cross name
         cross_tuple = single_result[2]  # Format: ((gate1, gate2), (gate3, gate4))-TYPE
-        cross_type = single_result[3]  # RAC, LAC, or JC
         
         # Parse the cross to get the sun gate
         import re

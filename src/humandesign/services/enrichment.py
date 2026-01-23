@@ -1,4 +1,4 @@
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 from .sqlite_repository import SQLiteRepository
 
 class EnrichmentService:

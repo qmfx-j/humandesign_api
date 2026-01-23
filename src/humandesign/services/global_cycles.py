@@ -1,4 +1,3 @@
-from typing import List, Dict, Optional
 from datetime import date
 from ..schemas.v2.calculate import GlobalCycleOutput
 

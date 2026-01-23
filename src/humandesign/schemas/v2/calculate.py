@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 
 class CalculateRequestV2(BaseModel):
     year: int = Field(1968, description="Birth year")

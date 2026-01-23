@@ -1,7 +1,7 @@
 # Project Architecture Blueprint
 
 **Generated:** 2026-01-22
-**Version:** 3.4.0
+**Version:** 3.4.1
 **Project:** Human Design API
 
 ## 1. Architecture Detection and Analysis
