@@ -14,6 +14,6 @@ services:
       - "9021:9021"
     # Set environment variables within the container
     environment:
-      - HD_API_TOKEN=12345678 # API token for authentication
+      - HD_API_TOKEN=AAAAbbbb8888 # API token for authentication
     # Configure the container to always restart if it stops
     restart: always

@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class HumanDesignCalculator:
-    def __init__(self, base_url="http://localhost:9021", token="12345678"):
+    def __init__(self, base_url="http://localhost:9021", token="AAAAbbbb8888"):
         self.base_url = base_url
         self.headers = {"Authorization": f"Bearer {token}"}
         self.session = requests.Session()
