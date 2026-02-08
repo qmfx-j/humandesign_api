@@ -1,0 +1,430 @@
+{
+  "general": {
+    "birth_date": "1998-03-03T01:45:00Z",
+    "create_date": "1997-12-06T08:58:00Z",
+    "birth_place": "Taiyuan, China",
+    "age": 27,
+    "gender": "male",
+    "islive": true,
+    "zodiac_sign": "Pisces",
+    "energy_type": "Projector",
+    "strategy": "Wait for the Invitation",
+    "signature": "Success",
+    "not_self": "Bitterness",
+    "aura": "Focused & Absorbing",
+    "inner_authority": "Emotional Authority",
+    "inc_cross": "The Right Angle Cross of Consciousness (1)",
+    "profile": "1/4: Investigator Opportunist",
+    "definition": "Single Definition"
+  },
+  "centers": {
+    "defined": [
+      "G_Center",
+      "Solar Plexus",
+      "Heart"
+    ],
+    "undefined": [
+      "Ajna",
+      "Sacral",
+      "Spleen",
+      "Head",
+      "Root",
+      "Throat"
+    ]
+  },
+  "channels": [
+    {
+      "channel": "37/40: The Channel of Community (A Design of a Part Seeking a Whole)"
+    },
+    {
+      "channel": "25/51: The Channel of Initiation (A Design of Needing to be First)"
+    }
+  ],
+  "variables": {
+    "top_right": {
+      "value": "right",
+      "name": "Motivation",
+      "aspect": "Personality (Mind)",
+      "def_type": "Receptive"
+    },
+    "bottom_right": {
+      "value": "right",
+      "name": "Perspective",
+      "aspect": "Personality (View)",
+      "def_type": "Peripheral"
+    },
+    "top_left": {
+      "value": "right",
+      "name": "Digestion",
+      "aspect": "Design (Brain)",
+      "def_type": "Passive"
+    },
+    "bottom_left": {
+      "value": "right",
+      "name": "Environment",
+      "aspect": "Design (Body)",
+      "def_type": "Observer"
+    },
+    "short_code": "PRR DRR"
+  },
+  "gates": {
+    "personality": {
+      "Sun": {
+        "gate": 63,
+        "line": 1,
+        "color": 6,
+        "tone": 5,
+        "base": 4,
+        "lon": 342.276640565897,
+        "gate_name": "The Gate of Doubt (After Completion)",
+        "gate_summary": "The energy of doubt and questioning. It provides the mental pressure to question the validity of patterns and find logical answers. It is the scientific mind.",
+        "line_name": "Composure",
+        "line_description": "The calm in the face of doubt. Sun exalted. The ability to question without anxiety. The scientific detachment. Mars in detriment. The panic. The doubt that leads to paralysis.",
+        "fixation": {
+          "type": "Exalted",
+          "value": "Up"
+        }
+      },
+      "Earth": {
+        "gate": 64,
+        "line": 1,
+        "color": 6,
+        "tone": 5,
+        "base": 4,
+        "lon": 162.27664056589697,
+        "gate_name": "The Gate of Confusion (Before Completion)",
+        "gate_summary": "The energy of confusion and mental pressure. It seeks to make sense of the past and resolve the chaos of images into a clear picture. It is the gate of the historian.",
+        "line_name": "Conditions",
+        "line_description": "The confusion requires the right environment. Pluto exalted. The ability to navigate the chaos. The inner peace. Mars in detriment. The turmoil. The confusion that overwhelms."
+      },
+      "Moon": {
+        "gate": 24,
+        "line": 6,
+        "color": 2,
+        "tone": 5,
+        "base": 1,
+        "lon": 42.574288449029524,
+        "gate_name": "The Gate of Rationalisation (Return)",
+        "gate_summary": "The energy of returning and rationalization. It processes inspiration over and over until it can be rationalized and understood. It is the gate of the mental loop.",
+        "line_name": "The Gift Horse",
+        "line_description": "The opportunity that is missed. Pluto exalted. The awareness of the opportunity. The seizing of the chance. Jupiter in detriment. The suspicion. The rejection of the gift due to doubt."
+      },
+      "North_Node": {
+        "gate": 40,
+        "line": 6,
+        "color": 1,
+        "tone": 4,
+        "base": 4,
+        "lon": 160.53442205731412,
+        "gate_name": "The Gate of Aloneness (Deliverance)",
+        "gate_summary": "The energy of aloneness and deliverance. It works for the community but needs rest and separation to regenerate its willpower. It is the gate of the stomach and the need to be fed.",
+        "line_name": "Decapitation",
+        "line_description": "The removal of the head. Sun exalted. The loss of the leader. The liberation from authority. Earth in detriment. The anarchy. The chaos that follows the fall of the leader."
+      },
+      "South_Node": {
+        "gate": 37,
+        "line": 6,
+        "color": 1,
+        "tone": 4,
+        "base": 4,
+        "lon": 340.53442205731415,
+        "gate_name": "The Gate of Friendship (The Family)",
+        "gate_summary": "The energy of friendship and family. It seeks harmony and bargains for emotional support and community connection. It is the gate of the emotional contract.",
+        "line_name": "Purpose",
+        "line_description": "The extension of the family. Venus exalted. The inclusion of the community. The family of man. Mercury in detriment. The exclusion. The clan mentality that rejects the outsider."
+      },
+      "Mercury": {
+        "gate": 22,
+        "line": 4,
+        "color": 2,
+        "tone": 1,
+        "base": 4,
+        "lon": 349.988690667814,
+        "gate_name": "The Gate of Openness (Grace)",
+        "gate_summary": "The energy of grace and social openness. It is an emotional energy that listens to others and charms them when the mood is right. It is the gate of the left ear, hearing the mood.",
+        "line_name": "Sensitivity",
+        "line_description": "The modification of behavior to suit the other. Neptune exalted. The intuitive understanding of the social environment. The ability to blend in. Mars in detriment. The over-reaction to the social environment. The prickly nature that pushes others away."
+      },
+      "Venus": {
+        "gate": 60,
+        "line": 3,
+        "color": 4,
+        "tone": 5,
+        "base": 1,
+        "lon": 298.8274355070171,
+        "gate_name": "The Gate of the Acceptance of Limitation (Limitation)",
+        "gate_summary": "The energy of limitation. It provides the pressure to transcend limits and bring about mutation, accepting what is to allow for the new. It is the gate of the pulse.",
+        "line_name": "Conservatism",
+        "line_description": "The maintenance of the structure. Earth exalted. The preservation of what works. The stability. Mars in detriment. The stubbornness. The refusal to mutate."
+      },
+      "Mars": {
+        "gate": 25,
+        "line": 1,
+        "color": 4,
+        "tone": 2,
+        "base": 2,
+        "lon": 358.7537221823773,
+        "gate_name": "The Gate of the Spirit of the Self (Innocence)",
+        "gate_summary": "The energy of universal love and innocence. It accepts everything as it is and maintains the spirit of the self amidst shock. It is the gate of the spiritual warrior.",
+        "line_name": "Selflessness",
+        "line_description": "Action without motivation. Neptune exalted. The pure act. The innocence of the deed. Earth in detriment. The hidden agenda. The act that appears selfless but is calculated."
+      },
+      "Jupiter": {
+        "gate": 37,
+        "line": 1,
+        "color": 5,
+        "tone": 1,
+        "base": 3,
+        "lon": 336.38739513907996,
+        "gate_name": "The Gate of Friendship (The Family)",
+        "gate_summary": "The energy of friendship and family. It seeks harmony and bargains for emotional support and community connection. It is the gate of the emotional contract.",
+        "line_name": "The Mother / The Father",
+        "line_description": "The focus of the family. Venus exalted. The harmony of the household. The love that binds the family. Mars in detriment. The authoritarian. The rule by fear."
+      },
+      "Saturn": {
+        "gate": 51,
+        "line": 4,
+        "color": 3,
+        "tone": 3,
+        "base": 4,
+        "lon": 18.320269057651103,
+        "gate_name": "The Gate of Shock (The Arousing)",
+        "gate_summary": "The energy of shock and arousal. It initiates others through shock, testing the spirit and empowering individual competitiveness. It is the gate of the warrior ego.",
+        "line_name": "Limitation",
+        "line_description": "The recognition of what cannot be done. Uranus exalted. The inventive spirit that works within the new limits. The acceptance of the new reality. Mars in detriment. The frustration. The anger at the limitation."
+      },
+      "Uranus": {
+        "gate": 19,
+        "line": 4,
+        "color": 1,
+        "tone": 6,
+        "base": 2,
+        "lon": 310.5746636006443,
+        "gate_name": "The Gate of Wanting (Approach)",
+        "gate_summary": "The energy of wanting and sensitivity. It seeks resources and emotional support, needing to be needed and connected to the tribe. It is the pressure to bond.",
+        "line_name": "The Loner",
+        "line_description": "The approach that is rejected. Mars exalted. The strength to stand alone when rejected. The independence of spirit. Venus in detriment. The isolation. The pain of rejection that leads to withdrawal."
+      },
+      "Neptune": {
+        "gate": 60,
+        "line": 6,
+        "color": 1,
+        "tone": 4,
+        "base": 1,
+        "lon": 301.1457695796711,
+        "gate_name": "The Gate of the Acceptance of Limitation (Limitation)",
+        "gate_summary": "The energy of limitation. It provides the pressure to transcend limits and bring about mutation, accepting what is to allow for the new. It is the gate of the pulse.",
+        "line_name": "Rigidity",
+        "line_description": "The punishment of the limitation. Saturn exalted. The structure that protects. The walls. Mars in detriment. The prison. The limitation that suffocates."
+      },
+      "Pluto": {
+        "gate": 9,
+        "line": 3,
+        "color": 3,
+        "tone": 5,
+        "base": 1,
+        "lon": 248.04412466862186,
+        "gate_name": "The Gate of Focus (The Taming Power of the Small)",
+        "gate_summary": "The energy of detailed attention and focus. It provides the power to concentrate on the small details to achieve a larger goal. It is the energy that fuels the logical process.",
+        "line_name": " The Straw that breaks the camel's back",
+        "line_description": "The oversight of a minor detail that leads to failure. Earth exalted. The meticulous checking of every detail. The refusal to take shortcuts. Sun in detriment. The ignoring of the small things. The assumption that the details will take care of themselves."
+      }
+    },
+    "design": {
+      "Sun": {
+        "gate": 5,
+        "line": 4,
+        "color": 1,
+        "tone": 4,
+        "base": 3,
+        "lon": 254.27664056570018,
+        "gate_name": "The Gate of Fixed Patterns (Waiting)",
+        "gate_summary": "The energy of fixed rhythms and habits. It aligns the individual with the natural flow of time and universal patterns.",
+        "line_name": "The Hunter",
+        "line_description": "Waiting for the opportunity. Uranus exalted. The sudden strike. The ability to seize the moment. Sun in detriment. The missed opportunity. The hesitation that costs the prize.",
+        "fixation": {
+          "type": "Detriment",
+          "value": "Down"
+        }
+      },
+      "Earth": {
+        "gate": 35,
+        "line": 4,
+        "color": 1,
+        "tone": 4,
+        "base": 3,
+        "lon": 74.27664056570018,
+        "gate_name": "The Gate of Change (Progress)",
+        "gate_summary": "The energy of change and progress. It seeks to experience something new and share the lessons learned, often driven by a sense of 'been there, done that'. It is the gate of the jack of all trades.",
+        "line_name": "Hunger",
+        "line_description": "The insatiable drive for the new. Mars exalted. The appetite for experience. The endless search. Pluto in detriment. The obsession. The consumption that destroys."
+      },
+      "Moon": {
+        "gate": 55,
+        "line": 3,
+        "color": 6,
+        "tone": 2,
+        "base": 4,
+        "lon": 332.82412626532476,
+        "gate_name": "The Gate of Spirit (Abundance)",
+        "gate_summary": "The energy of spirit and abundance. It is an emotional energy that fluctuates between melancholy and hope, seeking the quality of spirit. It is the gate of the cup being half full or half empty.",
+        "line_name": "Innocence",
+        "line_description": "The spirit of the child. Neptune exalted. The wonder. The ability to find joy in the simple things. Mars in detriment. The naivety. The vulnerability of the spirit."
+      },
+      "North_Node": {
+        "gate": 64,
+        "line": 4,
+        "color": 6,
+        "tone": 6,
+        "base": 2,
+        "lon": 165.1066784343007,
+        "gate_name": "The Gate of Confusion (Before Completion)",
+        "gate_summary": "The energy of confusion and mental pressure. It seeks to make sense of the past and resolve the chaos of images into a clear picture. It is the gate of the historian.",
+        "line_name": "Conviction",
+        "line_description": "The faith in the resolution. Moon exalted. The belief that the picture will clear. The patience. Mars in detriment. The doubt. The loss of faith."
+      },
+      "South_Node": {
+        "gate": 63,
+        "line": 4,
+        "color": 6,
+        "tone": 6,
+        "base": 2,
+        "lon": 345.1066784343007,
+        "gate_name": "The Gate of Doubt (After Completion)",
+        "gate_summary": "The energy of doubt and questioning. It provides the mental pressure to question the validity of patterns and find logical answers. It is the scientific mind.",
+        "line_name": "Memory",
+        "line_description": "The doubt based on past experience. Moon exalted. The learning from mistakes. The skepticism. Venus in detriment. The grudge. The doubt that refuses to forgive."
+      },
+      "Mercury": {
+        "gate": 10,
+        "line": 6,
+        "color": 2,
+        "tone": 5,
+        "base": 5,
+        "lon": 273.22185788609426,
+        "gate_name": "The Gate of the Behaviour of the Self (Treading)",
+        "gate_summary": "The energy of self-love and authentic behavior. It is about being oneself and empowering others to do the same. This gate sets the standard for behavior in the world.",
+        "line_name": "The Role Model",
+        "line_description": "Perfect expression of norms through action rather than words. Pluto exalted. Constant example that refocuses complacent people on integrity of behaviour. Saturn in detriment. Risk of hypocrisy. Saying one thing, doing another. Behaviour limited to words without action."
+      },
+      "Venus": {
+        "gate": 60,
+        "line": 1,
+        "color": 2,
+        "tone": 6,
+        "base": 2,
+        "lon": 296.6692755211306,
+        "gate_name": "The Gate of the Acceptance of Limitation (Limitation)",
+        "gate_summary": "The energy of limitation. It provides the pressure to transcend limits and bring about mutation, accepting what is to allow for the new. It is the gate of the pulse.",
+        "line_name": "Acceptance",
+        "line_description": "The first step in mutation. Venus exalted. The harmony with the limitation. The peace of mind. Mars in detriment. The restlessness. The fighting against the constraint.",
+        "fixation": {
+          "type": "Exalted",
+          "value": "Up"
+        }
+      },
+      "Mars": {
+        "gate": 54,
+        "line": 6,
+        "color": 6,
+        "tone": 6,
+        "base": 3,
+        "lon": 290.73701948776596,
+        "gate_name": "The Gate of Ambition (The Marrying Maiden)",
+        "gate_summary": "The energy of ambition and drive. It provides the pressure to rise socially and materially, seeking recognition and transformation. It is the gate of the social climber.",
+        "line_name": "Selectivity",
+        "line_description": "The choosy ambition. Pluto exalted. The discernment. The refusal to rise at any cost. Jupiter in detriment. The snobbery. The rejection of opportunity due to arrogance."
+      },
+      "Jupiter": {
+        "gate": 13,
+        "line": 5,
+        "color": 3,
+        "tone": 4,
+        "base": 5,
+        "lon": 317.41379634835346,
+        "gate_name": "The Gate of the Listener (The Fellowship of Men)",
+        "gate_summary": "The energy of the listener and keeper of secrets. It collects the experiences and stories of the past to provide direction. It is the openness of the G Center to the stories of others.",
+        "line_name": "The Saviour",
+        "line_description": "The listener who can heal. Neptune exalted. The ability to absorb the other's pain. The transpersonal love that listens without judgment. Jupiter in detriment. The messiah complex. The belief that one can save everyone through listening.",
+        "fixation": {
+          "type": "Detriment",
+          "value": "Down"
+        }
+      },
+      "Saturn": {
+        "gate": 21,
+        "line": 5,
+        "color": 3,
+        "tone": 3,
+        "base": 3,
+        "lon": 13.626440689065818,
+        "gate_name": "The Gate of the Hunter (Biting Through)",
+        "gate_summary": "The energy of control and managing resources. It is the hunter responsible for ensuring the tribe has what it needs to survive. It demands that one must control their own life.",
+        "line_name": "Objectivity",
+        "line_description": "The fair application of the law. Saturn exalted. The impartial judgment. The rule of law without favor. Pluto in detriment. The subjective judgment. The use of the law for personal revenge.",
+        "fixation": {
+          "type": "Exalted",
+          "value": "Up"
+        }
+      },
+      "Uranus": {
+        "gate": 41,
+        "line": 5,
+        "color": 1,
+        "tone": 6,
+        "base": 2,
+        "lon": 305.88599484273743,
+        "gate_name": "The Gate of Contraction (Decrease)",
+        "gate_summary": "The energy of contraction and fantasy. It is the fuel of imagination and the starting point for all new human experiences. It initiates the abstract process.",
+        "line_name": "Authorization",
+        "line_description": "The sanctioning of the new. Jupiter exalted. The leader who authorizes the new experience. The blessing. Mars in detriment. The unauthorized action. The rebellion."
+      },
+      "Neptune": {
+        "gate": 60,
+        "line": 2,
+        "color": 5,
+        "tone": 6,
+        "base": 5,
+        "lon": 298.0896128846586,
+        "gate_name": "The Gate of the Acceptance of Limitation (Limitation)",
+        "gate_summary": "The energy of limitation. It provides the pressure to transcend limits and bring about mutation, accepting what is to allow for the new. It is the gate of the pulse.",
+        "line_name": "Decisiveness",
+        "line_description": "The cutting of the cord. Saturn exalted. The ability to let go of the old. The finality. Mercury in detriment. The hesitation. The holding on to the past."
+      },
+      "Pluto": {
+        "gate": 9,
+        "line": 1,
+        "color": 1,
+        "tone": 3,
+        "base": 2,
+        "lon": 245.8122122353726,
+        "gate_name": "The Gate of Focus (The Taming Power of the Small)",
+        "gate_summary": "The energy of detailed attention and focus. It provides the power to concentrate on the small details to achieve a larger goal. It is the energy that fuels the logical process.",
+        "line_name": "Sensibility",
+        "line_description": "A balanced approach to detail. Pluto exalted. The intelligent application of energy to detail. The recognition that not all details are equal. Mars in detriment. The obsession with detail. The inability to see the forest for the trees.",
+        "fixation": {
+          "type": "Exalted",
+          "value": "Up"
+        }
+      }
+    }
+  },
+  "advanced": {
+    "dream_rave": {
+      "activated_centers": [],
+      "activated_gates": [],
+      "status": "Analyzed"
+    },
+    "global_cycle": {
+      "great_cycle": "Cycle of Aries",
+      "cycle_cross": "Cross of Planning",
+      "gates": [
+        37,
+        40,
+        9,
+        16
+      ],
+      "description": "Era of institutionalization, social contracts, and detailed structure (1615-2027)."
+    }
+  }
+}

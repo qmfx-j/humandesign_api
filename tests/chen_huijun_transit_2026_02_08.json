@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "birth_date": "1998-03-03T09:45:00Z",
+    "create_date": "(1997, 12, 6, 8, 58)",
+    "place": "Taiyuan, China",
+    "age": 28,
+    "gender": "male",
+    "islive": true,
+    "transit_date_local": "2026-02-08 19:24",
+    "transit_date_utc": "2026-02-08T11:24:00Z",
+    "calculation_place": "Taiyuan, China",
+    "zodiac_sign": "Pisces",
+    "energy_type": "Projector",
+    "strategy": "Wait for the Invitation",
+    "signature": "Success",
+    "not_self": "Bitterness",
+    "aura": "Focused & Absorbing",
+    "inner_authority": "Emotional Authority",
+    "inc_cross": "((63, 64), (5, 35))-RAC",
+    "profile": "1/4: Investigator Opportunist",
+    "defined_centers": [
+      "G_Center",
+      "Solar Plexus",
+      "Heart"
+    ],
+    "undefined_centers": [
+      "Ajna",
+      "Sacral",
+      "Spleen",
+      "Head",
+      "Root",
+      "Throat"
+    ],
+    "definition": "Single Definition",
+    "channels": {
+      "Channels": [
+        {
+          "channel": "40/37: Community (A d. of being part, seeking a whole)"
+        },
+        {
+          "channel": "25/51: Initiation (A d. of needing to be first)"
+        }
+      ]
+    }
+  },
+  "composite_changes": {
+    "new_channels": [
+      {
+        "gates": "63-4",
+        "name": "Logic",
+        "description": "D. of mental muse? mixed with doubt"
+      },
+      {
+        "gates": "19-49",
+        "name": "Synthesis",
+        "description": "A d. of being sensitive"
+      },
+      {
+        "gates": "41-30",
+        "name": "Recognition",
+        "description": "A d. of focused energy"
+      }
+    ],
+    "new_centers": [
+      "Ajna",
+      "Root",
+      "Head"
+    ]
+  },
+  "planetary_transits": [
+    {
+      "planets": "Sun",
+      "gate": 49,
+      "line": 1,
+      "color": 6,
+      "tone": 2,
+      "base": 4,
+      "lon": 319.702
+    },
+    {
+      "planets": "Earth",
+      "gate": 4,
+      "line": 1,
+      "color": 6,
+      "tone": 2,
+      "base": 4,
+      "lon": 139.702
+    },
+    {
+      "planets": "Moon",
+      "gate": 44,
+      "line": 1,
+      "color": 4,
+      "tone": 3,
+      "base": 2,
+      "lon": 218.153
+    },
+    {
+      "planets": "North_Node",
+      "gate": 37,
+      "line": 4,
+      "color": 4,
+      "tone": 4,
+      "base": 4,
+      "lon": 339.129
+    },
+    {
+      "planets": "South_Node",
+      "gate": 40,
+      "line": 4,
+      "color": 4,
+      "tone": 4,
+      "base": 4,
+      "lon": 159.129
+    },
+    {
+      "planets": "Mercury",
+      "gate": 55,
+      "line": 3,
+      "color": 5,
+      "tone": 2,
+      "base": 3,
+      "lon": 332.662
+    },
+    {
+      "planets": "Venus",
+      "gate": 30,
+      "line": 4,
+      "color": 2,
+      "tone": 4,
+      "base": 1,
+      "lon": 327.551
+    },
+    {
+      "planets": "Mars",
+      "gate": 19,
+      "line": 6,
+      "color": 2,
+      "tone": 5,
+      "base": 3,
+      "lon": 312.588
+    },
+    {
+      "planets": "Jupiter",
+      "gate": 53,
+      "line": 2,
+      "color": 4,
+      "tone": 3,
+      "base": 2,
+      "lon": 106.589
+    },
+    {
+      "planets": "Saturn",
+      "gate": 25,
+      "line": 2,
+      "color": 2,
+      "tone": 3,
+      "base": 2,
+      "lon": 359.403
+    },
+    {
+      "planets": "Uranus",
+      "gate": 8,
+      "line": 4,
+      "color": 1,
+      "tone": 6,
+      "base": 5,
+      "lon": 57.468
+    },
+    {
+      "planets": "Neptune",
+      "gate": 25,
+      "line": 3,
+      "color": 2,
+      "tone": 3,
+      "base": 5,
+      "lon": 0.357
+    },
+    {
+      "planets": "Pluto",
+      "gate": 41,
+      "line": 3,
+      "color": 1,
+      "tone": 3,
+      "base": 1,
+      "lon": 303.932
+    }
+  ]
+}
