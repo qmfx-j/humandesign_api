@@ -218,10 +218,8 @@ def main():
     else:
         print("\n❌ 运势分析失败")
         print("\n🔧 故障排除建议:")
-        print("1. 检查 Docker 容器是否正常运行")
-        print("2. 验证 API 认证令牌")
-        print("3. 检查网络连接")
-        print("4. 查看容器日志: docker logs humandesignapi")
+        print("1. 验证 API 认证令牌")
+        print("2. 检查网络连接")
 
 if __name__ == "__main__":
     main()
